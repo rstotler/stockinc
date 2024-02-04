@@ -1,0 +1,198 @@
+* { margin: 0; padding: 0; caret-color: transparent; }
+a { color: #34737D; text-decoration: none; }
+a:hover { text-decoration: none; }
+
+.background-container { background-color: #C6EBF2; height: 100vh; }
+.center-horizontal { display: flex; justify-content: center; }
+.same-line { display: flex; }
+.align-text-right { text-align: right; }
+.width-100 { width: 100%; }
+.width-93 { width: 93%; }
+.green { color: #178E1F; }
+.dark-green { color: #263B3F; }
+.red { color: #8E1717; }
+
+.nav-bar {
+    display: flex;
+    background-color: #263B3F;
+}
+.nav-bar-item {
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    color: #C6EBF2;
+    font-size: 13px;
+    font-weight: bold;
+}
+.nav-bar-item-end {
+    width: 100%;
+    justify-content: right;
+    padding-right: 15px;
+}
+.nav-bar-user-data {
+    background-color: #5C868B;
+    padding-left: 5px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    font-size: 13px;
+    color: #263B3F;
+}
+
+.border-box {
+    background-color: #FFFFFF;
+    width: fit-content;
+    height: fit-content;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-style: solid;
+    border-color: #263B3F;
+    border-width: 2px;
+    border-radius: 5px;
+}
+
+.header-1 { font-size: 30px; color: #263B3F; }
+.header-2 { font-size: 15px; color: #263B3F; }
+.small-text {
+    font-size: 10px;
+    margin-top: 2px;
+    text-align: center;
+}
+
+.button {
+    background-color: #34737D;
+    margin-top: 3px;
+    padding: 3px;
+    border: none;
+    border-radius: 5px;
+    color: #C6EBF2;
+    font-size: 16px;
+}
+.button:hover {
+    background-color: #4D96A1;
+}
+.button-green { background-color: #178E1F; }
+.button-green:hover { background-color: #24AE2E; }
+.button-green-inactive { background-color: #6E6A6A; }
+.button-green-inactive:hover { background-color: #24AE2E; }
+.button-red { background-color: #8E1717; }
+.button-red:hover { background-color: #A62121; }
+.button-red-inactive { background-color: #6E6A6A; }
+.button-red-inactive:hover { background-color: #A62121; }
+
+.text-field-large {
+    margin-top: 2px;
+    padding: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-color: #263B3F;
+    border-radius: 3px;
+    border-width: 1px;
+    color: #263B3F;
+    caret-color: #263B3F;
+}
+
+.table {
+    margin-top: 30px;
+    border-spacing: 0;
+    border-right: solid;
+    border-bottom: solid;
+    border-color: #263B3F;
+    border-width: 3px;
+    border-radius: 5px;
+}
+.table-head {
+    background-color: #263B3F;
+    color: #C6EBF2;
+    font-size: 14px;
+}
+.table-head-0 {
+    display: table-cell;
+    padding: 5px;
+}
+.table-head-1 {
+    display: table-cell;
+    width: 70px;
+}
+.table-head-2 {
+    display: table-cell;
+    width: 50px;
+}
+.table-head-3 {
+    display: table-cell;
+    width: 65px;
+    padding-right: 10px;
+}
+
+.table-row {
+    font-size: 13px;
+    text-align: center;
+    background-color: #89BEC6;
+    color: #263B3F;
+}
+.table-row:nth-child(even) {
+    background-color: #78A7AE;
+}
+.table-row:hover {
+    background-color: #5C868B;
+}
+.table-column-0 {
+    text-align: left;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+}
+.table-column-1 {
+    font-weight: bold;
+}
+.table-column-3 {
+    font-weight: bold;
+}
+
+.offscreen-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    z-index: 3;
+    height: 100vh;
+    width: 55%;
+    color: #172325;
+    background-color: #A4C9D0;
+    border-left-color: #172325;
+    border-left-style: solid;
+    border-width: 3px;
+    padding-top: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    transition: right .5s;
+}
+.offscreen-menu.active {
+    right: 0;
+}
+.offscreen-menu-header {
+    margin-bottom: 10px;
+    padding: 3px;
+    border-radius: 5px;
+    color: #C6EBF2;
+    background-color: #263B3F;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+.offscreen-menu-subheader {
+    margin-bottom: 10px;
+    font-size: 30px;
+    text-align: center;
+}
+.offscreen-menu-item {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+.amend-offer {
+    color: #8E1717;
+    font-size: 12px;
+    font-weight: bold;
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>StockInc</title>
+        <link th:href="@{/styles/main.css}" rel="stylesheet"/>
+    </head>
+    
+    <body class="background-container">
+        <!-- Offscreen Menu -->
+        <div class="offscreen-menu">
+            <div class="offscreen-menu-header" id="offscreenMenuHeader">Buy Stock</div>
+            <div class="offscreen-menu-subheader" id="stockListingName">Stock Name</div>
+
+            <!-- Buy/Sell Screen 1 -->
+            <div id="buySellScreen1">
+                <span class="same-line" style="align-items: center;">
+                    <div class="offscreen-menu-item" id="stockListingSymbol">Stock Symbol</div>
+                    <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                        <a style="padding-right: 3px;"><button type="button" th:onclick="toggleBuyButton()" class="button button-green" id="toggleBuyButton">Buy</button></a>
+                        <a><button type="button" th:attr="onclick=|toggleSellButton()|" class="button button-red-inactive" id="toggleSellButton">Sell</button></a>
+                    </div>
+                </span>
+                <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                    <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                        <div>$</div>
+                        <div id="stockListingPrice">Stock Price</div>
+                    </div>
+                    <div class="offscreen-menu-item">Shares</div>
+                </span>
+                <span class="same-line" style="margin-bottom: 5px; align-items: center;">
+                    <div class="same-line offscreen-menu-item red" id="buySellPriceLine" style="justify-content: center;">
+                        <div id="buySellPriceSymbol">-$</div>
+                        <div id="buySellPrice">Price</div>
+                    </div>
+                    <div class="offscreen-menu-item"><input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" id="inputStockQuantity"></div>
+                </span>
+                <button th:onclick="toggleConfirmScreen(2)" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Next</button>
+            </div>
+
+            <!-- Buy/Sell Screen 2 -->
+            <div id="buySellScreen2" style="display: none;">
+                <span class="same-line">
+                    <div class="offscreen-menu-item">Total</div>
+                    <div class="offscreen-menu-item">Shares</div>
+                </span>
+                <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                    <div class="same-line offscreen-menu-item red" id="buySellPriceLine2" style="justify-content: center;">
+                        <div id="buySellPriceSymbol2">-$</div>
+                        <div id="totalBuySellPrice">Total Price</div>
+                    </div>
+                    <div class="offscreen-menu-item" id="totalBuySellShares">Total Shares</div>
+                </span>
+                <a href="#" th:onclick="toggleConfirmScreen(1)" class="amend-offer"><< Amend Offer</a>
+                
+                <!-- Buy Form -->
+                <div id="buyForm">
+                    <form th:action="0" method="get" id="buyStockForm">
+                        <input type="hidden" th:value="0" name="amountString" id="buyStockAmount"/>
+                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Buy</button>
+                    </form>
+                </div>
+                
+                <!-- Sell Form -->
+                <div id="sellForm" style="display: none;">
+                    <form th:action="0" method="get" id="sellStockForm">
+                        <input type="hidden" th:value="0" name="amountString" id="sellStockAmount"/>
+                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Sell</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navbar -->
+        <div class="nav-bar">
+            <a th:href="@{/index}"><img th:src="@{/images/Logo.png}"/></a>
+            <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
+            <span class="nav-bar-item"><a th:href="@{/profile}" style="color: #C6EBF2;">Account</a></span>
+            <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
+        </div>
+        <div class="nav-bar-user-data">
+            Credit: $<span th:text="${userCredits}"></span>
+        </div>
+
+        <!-- Stock Listing Table -->
+        <div>
+            <table class="table">
+                <thead class="table-head">
+                    <tr>
+                        <th class="table-head-0">Name</th>
+                        <th class="table-head-1">Symbol</th>
+                        <th class="table-head-2">Price</th>
+                        <th class="table-head-3">Change %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="stockListing : ${stockListings}" class="table-row" th:attr="onclick=|clickStockListing('${stockListing.name}', '${stockListing.symbol}', '${stockListing.price}', '${ownedStockString}')|">
+                        <td class="table-column-0"><span th:text="${stockListing.name}"></span></td>
+                        <td class="table-column-1"><span th:text="${stockListing.symbol}"></span></td>
+                        <td><span th:text="${stockListing.price}"></span></td>
+    
+                        <td class="table-column-3">
+                            <span th:if="${stockListing.priceChange} &gt; 0">
+                                +<span th:text="${stockListing.priceChange}" style="color: green"></span>
+                            </span>
+                            <span th:if="${stockListing.priceChange} &lt; 0">
+                                -<span th:text="${stockListing.priceChange}"></span>
+                            </span>
+                            <span th:if="${stockListing.priceChange} == 0">
+                                <span th:text="${stockListing.priceChange}"></span>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <script type="text/javascript" src="js/offscreenMenu.js"></script>
+    </body>
+</html>

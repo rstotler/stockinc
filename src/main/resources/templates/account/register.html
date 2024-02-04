@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>StockInc</title>
+        <link th:href="@{/styles/main.css}" rel="stylesheet"/>
+    </head>
+    
+    <body class="background-container">
+        <div class="nav-bar">
+            <a th:href="@{/index}"><img th:src="@{/images/Logo.png}"/></a>
+        </div>
+        <div class="center-horizontal">
+            <div class="border-box" style="margin-top: 40px;">
+                <div class="header-1 align-text-right">Register</div>
+
+                <form th:action="@{/register}" method="post" th:object="${account}">
+                    <div><input name="username" type="text" placeholder="Username" class="text-field-large width-93"/></div>
+                    <div><input name="password" type="password" placeholder="Password" class="text-field-large width-93"/></div>
+                    <div><input type="submit" value="Register" class="button width-100"></div>
+                </form>
+
+                <div class="small-text dark-green">Already have an account? <a th:href="@{/login}"><b>Sign In</b></a></div>
+            </div>
+        </div>
+    </body>
+</html>

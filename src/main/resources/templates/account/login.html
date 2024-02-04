@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>StockInc</title>
+        <link th:href="@{/styles/main.css}" rel="stylesheet"/>
+    </head>
+    
+    <body class="background-container">
+        <div class="nav-bar">
+            <a th:href="@{/index}"><img th:src="@{/images/Logo.png}"/></a>
+        </div>
+
+        <div class="center-horizontal">
+            <div class="border-box" style="margin-top: 40px;">
+                <div class="header-1 align-text-right">Login</div>
+
+                <form th:action="@{/login}" method="post">
+                    <div><input name="username" type="text" placeholder="Username" class="text-field-large width-93"/></div>
+                    <div><input name="password" type="password" placeholder="Password" class="text-field-large width-93"/></div>
+                    <div><input type="submit" value="Log In" class="button width-100"></div>
+                </form>
+
+                <div class="small-text dark-green">Need an account? <a th:href="@{/register}"><b>Sign Up</b></a></div>
+            </div>
+        </div>
+
+        <div>
+            <div class="center-horizontal">
+                <div th:if="${param.success}" class="border-box header-2" style="margin-top: 10px;">
+                    Account successfully created.
+                </div>
+                <div th:if="${param.error}" class="border-box header-2" style="margin-top: 10px;">
+                    Invalid username/password.
+                </div>
+                <div th:if="${param.logout}" class="border-box header-2" style="margin-top: 10px;">
+                    You have been logged out.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
