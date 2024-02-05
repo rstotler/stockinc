@@ -38,7 +38,7 @@ function clickStockListing(stockListingName, stockListingSymbol, stockListingPri
         const textBuySellPrice = document.getElementById("buySellPrice");
     
         textStockListingName.innerHTML = stockListingName;
-        textStockListingSymbol.innerHTML = selectedStockSymbol + " (" + selectedStockQuantity + ")";
+        textStockListingSymbol.innerHTML = selectedStockSymbol + " (" + selectedStockQuantity + " Owned)";
         textStockListingPrice.innerHTML = stockListingPrice;
         textBuySellPrice.innerHTML = "0.00";
 
@@ -172,20 +172,29 @@ function toggleConfirmScreen(screenNum) {
         buySellScreen2.style.display = "block";
 
         const totalBuySellPrice = document.getElementById("totalBuySellPrice");
-        totalBuySellPrice.innerHTML = buySellPrice;
-
         const totalBuySellShares = document.getElementById("totalBuySellShares");
+
+        if(targetAction == "Buy") {
+            
+        } else if(targetAction == "Sell") {
+            if(parseInt(buySellQuantity) > parseInt(selectedStockQuantity)) {
+                buySellQuantity = selectedStockQuantity;
+
+                const textStockListingPrice = document.getElementById("stockListingPrice");
+                buySellPrice = parseFloat(textStockListingPrice.innerHTML) * parseInt(buySellQuantity);
+
+                const textBuySellPrice = document.getElementById("buySellPrice");
+                textBuySellPrice.innerHTML = buySellPrice;
+                inputStockQuantity.value = buySellQuantity;
+            }
+        }
+
+        totalBuySellPrice.innerHTML = buySellPrice;
         totalBuySellShares.innerHTML = buySellQuantity;
 
         buyStockForm.action = "/buyStock/" + targetStockName;
         buyStockAmount.value = buySellQuantity;
         sellStockForm.action = "/sellStock/" + targetStockName;
         sellStockAmount.value = buySellQuantity;
-
-        if(targetAction == "Buy") {
-
-        } else if(targetAction == "Sell") {
-            
-        }
     }
 }

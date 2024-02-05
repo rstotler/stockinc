@@ -34,7 +34,7 @@ a:hover { text-decoration: none; }
     padding-left: 5px;
     padding-top: 1px;
     padding-bottom: 1px;
-    font-size: 13px;
+    font-size: 14px;
     color: #263B3F;
 }
 
@@ -191,7 +191,7 @@ a:hover { text-decoration: none; }
     font-weight: bold;
 }
 
-.amend-offer {
+.amend-offer-text {
     color: #8E1717;
     font-size: 12px;
     font-weight: bold;
