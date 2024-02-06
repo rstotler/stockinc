@@ -32,8 +32,9 @@ public class AccountService {
             .orElse(null);
     }
 
-    public float getTotalInvestment(Account account) {
+    public float getTotalInvestment(String username) {
         float amount = 0.0f;
+        Account account = findByUsername(username);
         for(String symbol : account.getOwnedStock().keySet()) {
             StockListing stockListing = stockListingService.findBySymbol(symbol);
             amount += (stockListing.getPrice() * account.getOwnedStock().get(symbol));
@@ -42,7 +43,8 @@ public class AccountService {
         return amount;
     }
 
-    public float getGainLoss(Account account) {
-        return getTotalInvestment(account) - account.getLastInvestmentAmount();
+    public float getGainLoss(String username) {
+        Account account = findByUsername(username);
+        return getTotalInvestment(username) - account.getLastInvestmentAmount();
     }
 }

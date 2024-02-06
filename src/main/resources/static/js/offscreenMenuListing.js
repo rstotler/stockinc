@@ -7,6 +7,7 @@ var buySellPrice = 0.0;
 var buySellQuantity = 0;
 var targetStockName = null;
 var targetAction = "Buy";
+var userCredits = 0;
 
 var buyStockForm = document.getElementById("buyStockForm");
 var buyStockAmount = document.getElementById("buyStockAmount");
@@ -24,7 +25,7 @@ function updateBuySellPrice() {
     buySellQuantity = inputStockQuantity.value;
 }
 
-function clickStockListing(stockListingName, stockListingSymbol, stockListingPrice, ownedStockString) {
+function clickStockListing(stockListingName, stockListingSymbol, stockListingPrice, ownedStockString, userTotalCredits) {
     const offscreenMenu = document.querySelector(".offscreen-menu");
 
     if(!offscreenMenu.classList.contains("active")) {
@@ -50,6 +51,8 @@ function clickStockListing(stockListingName, stockListingSymbol, stockListingPri
 
         const inputStockQuantity = document.getElementById("inputStockQuantity");
         inputStockQuantity.value = "0";
+
+        userCredits = userTotalCredits;
 
         toggleBuyButton();
     }
@@ -173,14 +176,22 @@ function toggleConfirmScreen(screenNum) {
 
         const totalBuySellPrice = document.getElementById("totalBuySellPrice");
         const totalBuySellShares = document.getElementById("totalBuySellShares");
+        const textStockListingPrice = document.getElementById("stockListingPrice");
 
         if(targetAction == "Buy") {
-            
-        } else if(targetAction == "Sell") {
+            var maxBuyAmount = Math.floor(parseFloat(userCredits) / parseFloat(textStockListingPrice.innerHTML));
+            if(buySellQuantity > maxBuyAmount) {
+                buySellQuantity = maxBuyAmount;
+                buySellPrice = parseFloat(textStockListingPrice.innerHTML) * parseInt(buySellQuantity);
+
+                const textBuySellPrice = document.getElementById("buySellPrice");
+                textBuySellPrice.innerHTML = buySellPrice;
+                inputStockQuantity.value = buySellQuantity;
+            }
+        }
+        else if(targetAction == "Sell") {
             if(parseInt(buySellQuantity) > parseInt(selectedStockQuantity)) {
                 buySellQuantity = selectedStockQuantity;
-
-                const textStockListingPrice = document.getElementById("stockListingPrice");
                 buySellPrice = parseFloat(textStockListingPrice.innerHTML) * parseInt(buySellQuantity);
 
                 const textBuySellPrice = document.getElementById("buySellPrice");

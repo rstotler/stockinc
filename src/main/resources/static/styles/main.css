@@ -52,6 +52,28 @@ a:hover { text-decoration: none; }
     border-radius: 5px;
 }
 
+.border-box-2 {
+    background-color: #FFFFFF;
+    margin-top: 30px;
+    border-top-left-radius: 5px;
+    border-left: solid;
+    border-top: solid;
+    border-bottom: solid;
+    border-bottom-left-radius: 5px;
+    border-width: 2px;
+    border-bottom-color: #263B3F;
+    border-top-color: #263B3F;
+    border-left-color: #263B3F;
+}
+.border-box-2-header {
+    background-color: #263B3F;
+    color: #C6EBF2;
+    padding: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
 .header-1 { font-size: 30px; color: #263B3F; }
 .header-2 { font-size: 15px; color: #263B3F; }
 .small-text {
@@ -100,7 +122,8 @@ a:hover { text-decoration: none; }
     border-bottom: solid;
     border-color: #263B3F;
     border-width: 3px;
-    border-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 .table-head {
     background-color: #263B3F;

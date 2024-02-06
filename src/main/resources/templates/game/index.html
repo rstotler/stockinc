@@ -75,12 +75,33 @@
         <div class="nav-bar">
             <a th:href="@{/index}"><img th:src="@{/images/Logo.png}"/></a>
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
-            <span class="nav-bar-item"><a th:href="@{/profile}" style="color: #C6EBF2;">Account</a></span>
+            <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Groups</a></span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
-        <div class="nav-bar-user-data">
-            Credit: $<span th:text="${userCredits}"></span>
-        </div>
+        <span class="same-line nav-bar-user-data">
+            <div>Credit: $<span th:text="${userCredits}"></span></div>
+            <div style="width: 5px;"></div>
+            <div>
+                <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} &gt; 0">
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    <span class="green" style="font-weight: bold;">
+                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                    </span>
+                </span>
+                <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} &lt; 0">
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    <span class="red" style="font-weight: bold;">
+                        (-$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                    </span>
+                </span>
+                <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} == 0">
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    <span style="font-weight: bold;">
+                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                    </span>
+                </span>
+            </div>
+        </span>
 
         <!-- Stock Listing Table -->
         <div>
@@ -94,7 +115,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="stockListing : ${stockListings}" class="table-row" th:attr="onclick=|clickStockListing('${stockListing.name}', '${stockListing.symbol}', '${stockListing.price}', '${ownedStockString}')|">
+                    <tr th:each="stockListing : ${stockListings}" class="table-row" th:attr="onclick=|clickStockListing('${stockListing.name}', '${stockListing.symbol}', '${stockListing.price}', '${ownedStockString}', '${userCredits}')|">
                         <td class="table-column-0"><span th:text="${stockListing.name}"></span></td>
                         <td class="table-column-1"><span th:text="${stockListing.symbol}"></span></td>
                         <td><span th:text="${stockListing.price}"></span></td>
@@ -115,6 +136,6 @@
             </table>
         </div>
 
-        <script type="text/javascript" src="js/offscreenMenu.js"></script>
+        <script type="text/javascript" src="js/offscreenMenuListing.js"></script>
     </body>
 </html>
