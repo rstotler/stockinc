@@ -9,7 +9,21 @@ function clickGroupListing(groupName, groupSymbol) {
     offscreenMenuGroupListing.classList.toggle("active");
 }
 
-function clickCreateGroup() {
+function clickGroupSettingsTab(groupName, groupSymbol, groupStatus) {
+    if(groupStatus == "None") {
+        const createGroupForm = document.getElementById("createGroupForm");
+        createGroupForm.style.display = "block";
+    } else if(groupStatus == "Founder") {
+        const textGroupName = document.getElementById("groupName");
+        textGroupName.innerHTML = groupName;
+
+        const inputGroupSymbol = document.getElementById("groupSymbolInput");
+        inputGroupSymbol.value = groupSymbol;
+
+        const groupSettingsForm = document.getElementById("groupSettingsForm");
+        groupSettingsForm.style.display = "block";
+    }
+
     const offscreenMenuGroupListing = document.getElementById("groupListingMenu");
     const offscreenMenuCreateGroup = document.getElementById("createGroupMenu");
 

@@ -1,5 +1,7 @@
 package com.jbs.StockGame.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -110,10 +112,29 @@ public class StockGameController {
     public String groups(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
 
+        String groupName = "None";
+        String groupSymbol = "None";
+        String groupStatus = "None";
+        for(Group group : groupService.findAll()) {
+            if(group.getFounder().equals(userDetails.getUsername())) {
+                groupName = group.getName();
+                groupSymbol = group.getSymbol();
+                groupStatus = "Founder";
+                break;
+            } else if(group.getMemberList().contains(userDetails.getUsername())) {
+                groupStatus = "Member";
+                break;
+            }
+        }
+
         model.addAttribute("accountService", accountService);
+        model.addAttribute("groupService", groupService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
         model.addAttribute("groups", groupService.findAll());
+        model.addAttribute("groupName", groupName);
+        model.addAttribute("groupSymbol", groupSymbol);
+        model.addAttribute("groupStatus", groupStatus);
 
         return "game/groups";
     }
@@ -126,9 +147,9 @@ public class StockGameController {
         boolean createGroupCheck = account.getCredits() >= 100.0;
         if(createGroupCheck) {
             for(Group group : groupService.findAll()) {
-                if(userDetails.getUsername() == group.getFounder() || group.getMemberList().contains(userDetails.getUsername())) {
+                if(userDetails.getUsername().equals(group.getFounder()) || group.getMemberList().contains(userDetails.getUsername())) {
                     createGroupCheck = false;
-                } else if(groupName.toLowerCase() == group.getName().toLowerCase() || groupSymbol == group.getSymbol()) {
+                } else if(groupName.toLowerCase().equals(group.getName().toLowerCase()) || groupSymbol.equals(group.getSymbol())) {
                     createGroupCheck = false;
                 }
             }
@@ -140,6 +161,33 @@ public class StockGameController {
         }
         
         return "redirect:/groups";
+    }
+
+    @GetMapping("/disbandGroup")
+    public String disbandGroup(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="groupSymbol", required=false) String groupSymbol) {
+        Group group = groupService.findBySymbol(groupSymbol);
+        if(group != null && group.getFounder().equals(userDetails.getUsername()))  {
+            List<Group> groups = groupService.findAll();
+            for(int i = 0; i < groups.size(); i++) {
+                if(groups.get(i).getSymbol().equals(groupSymbol)) {
+                    groups.remove(i);
+                    break;
+                }
+            }
+        }
+
+        return "redirect:/groups";
+    }
+
+    @GetMapping("/assets")
+    public String assets(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Account account = accountService.findByUsername(userDetails.getUsername());
+
+        model.addAttribute("accountService", accountService);
+        model.addAttribute("userName", userDetails.getUsername());
+        model.addAttribute("userCredits", account.getCredits());
+        
+        return "game/assets";
     }
 
     public boolean isInteger(String targetString) {

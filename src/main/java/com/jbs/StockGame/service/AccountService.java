@@ -13,9 +13,9 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class AccountService {
-    private List<Account> accounts = new ArrayList<>();
-    private PasswordEncoder passwordEncoder;;
     private StockListingService stockListingService;
+    private List<Account> accounts = new ArrayList<>();
+    private PasswordEncoder passwordEncoder;
     
     public void register(Account account) {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
@@ -46,5 +46,18 @@ public class AccountService {
     public float getGainLoss(String username) {
         Account account = findByUsername(username);
         return getTotalInvestment(username) - account.getLastInvestmentAmount();
+    }
+
+    public float getTotalOwnedStockValue(String username) {
+        Account account = findByUsername(username);
+        float totalValue = 0.0f;
+        if(account != null) {
+            for(String symbol : account.getOwnedStock().keySet()) {
+                StockListing stockListing = stockListingService.findBySymbol(symbol);
+                totalValue += stockListing.getPrice() * account.getOwnedStockQuantity(symbol);
+            }
+        }
+        
+        return totalValue;
     }
 }
