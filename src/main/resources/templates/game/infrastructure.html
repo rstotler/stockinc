@@ -7,12 +7,17 @@
     </head>
     
     <body class="background-container">
+        <!-- Offscreen Menu -->
+        <div class="offscreen-menu">
+            <div class="offscreen-menu-header">Buy Infrastructure</div>
+        </div>
+
         <!-- Navbar -->
         <div class="nav-bar">
             <a th:href="@{/index}"><img th:src="@{/images/Logo.png}"/></a>
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
             <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Groups</a></span>
-            <span class="nav-bar-item"><a th:href="@{/assets}" style="color: #C6EBF2;">Assets</a></span>
+            <span class="nav-bar-item"><a th:href="@{/infrastructure}" style="color: #C6EBF2;">Infrastructure</a></span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
         <span class="same-line nav-bar-user-data">
@@ -40,9 +45,29 @@
             </div>
         </span>
 
-        <!--  -->
-        <div style="display: flex;">
-            
+        <!-- Infrastructure Box -->
+        <div class="border-box-3" style="width: 60%;">
+            <div class="border-box-3-header">Infrastructure</div>
+            <div class="same-line">
+                <a href="#">
+                    <div th:attr="onclick=|clickInfrastructureUnit()|" style="position: relative; margin-right: 10px;">
+                        <img th:src="@{/images/IconTemplate.png}"/>
+                        <div class="bottom-icon-left-corner"></div>
+                        <div class="bottom-icon-banner">Hacker</div>
+                        <div class="bottom-icon-right-corner"></div>
+                    </div>
+                </a>
+                <a href="#">
+                    <div th:attr="onclick=|clickInfrastructureUnit()|" style="position: relative; margin-right: 10px;">
+                        <img th:src="@{/images/IconTemplate.png}"/>
+                        <div class="bottom-icon-left-corner"></div>
+                        <div class="bottom-icon-banner">Hacker</div>
+                        <div class="bottom-icon-right-corner"></div>
+                    </div>
+                </a>
+            </div>
         </div>
+
+        <script type="text/javascript" src="js/offscreenMenuInfrastructure.js"></script>
     </body>
 </html>

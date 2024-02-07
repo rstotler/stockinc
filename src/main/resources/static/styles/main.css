@@ -1,6 +1,7 @@
 * { margin: 0; padding: 0; caret-color: transparent; }
 a { color: #34737D; text-decoration: none; }
 a:hover { text-decoration: none; }
+img { display: block; }
 
 .background-container { background-color: #C6EBF2; height: 100vh; }
 .center-horizontal { display: flex; justify-content: center; }
@@ -72,6 +73,21 @@ a:hover { text-decoration: none; }
     font-size: 14px;
     font-weight: bold;
     text-align: center;
+}
+
+.border-box-3 {
+    background-color: #5C868B;
+    margin: 10px;
+    padding: 10px;
+    border-color: #263B3F;
+    border-width: 3px;
+    border-style: solid;
+}
+.border-box-3-header {
+    color: #C6EBF2;
+    padding-bottom: 5px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .header-1 { font-size: 30px; color: #263B3F; }
@@ -218,4 +234,34 @@ a:hover { text-decoration: none; }
     color: #8E1717;
     font-size: 12px;
     font-weight: bold;
+}
+
+.bottom-icon-left-corner {
+    width: 0;
+    height: 0px;
+    border-top: 13px solid #263B3F;
+    border-left: 13px solid transparent;
+    position: absolute;
+    bottom: 0px;
+}
+.bottom-icon-banner {
+    font-size: 11px;
+    color: #FFFFFF;
+    position: absolute;
+    bottom: 0px;
+    background-color: #263B3F;
+    left: 12px;
+    padding-left: 3px;
+    padding-right: 3px;
+    width: 31px;
+    text-align: center;
+}
+.bottom-icon-right-corner {
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 13px solid #263B3F;
+    border-right: 13px solid transparent;
+    position: absolute;
+    left: 49px;
 }

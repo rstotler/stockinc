@@ -179,7 +179,7 @@ public class StockGameController {
         return "redirect:/groups";
     }
 
-    @GetMapping("/assets")
+    @GetMapping("/infrastructure")
     public String assets(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
 
@@ -187,7 +187,7 @@ public class StockGameController {
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
         
-        return "game/assets";
+        return "game/infrastructure";
     }
 
     public boolean isInteger(String targetString) {
