@@ -9,7 +9,32 @@
     <body class="background-container">
         <!-- Offscreen Menu -->
         <div class="offscreen-menu">
-            <div class="offscreen-menu-header">Buy Infrastructure</div>
+            <div class="offscreen-menu-header" id="offscreenMenuHeader">Buy Infrastructure</div>
+
+            <!-- Buy Screen 1 -->
+            <div id="buySellScreen1">
+                <div class="offscreen-menu-subheader" id="unitType">Unit Type</div>
+                <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                    <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                        <div>$</div>
+                        <div id="unitPrice">Unit Price</div>
+                    </div>
+                    <div class="offscreen-menu-item">Count</div>
+                </span>
+                <form th:action="@{/buyUnits}" method="get">
+                    <span class="same-line" style="margin-bottom: 5px; align-items: center;">
+                        <div class="same-line offscreen-menu-item red" style="width: 50%; justify-content: center;">
+                            <div>-$</div>
+                            <div id="buyPrice">0.00</div>
+                        </div>
+                        <div style="width: 50%; text-align: center;">
+                            <input type="hidden" th:value="0" name="unitType" id="unitTypeInput"/>
+                            <input type="number" name="unitCount" size="4" min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" id="inputBuyCount">
+                        </div>
+                    </span>
+                    <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Hire</button>
+                </form>
+            </div>
         </div>
 
         <!-- Navbar -->
@@ -47,13 +72,35 @@
 
         <!-- Infrastructure Box -->
         <div class="border-box-3" style="width: 60%;">
-            <div class="border-box-3-header">Infrastructure</div>
+            <!-- Units -->
+            <div class="border-box-3-header">Units</div>
             <div class="same-line">
                 <a href="#">
                     <div th:attr="onclick=|clickInfrastructureUnit()|" style="position: relative; margin-right: 10px;">
                         <img th:src="@{/images/IconTemplate.png}"/>
                         <div class="bottom-icon-left-corner"></div>
+                        <div class="bottom-icon-banner">Tipster</div>
+                        <div class="bottom-icon-right-corner"></div>
+                    </div>
+                </a>
+                <a href="#">
+                    <div th:attr="onclick=|clickInfrastructureUnit('Hacker', '${unitPrices}')|" style="position: relative; margin-right: 10px;">
+                        <img th:src="@{/images/IconTemplate.png}"/>
+                        <div class="bottom-icon-left-corner"></div>
                         <div class="bottom-icon-banner">Hacker</div>
+                        <div class="bottom-icon-right-corner"></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Infrastructure -->
+            <div class="border-box-3-header" style="padding-top: 20px;">Infrastructure</div>
+            <div class="same-line">
+                <a href="#">
+                    <div th:attr="onclick=|clickInfrastructureUnit()|" style="position: relative; margin-right: 10px;">
+                        <img th:src="@{/images/IconTemplate.png}"/>
+                        <div class="bottom-icon-left-corner"></div>
+                        <div class="bottom-icon-banner">Firewall</div>
                         <div class="bottom-icon-right-corner"></div>
                     </div>
                 </a>
@@ -61,7 +108,7 @@
                     <div th:attr="onclick=|clickInfrastructureUnit()|" style="position: relative; margin-right: 10px;">
                         <img th:src="@{/images/IconTemplate.png}"/>
                         <div class="bottom-icon-left-corner"></div>
-                        <div class="bottom-icon-banner">Hacker</div>
+                        <div class="bottom-icon-banner">Server</div>
                         <div class="bottom-icon-right-corner"></div>
                     </div>
                 </a>

@@ -253,8 +253,9 @@ img { display: block; }
     left: 12px;
     padding-left: 3px;
     padding-right: 3px;
-    width: 31px;
+    width: 36px;
     text-align: center;
+    z-index: 2;
 }
 .bottom-icon-right-corner {
     bottom: 0;
@@ -263,5 +264,5 @@ img { display: block; }
     border-bottom: 13px solid #263B3F;
     border-right: 13px solid transparent;
     position: absolute;
-    left: 49px;
+    left: 54px;
 }

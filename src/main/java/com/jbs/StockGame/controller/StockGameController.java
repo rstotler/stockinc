@@ -15,6 +15,7 @@ import com.jbs.StockGame.entity.Account;
 import com.jbs.StockGame.entity.Group;
 import com.jbs.StockGame.entity.StockListing;
 import com.jbs.StockGame.service.AccountService;
+import com.jbs.StockGame.service.GameDataService;
 import com.jbs.StockGame.service.GroupService;
 import com.jbs.StockGame.service.ScraperService;
 import com.jbs.StockGame.service.StockListingService;
@@ -29,6 +30,7 @@ public class StockGameController {
     private StockListingService stockListingService;
     private GroupService groupService;
     private ScraperService scraperService;
+    private GameDataService gameDataService;
 
     @GetMapping("/index")
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -144,7 +146,7 @@ public class StockGameController {
         groupSymbol = groupSymbol.toUpperCase();
 
         Account account = accountService.findByUsername(userDetails.getUsername());
-        boolean createGroupCheck = account.getCredits() >= 100.0;
+        boolean createGroupCheck = account.getCredits() >= 100.0 && groupName.length() > 0 && groupSymbol.length() > 0;
         if(createGroupCheck) {
             for(Group group : groupService.findAll()) {
                 if(userDetails.getUsername().equals(group.getFounder()) || group.getMemberList().contains(userDetails.getUsername())) {
@@ -186,8 +188,16 @@ public class StockGameController {
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
+        model.addAttribute("unitPrices", gameDataService.unitPrices.toString());
         
         return "game/infrastructure";
+    }
+
+    @GetMapping("/buyUnits")
+    public String buyUnits(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="unitType", required=false) String unitType, @RequestParam(value="unitCount", required=false) String unitCount) {
+        System.out.println(unitType + " " + unitCount);
+
+        return "redirect:/infrastructure";
     }
 
     public boolean isInteger(String targetString) {
