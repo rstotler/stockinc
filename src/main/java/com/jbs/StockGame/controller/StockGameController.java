@@ -37,7 +37,7 @@ public class StockGameController {
     @GetMapping("/index")
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-        account.updateUnitQueue();
+        account.updateQueues();
 
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
@@ -116,7 +116,7 @@ public class StockGameController {
     @GetMapping("/groups")
     public String groups(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-        account.updateUnitQueue();
+        account.updateQueues();
 
         String groupName = "None";
         String groupSymbol = "None";
@@ -188,9 +188,18 @@ public class StockGameController {
     @GetMapping("/infrastructure")
     public String assets(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-        account.updateUnitQueue();
+        account.updateQueues();
 
         List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Hacker"));
+
+        String tipsterCooldown = "None";
+        LocalDateTime tipsterCooldownTime = null;
+        int tipsterCooldownTimeLength = 0;
+        if(account.getTipsterQueue() != null) {
+            tipsterCooldown = "Tipster";
+            tipsterCooldownTime = account.getTipsterQueue().getStartTime();
+            tipsterCooldownTimeLength = account.getTipsterQueue().getCreateUnitLength();
+        }
 
         String creatingUnitType = "None";
         LocalDateTime creatingUnitTime = null;
@@ -200,17 +209,37 @@ public class StockGameController {
             creatingUnitTime = account.getUnitQueue().get(0).getStartTime();
             creatingUnitTimeLength = account.getUnitQueue().get(0).getCreateUnitLength();
         }
-
+        
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
+
+        model.addAttribute("servicePrices", gameDataService.servicePrices.toString());
+        model.addAttribute("tipsterCooldown", tipsterCooldown);
+        model.addAttribute("tipsterCooldownTime", tipsterCooldownTime);
+        model.addAttribute("tipsterCooldownTimeLength", tipsterCooldownTimeLength);
+        
         model.addAttribute("unitList", unitList);
         model.addAttribute("unitPrices", gameDataService.unitPrices.toString());
+        model.addAttribute("unitCounts", account.getOwnedUnits().toString());
         model.addAttribute("creatingUnitType", creatingUnitType);
         model.addAttribute("creatingUnitTime", creatingUnitTime);
         model.addAttribute("creatingUnitTimeLength", creatingUnitTimeLength);
         
         return "game/infrastructure";
+    }
+
+    @GetMapping("/buyTipster")
+    public String buyTipster(@AuthenticationPrincipal UserDetails userDetails) {
+        Account account = accountService.findByUsername(userDetails.getUsername());
+
+        if(account.getTipsterQueue() == null && account.getCredits() >= gameDataService.servicePrices.get("Tipster")) {
+            account.setTipsterQueue(new UnitQueue("Tipster", 0, 0, gameDataService.serviceResetLength.get("Tipster"), LocalDateTime.now()));
+            account.setCredits(account.getCredits() - gameDataService.servicePrices.get("Tipster"));
+            account.generateTipsterReport();
+        }
+
+        return "redirect:/infrastructure"; 
     }
 
     @GetMapping("/buyUnits")
@@ -230,6 +259,18 @@ public class StockGameController {
         }
 
         return "redirect:/infrastructure";
+    }
+
+    @GetMapping("/messages")
+    public String messages(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Account account = accountService.findByUsername(userDetails.getUsername());
+        account.updateQueues();
+        
+        model.addAttribute("accountService", accountService);
+        model.addAttribute("userName", userDetails.getUsername());
+        model.addAttribute("userCredits", account.getCredits());
+
+        return "game/messages"; 
     }
 
     public boolean isInteger(String targetString) {

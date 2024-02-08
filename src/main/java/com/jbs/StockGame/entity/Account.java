@@ -16,6 +16,7 @@ public class Account {
     private float lastInvestmentAmount;
     private Map<String, Integer> ownedStock;
 
+    private UnitQueue tipsterQueue;
     private Map<String, Integer> ownedUnits;
     private List<UnitQueue> unitQueue;
 
@@ -27,13 +28,26 @@ public class Account {
         }
     }
 
-    public void updateUnitQueue() {
+    public void updateQueues() {
+        LocalDateTime now = LocalDateTime.now();
+
+        if(tipsterQueue != null) {
+            LocalDateTime serviceStartTime = tipsterQueue.getStartTime();
+            long secondsPassed = ChronoUnit.SECONDS.between(serviceStartTime, now);
+            if(secondsPassed >= tipsterQueue.getCreateUnitLength()) {
+                tipsterQueue = null;
+            }
+        }
+
         if(unitQueue.size() > 0) {
-            LocalDateTime now = LocalDateTime.now();
             LocalDateTime creationStartTime = unitQueue.get(0).getStartTime();
             long secondsPassed = ChronoUnit.SECONDS.between(creationStartTime, now);
             updateUnitQueueUtility(secondsPassed);
         }
+    }
+
+    public void generateTipsterReport() {
+        
     }
 
     public void updateUnitQueueUtility(long secondsPassed) {

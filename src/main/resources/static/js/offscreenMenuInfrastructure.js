@@ -5,22 +5,56 @@ inputBuyCount.addEventListener('input', () => {updateBuyPrice();});
 var unitTypeInput = document.getElementById("unitTypeInput");
 
 var creatingUnitTime = document.getElementById("creatingUnitTime");
+var tipsterCooldownTime = document.getElementById("tipsterCooldownTime");
 var currentDateTime = new Date();
-var unitCreationDateTime = parseDateTimeString(creatingUnitTime.innerHTML);
+var unitCreationDateTime;
+if(creatingUnitTime != null) {
+    unitCreationDateTime = parseDateTimeString(creatingUnitTime.innerHTML);
+}
+var tipsterCooldownDateTime;
+if(tipsterCooldownTime != null) {
+    tipsterCooldownDateTime = parseDateTimeString(tipsterCooldownTime.innerHTML);
+}
 
 var creatingUnitTimeLength = document.getElementById("creatingUnitTimeLength");
 var unitCreationTimeField = document.getElementById("unitCreationTimeField");
-var unitCreationTimeRemaining = parseInt(creatingUnitTimeLength.innerHTML) - parseInt((currentDateTime.getTime() - unitCreationDateTime.getTime()) / 1000);
-unitCreationTimeField.innerHTML = parseTimeRemaining(unitCreationTimeRemaining);
+var unitCreationTimeRemaining;
+if(creatingUnitTimeLength != null) {
+    unitCreationTimeRemaining = parseInt(creatingUnitTimeLength.innerHTML) - parseInt((currentDateTime.getTime() - unitCreationDateTime.getTime()) / 1000);
+}
+if(unitCreationTimeField != null) {
+    unitCreationTimeField.innerHTML = parseTimeRemaining(unitCreationTimeRemaining);
+}
+
+var tipsterCooldownTimeLength = document.getElementById("tipsterCooldownTimeLength");
+var tipsterCooldownTimeField = document.getElementById("tipsterCooldownTimeField");
+var tipsterCooldownTimeRemaining;
+if(tipsterCooldownTimeLength != null) {
+    tipsterCooldownTimeRemaining = parseInt(tipsterCooldownTimeLength.innerHTML) - parseInt((currentDateTime.getTime() - tipsterCooldownDateTime.getTime()) / 1000);
+}
+if(tipsterCooldownTimeField != null) {
+    tipsterCooldownTimeField.innerHTML = parseTimeRemaining(tipsterCooldownTimeRemaining);
+}
 
 setInterval(updateCountdownTimers, 1000);
 
 function updateCountdownTimers() {
-    if(unitCreationTimeRemaining > 0) {
-        unitCreationTimeRemaining = unitCreationTimeRemaining - 1;
-        unitCreationTimeField.innerHTML = parseTimeRemaining(unitCreationTimeRemaining);
-    } else if(unitCreationTimeRemaining == 0) {
-        unitCreationTimeField.innerHTML = "Done";
+    if(tipsterCooldownTimeRemaining != null) {
+        if(tipsterCooldownTimeRemaining > 0) {
+            tipsterCooldownTimeRemaining = tipsterCooldownTimeRemaining - 1;
+            tipsterCooldownTimeField.innerHTML = parseTimeRemaining(tipsterCooldownTimeRemaining);
+        } else if(tipsterCooldownTimeRemaining == 0) {
+            tipsterCooldownTimeField.innerHTML = "Done";
+        }
+    }
+    
+    if(unitCreationTimeRemaining != null) {
+        if(unitCreationTimeRemaining > 0) {
+            unitCreationTimeRemaining = unitCreationTimeRemaining - 1;
+            unitCreationTimeField.innerHTML = parseTimeRemaining(unitCreationTimeRemaining);
+        } else if(unitCreationTimeRemaining == 0) {
+            unitCreationTimeField.innerHTML = "Done";
+        }
     }
 }
 
@@ -66,7 +100,7 @@ function updateBuyPrice() {
     textBuyPrice.innerHTML = parseFloat(textUnitPrice.innerHTML) * inputBuyCount.value;
 }
 
-function clickInfrastructureUnit(unitType, unitPrices) {
+function clickInfrastructureUnit(unitType, servicePrices, unitPrices, unitCounts) {
     const offscreenMenu = document.querySelector(".offscreen-menu");
     const offscreenMenuHeader = document.getElementById("offscreenMenuHeader");
 
@@ -76,6 +110,9 @@ function clickInfrastructureUnit(unitType, unitPrices) {
     if(!offscreenMenu.classList.contains("active")) {
         if(unitType == "Tipster") {
             offscreenMenuHeader.innerHTML = "Hire Tipster";
+
+            const tipsterPrice = document.getElementById("tipsterPrice");
+            tipsterPrice.innerHTML = parseMap(unitType, servicePrices);
     
             buyTipsterScreen.style.display = "block";
             buyUnitScreen.style.display = "none";
@@ -84,7 +121,7 @@ function clickInfrastructureUnit(unitType, unitPrices) {
         else if(unitType == "Hacker") {
             const textUnitType = document.getElementById("unitType");
             offscreenMenuHeader.innerHTML = "Hire Units";
-            textUnitType.innerHTML = unitType;
+            textUnitType.innerHTML = unitType + " (Owned: " + parseMap(unitType, unitCounts) + ")";
 
             unitTypeInput.value = unitType;
     
@@ -99,19 +136,19 @@ function clickInfrastructureUnit(unitType, unitPrices) {
     offscreenMenu.classList.toggle("active");
 }
 
-function parseMap(unitType, unitPrices) {
-    if(unitPrices.includes(unitType)) {
-        var startIndex = unitPrices.indexOf(unitType) + unitType.length + 1;
+function parseMap(targetString, mapString) {
+    if(mapString.includes(targetString)) {
+        var startIndex = mapString.indexOf(targetString) + targetString.length + 1;
         var endIndex = null;
 
-        if(unitPrices.substring(startIndex).includes(",")) {
-            endIndex = startIndex + unitPrices.substring(startIndex).indexOf(",");
+        if(mapString.substring(startIndex).includes(",")) {
+            endIndex = startIndex + mapString.substring(startIndex).indexOf(",");
         } else {
-            endIndex = startIndex + unitPrices.substring(startIndex).indexOf("}");
+            endIndex = startIndex + mapString.substring(startIndex).indexOf("}");
         }
 
         if(endIndex != null) {
-            return unitPrices.substring(startIndex, endIndex);
+            return mapString.substring(startIndex, endIndex);
         }
     }
 

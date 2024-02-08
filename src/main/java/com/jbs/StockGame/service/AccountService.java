@@ -20,11 +20,15 @@ public class AccountService {
     public void register(Account account) {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setRole("User");
+
         account.setCredits(1000.0f);
         account.setLastInvestmentAmount(0.0f);
         account.setOwnedStock(new HashMap<>());
+
+        account.setTipsterQueue(null);
         account.setOwnedUnits(new HashMap<>());
         account.setUnitQueue(new ArrayList<>());
+
         accounts.add(account);
     }
 

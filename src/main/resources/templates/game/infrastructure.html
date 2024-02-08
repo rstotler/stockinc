@@ -13,7 +13,15 @@
             
             <!-- Buy Tipster Screen -->
             <div id="buyTipsterScreen" style="display: none;">
-
+                <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                    <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                        <div>$</div>
+                        <div id="tipsterPrice">Tipster Price</div>
+                    </div>
+                </span>
+                <form th:action="@{/buyTipster}" method="get">
+                    <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Buy Tip</button>
+                </form>
             </div>
 
             <!-- Buy Unit Screen -->
@@ -34,7 +42,7 @@
                         </div>
                         <div style="width: 50%; text-align: center;">
                             <input type="hidden" th:value="0" name="unitType" id="unitTypeInput"/>
-                            <input type="number" name="unitCount" size="4" min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" id="inputBuyCount">
+                            <input type="number" name="unitCount" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" id="inputBuyCount">
                         </div>
                     </span>
                     <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Hire</button>
@@ -46,8 +54,9 @@
         <div class="nav-bar">
             <a th:href="@{/index}"><img th:src="@{/images/Logo.png}"/></a>
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
-            <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Groups</a></span>
+            <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Companies</a></span>
             <span class="nav-bar-item"><a th:href="@{/infrastructure}" style="color: #C6EBF2;">Infrastructure</a></span>
+            <span class="nav-bar-item"><a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a></span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
         <span class="same-line nav-bar-user-data">
@@ -81,13 +90,19 @@
             <div class="border-box-3-header">Units</div>
             <div class="same-line">
                 <a href="#" th:each="unitType : ${unitList}">
-                    <div th:attr="onclick=|clickInfrastructureUnit('${unitType}', '${unitPrices}')|" style="position: relative; margin-right: 10px;">
+                    <div th:attr="onclick=|clickInfrastructureUnit('${unitType}', '${servicePrices}', '${unitPrices}', '${unitCounts}')|" style="position: relative; margin-right: 10px;">
                         <img th:src="@{/images/IconTemplate.png}"/>
 
                         <div th:if="${unitType} == 'Hacker'">
                             <div class="bottom-icon-left-corner" style="bottom: 60px; left: 16px;"></div>
                             <div th:with="userName=${userName}, unitType=${unitType}" th:text="${accountService.getUnitCount(userName, unitType)}" class="bottom-icon-banner" style="bottom: 60px; left: 28px; width: 26px;"></div>
                             <div class="bottom-icon-right-corner" style="bottom: 60px; left: 60px;"></div>
+                        </div>
+
+                        <div th:if="${tipsterCooldown} == ${unitType}">
+                            <div th:text="${tipsterCooldownTimeLength}" id="tipsterCooldownTimeLength" style="display: none;"></div>
+                            <div th:text="${tipsterCooldownTime}" id="tipsterCooldownTime" style="display: none;"></div>
+                            <div class="bottom-icon-banner" style="left: 0px; width: 65px; bottom: 30px; background-color: RGBA(38, 59, 63, 0.75);" id="tipsterCooldownTimeField"></div>
                         </div>
 
                         <div th:if="${creatingUnitType} == ${unitType}">
@@ -110,7 +125,7 @@
                     <div style="position: relative; margin-right: 10px;">
                         <img th:src="@{/images/IconTemplate.png}"/>
                         <div class="bottom-icon-left-corner"></div>
-                        <div class="bottom-icon-banner">Firewall</div>
+                        <div class="bottom-icon-banner">???</div>
                         <div class="bottom-icon-right-corner"></div>
                     </div>
                 </a>
@@ -118,7 +133,7 @@
                     <div style="position: relative; margin-right: 10px;">
                         <img th:src="@{/images/IconTemplate.png}"/>
                         <div class="bottom-icon-left-corner"></div>
-                        <div class="bottom-icon-banner">Server</div>
+                        <div class="bottom-icon-banner">???</div>
                         <div class="bottom-icon-right-corner"></div>
                     </div>
                 </a>
