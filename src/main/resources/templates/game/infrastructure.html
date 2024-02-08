@@ -86,7 +86,7 @@
 
                         <div th:if="${unitType} == 'Hacker'">
                             <div class="bottom-icon-left-corner" style="bottom: 60px; left: 16px;"></div>
-                            <div th:text="0" class="bottom-icon-banner" style="bottom: 60px; left: 28px; width: 26px;"></div>
+                            <div th:with="userName=${userName}, unitType=${unitType}" th:text="${accountService.getUnitCount(userName, unitType)}" class="bottom-icon-banner" style="bottom: 60px; left: 28px; width: 26px;"></div>
                             <div class="bottom-icon-right-corner" style="bottom: 60px; left: 60px;"></div>
                         </div>
 

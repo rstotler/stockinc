@@ -62,4 +62,14 @@ public class AccountService {
         
         return totalValue;
     }
+
+    public int getUnitCount(String username, String unitType) {
+        Account account = findByUsername(username);
+        
+        if(account.getOwnedUnits().containsKey(unitType)) {
+            return account.getOwnedUnits().get(unitType);
+        } else {
+            return 0;
+        }
+    }
 }
