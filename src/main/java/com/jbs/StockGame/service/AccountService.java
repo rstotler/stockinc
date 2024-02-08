@@ -23,6 +23,8 @@ public class AccountService {
         account.setCredits(1000.0f);
         account.setLastInvestmentAmount(0.0f);
         account.setOwnedStock(new HashMap<>());
+        account.setOwnedUnits(new HashMap<>());
+        account.setUnitQueue(new ArrayList<>());
         accounts.add(account);
     }
 

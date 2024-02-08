@@ -10,9 +10,14 @@
         <!-- Offscreen Menu -->
         <div class="offscreen-menu">
             <div class="offscreen-menu-header" id="offscreenMenuHeader">Buy Infrastructure</div>
+            
+            <!-- Buy Tipster Screen -->
+            <div id="buyTipsterScreen" style="display: none;">
 
-            <!-- Buy Screen 1 -->
-            <div id="buySellScreen1">
+            </div>
+
+            <!-- Buy Unit Screen -->
+            <div id="buyUnitScreen" style="display: none;">
                 <div class="offscreen-menu-subheader" id="unitType">Unit Type</div>
                 <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
                     <div class="same-line offscreen-menu-item" style="justify-content: center;">
@@ -75,19 +80,24 @@
             <!-- Units -->
             <div class="border-box-3-header">Units</div>
             <div class="same-line">
-                <a href="#">
-                    <div th:attr="onclick=|clickInfrastructureUnit()|" style="position: relative; margin-right: 10px;">
+                <a href="#" th:each="unitType : ${unitList}">
+                    <div th:attr="onclick=|clickInfrastructureUnit('${unitType}', '${unitPrices}')|" style="position: relative; margin-right: 10px;">
                         <img th:src="@{/images/IconTemplate.png}"/>
+
+                        <div th:if="${unitType} == 'Hacker'">
+                            <div class="bottom-icon-left-corner" style="bottom: 60px; left: 16px;"></div>
+                            <div th:text="0" class="bottom-icon-banner" style="bottom: 60px; left: 28px; width: 26px;"></div>
+                            <div class="bottom-icon-right-corner" style="bottom: 60px; left: 60px;"></div>
+                        </div>
+
+                        <div th:if="${creatingUnitType} == ${unitType}">
+                            <div th:text="${creatingUnitTimeLength}" id="creatingUnitTimeLength" style="display: none;"></div>
+                            <div th:text="${creatingUnitTime}" id="creatingUnitTime" style="display: none;"></div>
+                            <div class="bottom-icon-banner" style="left: 0px; width: 65px; bottom: 30px; background-color: RGBA(38, 59, 63, 0.75);" id="unitCreationTimeField"></div>
+                        </div>
+                        
                         <div class="bottom-icon-left-corner"></div>
-                        <div class="bottom-icon-banner">Tipster</div>
-                        <div class="bottom-icon-right-corner"></div>
-                    </div>
-                </a>
-                <a href="#">
-                    <div th:attr="onclick=|clickInfrastructureUnit('Hacker', '${unitPrices}')|" style="position: relative; margin-right: 10px;">
-                        <img th:src="@{/images/IconTemplate.png}"/>
-                        <div class="bottom-icon-left-corner"></div>
-                        <div class="bottom-icon-banner">Hacker</div>
+                        <div th:text="${unitType}" class="bottom-icon-banner"></div>
                         <div class="bottom-icon-right-corner"></div>
                     </div>
                 </a>
@@ -97,7 +107,7 @@
             <div class="border-box-3-header" style="padding-top: 20px;">Infrastructure</div>
             <div class="same-line">
                 <a href="#">
-                    <div th:attr="onclick=|clickInfrastructureUnit()|" style="position: relative; margin-right: 10px;">
+                    <div style="position: relative; margin-right: 10px;">
                         <img th:src="@{/images/IconTemplate.png}"/>
                         <div class="bottom-icon-left-corner"></div>
                         <div class="bottom-icon-banner">Firewall</div>
@@ -105,7 +115,7 @@
                     </div>
                 </a>
                 <a href="#">
-                    <div th:attr="onclick=|clickInfrastructureUnit()|" style="position: relative; margin-right: 10px;">
+                    <div style="position: relative; margin-right: 10px;">
                         <img th:src="@{/images/IconTemplate.png}"/>
                         <div class="bottom-icon-left-corner"></div>
                         <div class="bottom-icon-banner">Server</div>

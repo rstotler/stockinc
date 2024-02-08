@@ -10,4 +10,9 @@ public class GameDataService {
     {
         unitPrices.put("Hacker", 100.0f);
     }
+
+    public Map<String, Integer> createUnitLength = new HashMap<>();
+    {
+        createUnitLength.put("Hacker", 5);
+    }
 }

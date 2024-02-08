@@ -1,6 +1,7 @@
 package com.jbs.StockGame.controller;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.jbs.StockGame.entity.Account;
 import com.jbs.StockGame.entity.Group;
 import com.jbs.StockGame.entity.StockListing;
+import com.jbs.StockGame.entity.UnitQueue;
 import com.jbs.StockGame.service.AccountService;
 import com.jbs.StockGame.service.GameDataService;
 import com.jbs.StockGame.service.GroupService;
@@ -35,6 +37,7 @@ public class StockGameController {
     @GetMapping("/index")
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
+        account.updateUnitQueue();
 
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
@@ -113,6 +116,7 @@ public class StockGameController {
     @GetMapping("/groups")
     public String groups(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
+        account.updateUnitQueue();
 
         String groupName = "None";
         String groupSymbol = "None";
@@ -184,18 +188,46 @@ public class StockGameController {
     @GetMapping("/infrastructure")
     public String assets(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
+        account.updateUnitQueue();
+
+        List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Hacker"));
+
+        String creatingUnitType = "None";
+        LocalDateTime creatingUnitTime = null;
+        int creatingUnitTimeLength = 0;
+        if(account.getUnitQueue().size() > 0) {
+            creatingUnitType = account.getUnitQueue().get(0).getUnitType();
+            creatingUnitTime = account.getUnitQueue().get(0).getStartTime();
+            creatingUnitTimeLength = account.getUnitQueue().get(0).getCreateUnitLength();
+        }
 
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
+        model.addAttribute("unitList", unitList);
         model.addAttribute("unitPrices", gameDataService.unitPrices.toString());
+        model.addAttribute("creatingUnitType", creatingUnitType);
+        model.addAttribute("creatingUnitTime", creatingUnitTime);
+        model.addAttribute("creatingUnitTimeLength", creatingUnitTimeLength);
         
         return "game/infrastructure";
     }
 
     @GetMapping("/buyUnits")
-    public String buyUnits(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="unitType", required=false) String unitType, @RequestParam(value="unitCount", required=false) String unitCount) {
-        System.out.println(unitType + " " + unitCount);
+    public String buyUnits(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="unitType", required=false) String unitType, @RequestParam(value="unitCount", required=false) int unitCount) {
+        if(gameDataService.unitPrices.containsKey(unitType)) {
+            Account account = accountService.findByUsername(userDetails.getUsername());
+            int maxBuyAmount = (int) (account.getCredits() / gameDataService.unitPrices.get(unitType));
+            if(unitCount > maxBuyAmount) {
+                unitCount = maxBuyAmount;
+            }
+
+            if(unitCount > 0) {
+                account.getUnitQueue().add(new UnitQueue(unitType, gameDataService.unitPrices.get(unitType), unitCount, gameDataService.createUnitLength.get(unitType), LocalDateTime.now()));
+                float totalCost = gameDataService.unitPrices.get(unitType) * unitCount;
+                account.setCredits(account.getCredits() - totalCost);
+            }
+        }
 
         return "redirect:/infrastructure";
     }

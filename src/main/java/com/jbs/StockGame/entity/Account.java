@@ -14,6 +14,9 @@ public class Account {
     private float lastInvestmentAmount;
     private Map<String, Integer> ownedStock;
 
+    private Map<String, Integer> ownedUnits;
+    private List<UnitQueue> unitQueue;
+
     public int getOwnedStockQuantity(String stockSymbol) {
         if(ownedStock.containsKey(stockSymbol)) {
             return ownedStock.get(stockSymbol);
