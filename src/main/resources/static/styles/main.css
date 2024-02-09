@@ -192,7 +192,7 @@ img { display: block; }
 .offscreen-menu {
     position: fixed;
     top: 0;
-    right: -100%;
+    right: -110%;
     z-index: 3;
     height: 100vh;
     width: 55%;
@@ -208,6 +208,14 @@ img { display: block; }
 }
 .offscreen-menu.active {
     right: 0;
+}
+.offscreen-menu-messages {
+    width: 87%;
+    height: 87%;
+    margin: 20px;
+    border-style: solid;
+    color: #263B3F;
+    transition: none;
 }
 .offscreen-menu-header {
     margin-bottom: 10px;
@@ -265,4 +273,19 @@ img { display: block; }
     border-right: 13px solid transparent;
     position: absolute;
     left: 54px;
+}
+
+.message-list-box {
+    border-width: 2px;
+    border-color: #C6EBF2;
+    border-style: solid;
+    margin-top: 3px;
+    padding: 3px;
+    font-size: 13px;
+    background-color: #5C868B;
+    color: #263B3F;
+}
+.message-list-box:hover {
+    border-color: #A7C7CD;
+    background-color: #51777B;
 }

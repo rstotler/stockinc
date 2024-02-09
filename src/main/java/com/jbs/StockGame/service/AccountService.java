@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jbs.StockGame.entity.Account;
+import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +30,8 @@ public class AccountService {
         account.setOwnedUnits(new HashMap<>());
         account.setUnitQueue(new ArrayList<>());
 
+        account.setMessages(new ArrayList<>());
+        
         accounts.add(account);
     }
 
@@ -75,5 +78,9 @@ public class AccountService {
         } else {
             return 0;
         }
+    }
+
+    public void generateTipsterReport() {
+        
     }
 }

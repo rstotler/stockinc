@@ -20,6 +20,8 @@ public class Account {
     private Map<String, Integer> ownedUnits;
     private List<UnitQueue> unitQueue;
 
+    private List<Message> messages;
+
     public int getOwnedStockQuantity(String stockSymbol) {
         if(ownedStock.containsKey(stockSymbol)) {
             return ownedStock.get(stockSymbol);
@@ -44,10 +46,6 @@ public class Account {
             long secondsPassed = ChronoUnit.SECONDS.between(creationStartTime, now);
             updateUnitQueueUtility(secondsPassed);
         }
-    }
-
-    public void generateTipsterReport() {
-        
     }
 
     public void updateUnitQueueUtility(long secondsPassed) {

@@ -19,6 +19,7 @@ import com.jbs.StockGame.entity.UnitQueue;
 import com.jbs.StockGame.service.AccountService;
 import com.jbs.StockGame.service.GameDataService;
 import com.jbs.StockGame.service.GroupService;
+import com.jbs.StockGame.service.MessageService;
 import com.jbs.StockGame.service.ScraperService;
 import com.jbs.StockGame.service.StockListingService;
 
@@ -33,6 +34,7 @@ public class StockGameController {
     private GroupService groupService;
     private ScraperService scraperService;
     private GameDataService gameDataService;
+    private MessageService messageService;
 
     @GetMapping("/index")
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -236,7 +238,7 @@ public class StockGameController {
         if(account.getTipsterQueue() == null && account.getCredits() >= gameDataService.servicePrices.get("Tipster")) {
             account.setTipsterQueue(new UnitQueue("Tipster", 0, 0, gameDataService.serviceResetLength.get("Tipster"), LocalDateTime.now()));
             account.setCredits(account.getCredits() - gameDataService.servicePrices.get("Tipster"));
-            account.generateTipsterReport();
+            accountService.generateTipsterReport();
         }
 
         return "redirect:/infrastructure"; 
@@ -265,10 +267,12 @@ public class StockGameController {
     public String messages(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
-        
+
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
+        model.addAttribute("messages", account.getMessages());
+        model.addAttribute("messageService", messageService);
 
         return "game/messages"; 
     }

@@ -7,6 +7,13 @@
     </head>
     
     <body class="background-container">
+        <!-- Offscreen Menu -->
+        <div class="offscreen-menu offscreen-menu-messages" th:attr="onclick=|clickMessage('None', 'None', 'None')|">
+            <div id="messageTitle" class="border-box-3-header" style="padding-bottom: 0px; color: #263B3F;">Title</div>
+            <div id="messageDate" style="padding-bottom: 13px;">Date</div>
+            <div id="messageContent">Content</div>
+        </div>
+
         <!-- Navbar -->
         <div class="nav-bar">
             <a th:href="@{/index}"><img th:src="@{/images/Logo.png}"/></a>
@@ -42,8 +49,16 @@
         </span>
 
         <!-- Messages Box -->
-        <div>
-            
+        <div class="border-box-3" style="border-width: 2px; background-color: #263B3F; border-color: #5C868B;">
+            <div class="border-box-3-header" style="padding-bottom: 0px;">Messages</div>
+            <div th:each="message : ${messages}" class="message-list-box" th:attr="onclick=|clickMessage('${message.title}', '${message.date}', '${message.content}')|">
+                <span class="same-line">
+                    <div th:with="messageDate=${message.date}" th:text="'[' + ${messageService.getDateTimeString(messageDate)} + ']'" style="padding-right: 5px;"></div>
+                    <div th:text="${message.title}"></div>
+                </span>
+            </div>
         </div>
+
+        <script type="text/javascript" src="js/offscreenMenuMessages.js"></script>
     </body>
 </html>
