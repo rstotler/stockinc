@@ -24,25 +24,25 @@
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
         <span class="same-line nav-bar-user-data">
-            <div>Credit: $<span th:text="${userCredits}"></span></div>
+            <div>Credit: $<span th:text="${userCreditsString}"></span></div>
             <div style="width: 5px;"></div>
             <div>
                 <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} &gt; 0">
-                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestmentString(userName)}"></span>
                     <span class="green" style="font-weight: bold;">
-                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLossString(userName)}"></span>)
                     </span>
                 </span>
                 <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} &lt; 0">
-                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestmentString(userName)}"></span>
                     <span class="red" style="font-weight: bold;">
-                        (-$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                        (-$<span th:with="userName=${userName}" th:text="${accountService.getGainLossString(userName)}"></span>)
                     </span>
                 </span>
                 <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} == 0">
-                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestmentString(userName)}"></span>
                     <span style="font-weight: bold;">
-                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLossString(userName)}"></span>)
                     </span>
                 </span>
             </div>

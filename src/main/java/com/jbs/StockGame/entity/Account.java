@@ -1,5 +1,6 @@
 package com.jbs.StockGame.entity;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -21,6 +22,11 @@ public class Account {
     private List<UnitQueue> unitQueue;
 
     private List<Message> messages;
+
+    public String getCreditsString() {
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        return decimalFormat.format(credits);
+    }
 
     public int getOwnedStockQuantity(String stockSymbol) {
         if(ownedStock.containsKey(stockSymbol)) {

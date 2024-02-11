@@ -3,6 +3,7 @@ inputStockQuantity.addEventListener('click', () => {updateBuySellPrice();});
 inputStockQuantity.addEventListener('input', () => {updateBuySellPrice();});
 var selectedStockSymbol = null;
 var selectedStockQuantity = null;
+var selectedStockPrice = null;
 var buySellPrice = 0.0;
 var buySellQuantity = 0;
 var targetStockName = null;
@@ -14,12 +15,17 @@ var buyStockAmount = document.getElementById("buyStockAmount");
 var sellStockForm = document.getElementById("sellStockForm");
 var sellStockAmount = document.getElementById("sellStockAmount");
 
+function formatNumber(num) {
+    var roundedNum = (Math.round(num * 100) / 100).toFixed(2);
+    return roundedNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function updateBuySellPrice() {
     const textStockListingPrice = document.getElementById("stockListingPrice");
     const textBuySellPrice = document.getElementById("buySellPrice");
     const inputStockQuantity = document.getElementById("inputStockQuantity");
 
-    textBuySellPrice.innerHTML = parseFloat(textStockListingPrice.innerHTML) * inputStockQuantity.value;
+    textBuySellPrice.innerHTML = formatNumber(parseFloat(selectedStockPrice) * inputStockQuantity.value);
 
     buySellPrice = textBuySellPrice.innerHTML;
     buySellQuantity = inputStockQuantity.value;
@@ -32,6 +38,7 @@ function clickStockListing(stockListingName, stockListingSymbol, stockListingPri
         selectedStockSymbol = stockListingSymbol;
         selectedStockQuantity = getSelectedStockQuantity(ownedStockString);
         targetStockName = stockListingName;
+        selectedStockPrice = stockListingPrice;
 
         const textStockListingName = document.getElementById("stockListingName");
         const textStockListingSymbol = document.getElementById("stockListingSymbol");
@@ -40,7 +47,7 @@ function clickStockListing(stockListingName, stockListingSymbol, stockListingPri
     
         textStockListingName.innerHTML = stockListingName;
         textStockListingSymbol.innerHTML = selectedStockSymbol + " (" + selectedStockQuantity + " Owned)";
-        textStockListingPrice.innerHTML = stockListingPrice;
+        textStockListingPrice.innerHTML = formatNumber(stockListingPrice);
         textBuySellPrice.innerHTML = "0.00";
 
         const buySellScreen1 = document.getElementById("buySellScreen1");
@@ -179,28 +186,28 @@ function toggleConfirmScreen(screenNum) {
         const textStockListingPrice = document.getElementById("stockListingPrice");
 
         if(targetAction == "Buy") {
-            var maxBuyAmount = Math.floor(parseFloat(userCredits) / parseFloat(textStockListingPrice.innerHTML));
+            var maxBuyAmount = Math.floor(parseFloat(userCredits) / parseFloat(selectedStockPrice));
             if(buySellQuantity > maxBuyAmount) {
                 buySellQuantity = maxBuyAmount;
-                buySellPrice = parseFloat(textStockListingPrice.innerHTML) * parseInt(buySellQuantity);
+                buySellPrice = parseFloat(selectedStockPrice) * parseInt(buySellQuantity);
 
                 const textBuySellPrice = document.getElementById("buySellPrice");
-                textBuySellPrice.innerHTML = buySellPrice;
+                textBuySellPrice.innerHTML = formatNumber(buySellPrice);
                 inputStockQuantity.value = buySellQuantity;
             }
         }
         else if(targetAction == "Sell") {
             if(parseInt(buySellQuantity) > parseInt(selectedStockQuantity)) {
                 buySellQuantity = selectedStockQuantity;
-                buySellPrice = parseFloat(textStockListingPrice.innerHTML) * parseInt(buySellQuantity);
+                buySellPrice = parseFloat(selectedStockPrice) * parseInt(buySellQuantity);
 
                 const textBuySellPrice = document.getElementById("buySellPrice");
-                textBuySellPrice.innerHTML = buySellPrice;
+                textBuySellPrice.innerHTML = formatNumber(buySellPrice);;
                 inputStockQuantity.value = buySellQuantity;
             }
         }
 
-        totalBuySellPrice.innerHTML = buySellPrice;
+        totalBuySellPrice.innerHTML = formatNumber(buySellPrice);
         totalBuySellShares.innerHTML = buySellQuantity;
 
         buyStockForm.action = "/buyStock/" + targetStockName;

@@ -3,6 +3,7 @@ package com.jbs.StockGame.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -48,7 +49,7 @@ public class ScraperService {
         stockListingService.findByName(stockName).setPrice(count);
     }
 
-    public void simulateUpdate() {
+    public void simulateUpdateOld() {
         System.out.println("Simulating Price Update");
 
         ArrayList<String> titleList = new ArrayList<>();
@@ -74,8 +75,50 @@ public class ScraperService {
                 }
             }
 
-            stockListing.setPriceChange(count);
-            stockListing.setPrice(stockListing.getPrice() + count);
+            // stockListing.setPriceChange(count);
+            // stockListing.setPrice(stockListing.getPrice() + count);
+        }
+    }
+
+    public void simulateUpdate() {
+
+        // Set Price Change //
+        for(StockListing stockListing : stockListingService.findAll()) {
+            if(stockListing.getAverageDayCount() > 0) {
+                float newStockPrice = stockListing.getNextPriceChange();
+                for(Float price : stockListing.getPriceList()) {
+                    newStockPrice += price;
+                }
+                if(stockListing.getAverageDayCount() > 0) {
+                    newStockPrice /= stockListing.getAverageDayCount();
+                }
+                if(newStockPrice < 0.0) {
+                    newStockPrice = 0.0f;
+                }
+                stockListing.getPriceList().add(newStockPrice);
+
+                if(stockListing.getAverageDayCount() == 30) {
+                    stockListing.getPriceList().remove(0);
+                    stockListing.setAverageDayCount(29);
+                }
+            }
+
+            stockListing.setAverageDayCount(stockListing.getAverageDayCount() + 1);
+
+            if(stockListing.getPriceList().size() > 1) {
+                float diff = stockListing.getPriceList().get(stockListing.getPriceList().size() - 1) - stockListing.getPriceList().get(stockListing.getPriceList().size() - 2);
+                float priceChange1Day = (diff / stockListing.getPriceList().get(stockListing.getPriceList().size() - 2)) * 100;
+                stockListing.setPriceChange1Day(priceChange1Day);
+            } else if(stockListing.getPriceList().size() == 1) {
+                stockListing.setPriceChange1Day(stockListing.getPriceList().get(0));
+            }
+        }
+
+        // Get Next Day's Price Change //
+        for(StockListing stockListing : stockListingService.findAll()) {
+            float nextPrice = 0.0f;
+            nextPrice = new Random().nextFloat() * 2500.0f;
+            stockListing.setNextPriceChange(nextPrice);
         }
     }
 }

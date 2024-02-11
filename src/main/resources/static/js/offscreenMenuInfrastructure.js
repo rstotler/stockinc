@@ -2,6 +2,7 @@ const inputBuyCount = document.getElementById("inputBuyCount");
 inputBuyCount.addEventListener('click', () => {updateBuyPrice();});
 inputBuyCount.addEventListener('input', () => {updateBuyPrice();});
 
+var selectedUnitPrice = null;
 var unitTypeInput = document.getElementById("unitTypeInput");
 
 var creatingUnitTime = document.getElementById("creatingUnitTime");
@@ -37,6 +38,11 @@ if(tipsterCooldownTimeField != null) {
 }
 
 setInterval(updateCountdownTimers, 1000);
+
+function formatNumber(num) {
+    var roundedNum = (Math.round(num * 100) / 100).toFixed(2);
+    return roundedNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 function updateCountdownTimers() {
     if(tipsterCooldownTimeRemaining != null) {
@@ -93,11 +99,10 @@ function parseTimeRemaining(seconds) {
 }
 
 function updateBuyPrice() {
-    const textUnitPrice = document.getElementById("unitPrice");
     const textBuyPrice = document.getElementById("buyPrice");
     const inputBuyCount = document.getElementById("inputBuyCount");
 
-    textBuyPrice.innerHTML = parseFloat(textUnitPrice.innerHTML) * inputBuyCount.value;
+    textBuyPrice.innerHTML = formatNumber(parseFloat(selectedUnitPrice) * inputBuyCount.value);
 }
 
 function clickInfrastructureUnit(unitType, servicePrices, unitPrices, unitCounts) {
@@ -108,11 +113,13 @@ function clickInfrastructureUnit(unitType, servicePrices, unitPrices, unitCounts
     const buyUnitScreen = document.getElementById("buyUnitScreen");
 
     if(!offscreenMenu.classList.contains("active")) {
+        selectedUnitPrice = parseMap(unitType, unitPrices);
+        
         if(unitType == "Tipster") {
             offscreenMenuHeader.innerHTML = "Hire Tipster";
 
             const tipsterPrice = document.getElementById("tipsterPrice");
-            tipsterPrice.innerHTML = parseMap(unitType, servicePrices);
+            tipsterPrice.innerHTML = "Cost: $" + formatNumber(parseMap(unitType, servicePrices));
     
             buyTipsterScreen.style.display = "block";
             buyUnitScreen.style.display = "none";
@@ -126,7 +133,7 @@ function clickInfrastructureUnit(unitType, servicePrices, unitPrices, unitCounts
             unitTypeInput.value = unitType;
     
             const textUnitPrice = document.getElementById("unitPrice");
-            textUnitPrice.innerHTML = parseMap(unitType, unitPrices);
+            textUnitPrice.innerHTML = formatNumber(parseMap(unitType, unitPrices));
     
             buyTipsterScreen.style.display = "none";
             buyUnitScreen.style.display = "block";

@@ -44,6 +44,7 @@ public class StockGameController {
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
+        model.addAttribute("userCreditsString", account.getCreditsString());
         model.addAttribute("stockListings", stockListingService.findAll());
         model.addAttribute("ownedStockString", account.getOwnedStock().toString());
         
@@ -138,7 +139,7 @@ public class StockGameController {
         model.addAttribute("accountService", accountService);
         model.addAttribute("groupService", groupService);
         model.addAttribute("userName", userDetails.getUsername());
-        model.addAttribute("userCredits", account.getCredits());
+        model.addAttribute("userCreditsString", account.getCreditsString());
         model.addAttribute("groups", groupService.findAll());
         model.addAttribute("groupName", groupName);
         model.addAttribute("groupSymbol", groupSymbol);
@@ -214,7 +215,7 @@ public class StockGameController {
         
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
-        model.addAttribute("userCredits", account.getCredits());
+        model.addAttribute("userCreditsString", account.getCreditsString());
 
         model.addAttribute("servicePrices", gameDataService.servicePrices.toString());
         model.addAttribute("tipsterCooldown", tipsterCooldown);
@@ -270,7 +271,7 @@ public class StockGameController {
 
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
-        model.addAttribute("userCredits", account.getCredits());
+        model.addAttribute("userCreditsString", account.getCreditsString());
         model.addAttribute("messages", account.getMessages());
         model.addAttribute("messageService", messageService);
 

@@ -1,5 +1,6 @@
 package com.jbs.StockGame.service;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,9 +53,21 @@ public class AccountService {
         return amount;
     }
 
+    public String getTotalInvestmentString(String username) {
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        float amount = getTotalInvestment(username);
+        return decimalFormat.format(amount);
+    }
+
     public float getGainLoss(String username) {
         Account account = findByUsername(username);
         return getTotalInvestment(username) - account.getLastInvestmentAmount();
+    }
+
+    public String getGainLossString(String username) {
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        float amount = getGainLoss(username);
+        return decimalFormat.format(amount);
     }
 
     public float getTotalOwnedStockValue(String username) {

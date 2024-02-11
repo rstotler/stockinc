@@ -1,5 +1,6 @@
 package com.jbs.StockGame.service;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
@@ -46,5 +47,11 @@ public class GroupService {
         }
         
         return totalValue;
+    }
+
+    public String getTotalValueString(String symbol) {
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        float amount = getTotalValue(symbol);
+        return decimalFormat.format(amount);
     }
 }

@@ -81,25 +81,25 @@
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
         <span class="same-line nav-bar-user-data">
-            <div>Credit: $<span th:text="${userCredits}"></span></div>
+            <div>Credit: $<span th:text="${userCreditsString}"></span></div>
             <div style="width: 5px;"></div>
             <div>
                 <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} &gt; 0">
-                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestmentString(userName)}"></span>
                     <span class="green" style="font-weight: bold;">
-                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLossString(userName)}"></span>)
                     </span>
                 </span>
                 <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} &lt; 0">
-                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestmentString(userName)}"></span>
                     <span class="red" style="font-weight: bold;">
-                        (-$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                        (-$<span th:with="userName=${userName}" th:text="${accountService.getGainLossString(userName)}"></span>)
                     </span>
                 </span>
                 <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} == 0">
-                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestment(userName)}"></span>
+                    - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestmentString(userName)}"></span>
                     <span style="font-weight: bold;">
-                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLoss(userName)}"></span>)
+                        (+$<span th:with="userName=${userName}" th:text="${accountService.getGainLossString(userName)}"></span>)
                     </span>
                 </span>
             </div>
@@ -117,20 +117,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="stockListing : ${stockListings}" class="table-row" th:attr="onclick=|clickStockListing('${stockListing.name}', '${stockListing.symbol}', '${stockListing.price}', '${ownedStockString}', '${userCredits}')|">
+                    <tr th:each="stockListing : ${stockListings}" class="table-row" th:attr="onclick=|clickStockListing('${stockListing.name}', '${stockListing.symbol}', '${stockListing.getPrice}', '${ownedStockString}', '${userCredits}')|">
                         <td class="table-column-0"><span th:text="${stockListing.name}"></span></td>
                         <td class="table-column-1"><span th:text="${stockListing.symbol}"></span></td>
-                        <td><span th:text="${stockListing.price}"></span></td>
+                        <td>$<span th:text="${stockListing.getPriceString}"></span></td>
     
                         <td class="table-column-3">
-                            <span th:if="${stockListing.priceChange} &gt; 0">
-                                +<span th:text="${stockListing.priceChange}" style="color: green"></span>
+                            <span th:if="${stockListing.priceChange1Day} &gt; 0">
+                                <span th:text="'+' + ${stockListing.getPriceChange1DayString} + '%'" class="green"></span>
                             </span>
-                            <span th:if="${stockListing.priceChange} &lt; 0">
-                                -<span th:text="${stockListing.priceChange}"></span>
+                            <span th:if="${stockListing.priceChange1Day} &lt; 0">
+                                <span th:text="${stockListing.getPriceChange1DayString} + '%'" class="red"></span>
                             </span>
-                            <span th:if="${stockListing.priceChange} == 0">
-                                <span th:text="${stockListing.priceChange}"></span>
+                            <span th:if="${stockListing.priceChange1Day} == 0">
+                                <span th:text="${stockListing.getPriceChange1DayString} + '%'"></span>
                             </span>
                         </td>
                     </tr>
