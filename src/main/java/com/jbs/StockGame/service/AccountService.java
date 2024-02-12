@@ -96,28 +96,30 @@ public class AccountService {
 
     public void generateTipsterReport(String username) {
         List<StockListing> listCopy = new ArrayList<>(stockListingService.findAll());
-        //Collections.shuffle(listCopy);
+        Collections.shuffle(listCopy);
         StockListing targetStock = null;
 
-        // for(StockListing stockListing : listCopy) {
-        //     if(stockListing.getPriceList().size() > 0 && stockListing.getNextPriceChange() > stockListing.getPriceList().get(stockListing.getPriceList().size() - 1)) {
-        //         targetStock = stockListing;
-        //         break;
-        //     }
-        // }
+        for(StockListing stockListing : listCopy) {
+            if(stockListing.getPriceList().size() > 0 && stockListing.getNextPrice() > stockListing.getPriceList().get(stockListing.getPriceList().size() - 1)) {
+                targetStock = stockListing;
+                break;
+            }
+        }
         if(targetStock == null) {
             targetStock = listCopy.get(0);
         }
 
-        float nextPrice = targetStock.getNextPriceChange();
-        if(targetStock.getPriceList().size() > 0) {
-            nextPrice += targetStock.getPriceList().get(targetStock.getPriceList().size() - 1);
-            nextPrice /= targetStock.getPriceList().size();
+        int dayCount = 29;
+        if(targetStock.getPriceList().size() < 29) {
+            dayCount = targetStock.getPriceList().size();
         }
-        float currentPrice = 0.0f;
-        if(targetStock.getPriceList().size() > 0) {
-            currentPrice = targetStock.getPriceList().get(targetStock.getPriceList().size() - 1);
+        float nextPrice = targetStock.getNextKeyCount();
+        for(int i = 0; i < dayCount; i++) {
+            nextPrice += targetStock.getKeyCountList().get(targetStock.getKeyCountList().size() - 1 - i);
         }
+        nextPrice /= (dayCount + 1);
+
+        float currentPrice = targetStock.getPrice();
         float changePercent = ((nextPrice - currentPrice) / currentPrice) * 100;
         
         String riseDropString = "";
@@ -133,9 +135,8 @@ public class AccountService {
 
         String title = "Tipster Report";
         LocalDateTime date = LocalDateTime.now();
-        //String content = "I have it on good authority that " + targetStock.getName() + " (" + targetStock.getSymbol() + ") will see a " + riseDropString + " tomorrow.";
-        String content = targetStock.getSymbol() + "NextUpdate:" + targetStock.getNextPriceChange() + " - Next:" + nextPrice + " - Current:" + currentPrice + " - " + changePercent + "%";
-
+        String content = "I have it on good authority that " + targetStock.getName() + " (" + targetStock.getSymbol() + ") will see a " + riseDropString + " tomorrow.";
+        
         Account account = findByUsername(username);
         account.getMessages().add(new Message(title, content, date));
     }

@@ -53,6 +53,21 @@ public class StockListing {
         return decimalFormat.format(getPrice());
     }
 
+    public float getNextPrice() {
+        int dayCount = 29;
+        if(priceList.size() < 29) {
+            dayCount = priceList.size();
+        }
+
+        float nextPrice = nextKeyCount;
+        for(int i = 0; i < dayCount; i++) {
+            nextPrice += keyCountList.get(keyCountList.size() - 1 - i);
+        }
+        nextPrice /= (dayCount + 1);
+
+        return nextPrice;
+    }
+
     public float getPriceChangePercent() {
         float priceChangePercent = 0.0f;
 
