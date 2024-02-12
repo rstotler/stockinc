@@ -239,7 +239,7 @@ public class StockGameController {
         if(account.getTipsterQueue() == null && account.getCredits() >= gameDataService.servicePrices.get("Tipster")) {
             account.setTipsterQueue(new UnitQueue("Tipster", 0, 0, gameDataService.serviceResetLength.get("Tipster"), LocalDateTime.now()));
             account.setCredits(account.getCredits() - gameDataService.servicePrices.get("Tipster"));
-            accountService.generateTipsterReport();
+            accountService.generateTipsterReport(userDetails.getUsername());
         }
 
         return "redirect:/infrastructure"; 

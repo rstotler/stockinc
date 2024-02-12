@@ -1,6 +1,7 @@
 package com.jbs.StockGame.service;
 
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -93,7 +94,49 @@ public class AccountService {
         }
     }
 
-    public void generateTipsterReport() {
+    public void generateTipsterReport(String username) {
+        List<StockListing> listCopy = new ArrayList<>(stockListingService.findAll());
+        //Collections.shuffle(listCopy);
+        StockListing targetStock = null;
+
+        // for(StockListing stockListing : listCopy) {
+        //     if(stockListing.getPriceList().size() > 0 && stockListing.getNextPriceChange() > stockListing.getPriceList().get(stockListing.getPriceList().size() - 1)) {
+        //         targetStock = stockListing;
+        //         break;
+        //     }
+        // }
+        if(targetStock == null) {
+            targetStock = listCopy.get(0);
+        }
+
+        float nextPrice = targetStock.getNextPriceChange();
+        if(targetStock.getPriceList().size() > 0) {
+            nextPrice += targetStock.getPriceList().get(targetStock.getPriceList().size() - 1);
+            nextPrice /= targetStock.getPriceList().size();
+        }
+        float currentPrice = 0.0f;
+        if(targetStock.getPriceList().size() > 0) {
+            currentPrice = targetStock.getPriceList().get(targetStock.getPriceList().size() - 1);
+        }
+        float changePercent = ((nextPrice - currentPrice) / currentPrice) * 100;
         
+        String riseDropString = "";
+        if(changePercent > 10.0) {
+            riseDropString = "significant rise";
+        } else if(changePercent < 10.0) {
+            riseDropString = "significant drop";
+        } else if(changePercent > 0) {
+            riseDropString = "rise";
+        } else if(changePercent < 0) {
+            riseDropString = "drop";
+        }
+
+        String title = "Tipster Report";
+        LocalDateTime date = LocalDateTime.now();
+        //String content = "I have it on good authority that " + targetStock.getName() + " (" + targetStock.getSymbol() + ") will see a " + riseDropString + " tomorrow.";
+        String content = targetStock.getSymbol() + "NextUpdate:" + targetStock.getNextPriceChange() + " - Next:" + nextPrice + " - Current:" + currentPrice + " - " + changePercent + "%";
+
+        Account account = findByUsername(username);
+        account.getMessages().add(new Message(title, content, date));
     }
 }

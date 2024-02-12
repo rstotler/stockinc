@@ -12,10 +12,8 @@ public class StockListing {
     private List<String> keyList;
     
     private List<Float> priceList;
-    private float priceChange1Day;
-
-    private float nextPriceChange;
-    private int averageDayCount;
+    private List<Integer> keyCountList;
+    private int nextKeyCount;
 
     public StockListing(String name, String symbol, List<String> keyList) {
         this.name = name;
@@ -23,17 +21,31 @@ public class StockListing {
         this.keyList = keyList;
 
         priceList = new ArrayList<>();
-        priceChange1Day = 0.0f;
+        keyCountList = new ArrayList<>();
+        nextKeyCount = -9999;
+    }
 
-        nextPriceChange = 0.0f;
-        averageDayCount = 0;
+    public void addNewPrice() {
+        int dayCount = 30;
+        if(keyCountList.size() < 30) {
+            dayCount = keyCountList.size();
+        }
+
+        float newPrice = 0.0f;
+        for(int i = 0; i < dayCount; i++) {
+            newPrice += keyCountList.get(keyCountList.size() - 1 - i);
+        }
+        newPrice /= dayCount;
+        priceList.add(newPrice);
     }
 
     public float getPrice() {
+        float price = 0.0f;
         if(priceList.size() > 0) {
-            return priceList.get(priceList.size() - 1);
+            price = priceList.get(priceList.size() - 1);
         }
-        return 0.0f;
+
+        return price;
     }
 
     public String getPriceString() {
@@ -41,12 +53,30 @@ public class StockListing {
         return decimalFormat.format(getPrice());
     }
 
-    public float getPriceChange1Day() {
-        return Math.round(priceChange1Day * 100.0) / 100.0f;
+    public float getPriceChangePercent() {
+        float priceChangePercent = 0.0f;
+
+        if(priceList.size() > 0) {
+            float currentPrice = getPrice();
+            float lastPrice = 0.0f;
+            if(priceList.size() > 1) {
+                lastPrice = priceList.get(priceList.size() - 2);
+            }
+            
+            float priceDifference = currentPrice - lastPrice;
+
+            if(lastPrice != 0.0) {
+                priceChangePercent = (priceDifference / lastPrice) * 100;
+            } else {
+                priceChangePercent = priceDifference;
+            }
+        }
+
+        return Math.round(priceChangePercent * 100.0) / 100.0f;
     }
 
-    public String getPriceChange1DayString() {
+    public String getPriceChangePercentString() {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
-        return decimalFormat.format(getPriceChange1Day());
+        return decimalFormat.format(getPriceChangePercent());
     }
 }

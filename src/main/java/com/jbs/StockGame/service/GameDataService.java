@@ -13,7 +13,7 @@ public class GameDataService {
 
     public Map<String, Integer> serviceResetLength = new HashMap<>();
     {
-        serviceResetLength.put("Tipster", 60);
+        serviceResetLength.put("Tipster", 5);
     }
     
     public Map<String, Float> unitPrices = new HashMap<>();

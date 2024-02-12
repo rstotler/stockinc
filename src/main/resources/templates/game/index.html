@@ -123,14 +123,14 @@
                         <td>$<span th:text="${stockListing.getPriceString}"></span></td>
     
                         <td class="table-column-3">
-                            <span th:if="${stockListing.priceChange1Day} &gt; 0">
-                                <span th:text="'+' + ${stockListing.getPriceChange1DayString} + '%'" class="green"></span>
+                            <span th:if="${stockListing.getPriceChangePercent} &gt; 0">
+                                <span th:text="'+' + ${stockListing.getPriceChangePercentString} + '%'" class="green"></span>
                             </span>
-                            <span th:if="${stockListing.priceChange1Day} &lt; 0">
-                                <span th:text="${stockListing.getPriceChange1DayString} + '%'" class="red"></span>
+                            <span th:if="${stockListing.getPriceChangePercent} &lt; 0">
+                                <span th:text="${stockListing.getPriceChangePercentString} + '%'" class="red"></span>
                             </span>
-                            <span th:if="${stockListing.priceChange1Day} == 0">
-                                <span th:text="${stockListing.getPriceChange1DayString} + '%'"></span>
+                            <span th:if="${stockListing.getPriceChangePercent} == 0">
+                                <span th:text="${stockListing.getPriceChangePercentString} + '%'"></span>
                             </span>
                         </td>
                     </tr>
