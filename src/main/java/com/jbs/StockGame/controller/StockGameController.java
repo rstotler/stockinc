@@ -278,6 +278,16 @@ public class StockGameController {
         return "game/messages"; 
     }
 
+    @GetMapping("/deleteMessage")
+    public String deleteMessage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="messageIndex", required=false) int messageIndex) {
+        Account account = accountService.findByUsername(userDetails.getUsername());
+        if(messageIndex <= account.getMessages().size() - 1) {
+            account.getMessages().remove(messageIndex);
+        }
+
+        return "redirect:/messages";
+    }
+
     public boolean isInteger(String targetString) {
         try {
             Integer.parseInt(targetString);

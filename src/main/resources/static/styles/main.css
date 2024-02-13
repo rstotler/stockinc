@@ -110,6 +110,18 @@ img { display: block; }
 .button:hover {
     background-color: #4D96A1;
 }
+.button-close-message {
+    border-width: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    background-color: #721B1B;
+    margin: 3px;
+    color: #EF8383;
+}
+.button-close-message:hover {
+    background-color: #5a1616;
+}
 .button-green { background-color: #178E1F; }
 .button-green:hover { background-color: #24AE2E; }
 .button-green-inactive { background-color: #6E6A6A; }
