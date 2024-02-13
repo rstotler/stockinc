@@ -29,12 +29,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class StockGameController {
     @Autowired
-    private AccountService accountService;
-    private StockListingService stockListingService;
-    private GroupService groupService;
-    private ScraperService scraperService;
-    private GameDataService gameDataService;
-    private MessageService messageService;
+    private final AccountService accountService;
+    private final StockListingService stockListingService;
+    private final GroupService groupService;
+    private final ScraperService scraperService;
+    private final GameDataService gameDataService;
+    private final MessageService messageService;
 
     @GetMapping("/index")
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -228,6 +228,7 @@ public class StockGameController {
         model.addAttribute("creatingUnitType", creatingUnitType);
         model.addAttribute("creatingUnitTime", creatingUnitTime);
         model.addAttribute("creatingUnitTimeLength", creatingUnitTimeLength);
+        model.addAttribute("unitQueue", account.getUnitQueue());
         
         return "game/infrastructure";
     }

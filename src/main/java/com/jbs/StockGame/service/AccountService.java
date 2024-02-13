@@ -16,15 +16,15 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class AccountService {
-    private StockListingService stockListingService;
+    private final StockListingService stockListingService;
     private List<Account> accounts = new ArrayList<>();
     private PasswordEncoder passwordEncoder;
-    
+
     public void register(Account account) {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setRole("User");
 
-        account.setCredits(1000.0f);
+        account.setCredits(10000.0f);
         account.setLastInvestmentAmount(0.0f);
         account.setOwnedStock(new HashMap<>());
 
