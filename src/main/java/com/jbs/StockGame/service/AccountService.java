@@ -11,14 +11,37 @@ import com.jbs.StockGame.entity.Account;
 import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class AccountService {
     private final StockListingService stockListingService;
+    private final ScraperService scraperService;
     private List<Account> accounts = new ArrayList<>();
     private PasswordEncoder passwordEncoder;
+
+    @PostConstruct
+    public void postConstruct() {
+        for(int i = 0; i < 3; i++) {
+            scraperService.simulateUpdate();
+        }
+
+        ArrayList<String> nameList = new ArrayList<>(Arrays.asList("a", "adeaddecember", "shootloadshoot", "againwithlove", "charmofadeadpoet", "bleedmylove", "noisenkisses12", "leshshshock", "ourmidairlove", "rafiko", "thefallbyavalon"));
+        for(int i = 0; i < 11; i++) {
+            Account account = new Account();
+            account.setUsername(nameList.get(i));
+            account.setPassword(nameList.get(i));
+            register(account);
+
+            for(int ii = 0; ii < new Random().nextInt(4); ii++) {
+                int sNum = new Random().nextInt(stockListingService.findAll().size());
+                StockListing s = stockListingService.findAll().get(sNum);
+                account.getOwnedStock().put(s.getSymbol(), new Random().nextInt(10) + 1);
+            }
+        }
+    }
 
     public void register(Account account) {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
@@ -35,6 +58,10 @@ public class AccountService {
         account.setMessages(new ArrayList<>());
         
         accounts.add(account);
+    }
+
+    public List<Account> findAll() {
+        return accounts;
     }
 
     public Account findByUsername(String username) {

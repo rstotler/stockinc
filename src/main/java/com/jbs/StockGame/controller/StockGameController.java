@@ -28,7 +28,6 @@ import lombok.AllArgsConstructor;
 @Controller
 @AllArgsConstructor
 public class StockGameController {
-    @Autowired
     private final AccountService accountService;
     private final StockListingService stockListingService;
     private final GroupService groupService;
