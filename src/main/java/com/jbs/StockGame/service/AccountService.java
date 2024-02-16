@@ -40,10 +40,6 @@ public class AccountService {
                 StockListing s = stockListingService.findAll().get(sNum);
                 account.getOwnedStock().put(s.getSymbol(), new Random().nextInt(10) + 1);
             }
-
-            for(int ii = 0 ; ii < 3; ii++) {
-                account.getMessages().add(new Message(String.valueOf(ii), "Test " + ii, LocalDateTime.now()));
-            }
         }
     }
 

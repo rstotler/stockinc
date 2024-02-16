@@ -126,6 +126,7 @@ public class StockGameController {
         String groupName = "None";
         String groupSymbol = "None";
         String groupStatus = "None";
+        List<String> memberList = new ArrayList<>();
         ArrayList<String> requestedJoinGroupList = new ArrayList<>();
         List<String> requestedUserList = new ArrayList<>();
         for(Group group : groupService.findAll()) {
@@ -133,6 +134,7 @@ public class StockGameController {
                 groupName = group.getName();
                 groupSymbol = group.getSymbol();
                 groupStatus = "Founder";
+                memberList = group.getMemberList();
                 requestedUserList = group.getRequestList();
             } else if(group.getMemberList().contains(userDetails.getUsername())) {
                 groupStatus = "Member";
@@ -149,6 +151,7 @@ public class StockGameController {
         model.addAttribute("groupName", groupName);
         model.addAttribute("groupSymbol", groupSymbol);
         model.addAttribute("groupStatus", groupStatus);
+        model.addAttribute("memberList", memberList);
         model.addAttribute("requestedJoinGroupList", requestedJoinGroupList.toString());
         model.addAttribute("requestedUserList", requestedUserList);
 
@@ -174,6 +177,13 @@ public class StockGameController {
         if(createGroupCheck) {
             account.setCredits(account.getCredits() - 100.0f);
             groupService.create(groupName, groupSymbol, userDetails.getUsername());
+
+            // Remove Any Open Group Requests //
+            for(Group group : groupService.findAll()) {
+                if(group.getRequestList().contains(account.getUsername())) {
+                    group.getRequestList().remove(account.getUsername());
+                }
+            }
         }
         
         return "redirect:/groups";

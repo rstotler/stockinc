@@ -44,27 +44,56 @@
             <div id="groupSettingsForm" style="display: none;">
                 <div class="offscreen-menu-header">Group Settings</div>
                 <div class="offscreen-menu-subheader" id="groupName">Stock Name</div>
-                <div th:if="${requestedUserList} != '[]'">
-                    <table class="table">
+                
+                <!-- Member List -->
+                <div th:if="${memberList.size} &gt; 0">
+                    <div class="offscreen-menu-title">Members</div>
+                    <table class="table-square">
                         <thead class="table-head">
                             <tr>
                                 <th class="table-head-0">Name</th>
                                 <th class="table-head-1">Value</th>
+                                <th class="table-head-2">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="member : ${memberList}" class="table-row">
+                                <td class="table-column-0"><span th:text="${member}"></span></td>
+                                <td><span th:text="'$' + ${accountService.getTotalInvestmentString(member)}"></span></td>
+                                <td><button class="button" style="margin: 2px; font-size: 11px;">Remove</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Applicant List -->
+                <div th:if="${requestedUserList.size} &gt; 0">
+                    <div class="offscreen-menu-title" style="margin-top: 10px;">Applicants</div>
+                    <table class="table-square">
+                        <thead class="table-head">
+                            <tr>
+                                <th class="table-head-0">Name</th>
+                                <th class="table-head-1">Value</th>
+                                <th class="table-head-2">Accept</th>
+                                <th class="table-head-2">Deny</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="requestedUser : ${requestedUserList}" class="table-row">
                                 <td class="table-column-0"><span th:text="${requestedUser}"></span></td>
                                 <td><span th:text="'$' + ${accountService.getTotalInvestmentString(requestedUser)}"></span></td>
+                                <td><button class="button" style="margin: 2px; font-size: 11px; margin-right: 0;">Accept</button></td>
+                                <td><button class="button" style="margin: 2px; font-size: 11px; margin-right: 0;">Deny</button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+
                 <form th:action="@{/disbandGroup}" method="get">
                     <div style="display: flex; justify-content: center;">
                         <div style="width: 60%; text-align: center;">
                             <input type="hidden" th:value="0" name="groupSymbol" id="groupSymbolInput"/>
-                            <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Disband Group</button>
+                            <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px; margin-top: 10px;">Disband Group</button>
                         </div>
                     </div>
                 </form>

@@ -25,7 +25,7 @@ public class GroupService {
         noKidHero.getMemberList().add(accountService.findAll().get(9).getUsername());
         groups.add(noKidHero);
 
-        Group theGirls = new Group("The Girls", "GIRL", accountService.findAll().get(4).getUsername());
+        Group theGirls = new Group("Girl Power", "GIRL", accountService.findAll().get(4).getUsername());
         theGirls.getMemberList().add(accountService.findAll().get(5).getUsername());
         theGirls.getMemberList().add(accountService.findAll().get(6).getUsername());
         theGirls.getMemberList().add(accountService.findAll().get(7).getUsername());

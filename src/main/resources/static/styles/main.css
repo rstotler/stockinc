@@ -203,6 +203,15 @@ img { display: block; }
     font-weight: bold;
 }
 
+.table-square {
+    border-spacing: 0;
+    border-style: solid;
+    border-color: #263B3F;
+    border-width: 2px;
+    margin-left:auto; 
+    margin-right:auto;
+}
+
 .offscreen-menu {
     position: fixed;
     top: 0;
@@ -245,6 +254,11 @@ img { display: block; }
     margin-bottom: 10px;
     font-size: 30px;
     text-align: center;
+}
+.offscreen-menu-title {
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 14px;
 }
 .offscreen-menu-item {
     width: 100%;
