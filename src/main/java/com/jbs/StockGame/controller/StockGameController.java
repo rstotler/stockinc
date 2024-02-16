@@ -10,7 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jbs.StockGame.entity.Account;
 import com.jbs.StockGame.entity.Group;
@@ -123,15 +126,18 @@ public class StockGameController {
         String groupName = "None";
         String groupSymbol = "None";
         String groupStatus = "None";
+        ArrayList<String> requestedJoinGroupList = new ArrayList<>();
+        List<String> requestedUserList = new ArrayList<>();
         for(Group group : groupService.findAll()) {
             if(group.getFounder().equals(userDetails.getUsername())) {
                 groupName = group.getName();
                 groupSymbol = group.getSymbol();
                 groupStatus = "Founder";
-                break;
+                requestedUserList = group.getRequestList();
             } else if(group.getMemberList().contains(userDetails.getUsername())) {
                 groupStatus = "Member";
-                break;
+            } else if(group.getRequestList().contains(userDetails.getUsername())) {
+                requestedJoinGroupList.add(group.getSymbol());
             }
         }
 
@@ -143,6 +149,8 @@ public class StockGameController {
         model.addAttribute("groupName", groupName);
         model.addAttribute("groupSymbol", groupSymbol);
         model.addAttribute("groupStatus", groupStatus);
+        model.addAttribute("requestedJoinGroupList", requestedJoinGroupList.toString());
+        model.addAttribute("requestedUserList", requestedUserList);
 
         return "game/groups";
     }
@@ -182,6 +190,26 @@ public class StockGameController {
                     break;
                 }
             }
+        }
+
+        return "redirect:/groups";
+    }
+
+    @GetMapping("/requestJoinGroup")
+    public String requestJoinGroup(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="groupSymbol", required=false) String groupSymbol) {
+        boolean inGroupCheck = false;
+        for(Group group : groupService.findAll()) {
+            if(group.getFounder().equals(userDetails.getUsername())
+            || group.getMemberList().contains(userDetails.getUsername())
+            || (group.getSymbol().equals(groupSymbol) && group.getRequestList().contains(userDetails.getUsername()))) {
+                inGroupCheck = true;
+                break;
+            }
+        }
+
+        if(!inGroupCheck) {
+            Group targetGroup = groupService.findBySymbol(groupSymbol);
+            targetGroup.getRequestList().add(userDetails.getUsername());
         }
 
         return "redirect:/groups";
@@ -276,6 +304,15 @@ public class StockGameController {
         model.addAttribute("messageService", messageService);
 
         return "game/messages"; 
+    }
+
+    @GetMapping("/clickMessage")
+    public @ResponseBody void clickMessage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("messageIndex") String messageIndexString) {
+        int messageIndex = Integer.valueOf(messageIndexString);
+        Account account = accountService.findByUsername(userDetails.getUsername());
+        if(messageIndex < account.getMessages().size() && !account.getMessages().get(messageIndex).isRead()) {
+            account.getMessages().get(messageIndex).setRead(true);
+        }
     }
 
     @GetMapping("/deleteMessage")

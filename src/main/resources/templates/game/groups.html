@@ -9,7 +9,19 @@
     <body class="background-container">
         <!-- Offscreen Menu Group Listing -->
         <div class="offscreen-menu" id="groupListingMenu">
-            <div>Group Listing</div>
+            <div class="offscreen-menu-header" id="groupListingMenuHeaderName">Group Name</div>
+
+            <!-- Join Group Form -->
+            <div id="joinGroupForm" style="display: none;">
+                <form th:action="@{/requestJoinGroup}" method="get">
+                    <div style="display: flex; justify-content: center;">
+                        <div style="width: 60%; text-align: center;">
+                            <input type="hidden" th:value="0" name="groupSymbol" id="groupJoinSymbolInput"/>
+                            <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;" id="requestJoinGroupButton">Request To Join</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Offscreen Menu Create Group -->
@@ -32,6 +44,22 @@
             <div id="groupSettingsForm" style="display: none;">
                 <div class="offscreen-menu-header">Group Settings</div>
                 <div class="offscreen-menu-subheader" id="groupName">Stock Name</div>
+                <div th:if="${requestedUserList} != '[]'">
+                    <table class="table">
+                        <thead class="table-head">
+                            <tr>
+                                <th class="table-head-0">Name</th>
+                                <th class="table-head-1">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="requestedUser : ${requestedUserList}" class="table-row">
+                                <td class="table-column-0"><span th:text="${requestedUser}"></span></td>
+                                <td><span th:text="'$' + ${accountService.getTotalInvestmentString(requestedUser)}"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <form th:action="@{/disbandGroup}" method="get">
                     <div style="display: flex; justify-content: center;">
                         <div style="width: 60%; text-align: center;">
@@ -49,7 +77,12 @@
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
             <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Companies</a></span>
             <span class="nav-bar-item"><a th:href="@{/infrastructure}" style="color: #C6EBF2;">Infrastructure</a></span>
-            <span class="nav-bar-item"><a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a></span>
+            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == false" class="nav-bar-item">
+                <a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a>
+            </span>
+            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == true" class="nav-bar-item">
+                <a th:href="@{/messages}" style="color: #34737D;">Messages</a>
+            </span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
         <span class="same-line nav-bar-user-data">
@@ -91,7 +124,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}')|">
+                        <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}', '${groupStatus}', '${requestedJoinGroupList}')|">
                             <td class="table-column-0"><span th:text="${group.name}"></span></td>
                             <td class="table-column-1"><span th:text="${group.symbol}"></span></td>
                             <td><span th:with="groupSymbol=${group.symbol}" th:text="'$' + ${groupService.getTotalValueString(groupSymbol)}"></span></td>

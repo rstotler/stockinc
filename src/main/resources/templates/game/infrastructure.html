@@ -51,7 +51,12 @@
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
             <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Companies</a></span>
             <span class="nav-bar-item"><a th:href="@{/infrastructure}" style="color: #C6EBF2;">Infrastructure</a></span>
-            <span class="nav-bar-item"><a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a></span>
+            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == false" class="nav-bar-item">
+                <a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a>
+            </span>
+            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == true" class="nav-bar-item">
+                <a th:href="@{/messages}" style="color: #34737D;">Messages</a>
+            </span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
         <span class="same-line nav-bar-user-data">

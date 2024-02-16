@@ -130,6 +130,8 @@ img { display: block; }
 .button-red:hover { background-color: #A62121; }
 .button-red-inactive { background-color: #6E6A6A; }
 .button-red-inactive:hover { background-color: #A62121; }
+.button-inactive { background-color: #6E6A6A; }
+.button-inactive:hover { background-color: #6E6A6A; }
 
 .text-field-large {
     margin-top: 2px;

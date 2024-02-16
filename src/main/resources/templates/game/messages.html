@@ -4,11 +4,12 @@
         <meta charset="UTF-8"/>
         <title>StockInc</title>
         <link th:href="@{/styles/main.css}" rel="stylesheet"/>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     </head>
     
     <body class="background-container">
         <!-- Offscreen Menu -->
-        <div class="offscreen-menu offscreen-menu-messages" th:attr="onclick=|clickMessage('None', 'None', 'None')|">
+        <div class="offscreen-menu offscreen-menu-messages" th:attr="onclick=|clickMessage('None', 'None', 'None', 'None')|">
             <div id="messageTitle" class="border-box-3-header" style="padding-bottom: 0px; color: #263B3F;">Title</div>
             <div id="messageDate" style="padding-bottom: 13px;">Date</div>
             <div id="messageContent">Content</div>
@@ -20,7 +21,12 @@
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
             <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Companies</a></span>
             <span class="nav-bar-item"><a th:href="@{/infrastructure}" style="color: #C6EBF2;">Infrastructure</a></span>
-            <span class="nav-bar-item"><a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a></span>
+            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == false" class="nav-bar-item">
+                <a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a>
+            </span>
+            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == true" class="nav-bar-item">
+                <a th:href="@{/messages}" style="color: #34737D;">Messages</a>
+            </span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
         <span class="same-line nav-bar-user-data">
@@ -53,9 +59,14 @@
             <div class="border-box-3-header" style="padding-bottom: 0px;">Messages</div>
             <div th:each="message, iter : ${messages}" class="message-list-box" style="padding: 1px;">
                 <span class="same-line" style="align-items: center;">
-                    <div class="same-line" th:attr="onclick=|clickMessage('${message.title}', '${message.date}', '${message.content}')|" style="width: 100%;">
-                        <div th:with="messageDate=${message.date}" th:text="'[' + ${messageService.getDateTimeString(messageDate)} + ']'" style="padding-left: 3px; padding-right: 5px; white-space: nowrap;"></div>
-                        <div th:text="${message.title}" style="white-space: nowrap;"></div>
+                    <div th:if="${message.isRead} != true" class="same-line" th:attr="onclick=|clickMessage('${message.title}', '${message.date}', '${message.content}', '${iter.index}')|" id="ajaxClickMessage" th:data-message-index="${iter.index}" style="width: 100%;">
+                        <div th:with="messageDate=${message.date}" th:text="'[New] [' + ${messageService.getDateTimeString(messageDate)} + ']'" name="messageBoxDate" style="padding-left: 3px; padding-right: 5px; white-space: nowrap;"></div>
+                        <div th:text="${message.title}" name="messageBoxTitle" style="white-space: nowrap;"></div>
+                        <div style="width: 100%;"></div>
+                    </div>
+                    <div th:if="${message.isRead} == true" class="same-line" th:attr="onclick=|clickMessage('${message.title}', '${message.date}', '${message.content}', '${iter.index}')|" id="ajaxClickMessage" th:data-message-index="${iter.index}" style="width: 100%; color: #47676D;">
+                        <div th:with="messageDate=${message.date}" th:text="'[' + ${messageService.getDateTimeString(messageDate)} + ']'" name="messageBoxDate" style="padding-left: 3px; padding-right: 5px; white-space: nowrap;"></div>
+                        <div th:text="${message.title}" name="messageBoxTitle" style="white-space: nowrap;"></div>
                         <div style="width: 100%;"></div>
                     </div>
                     <form th:action="@{/deleteMessage}" method="get">
@@ -67,5 +78,6 @@
         </div>
 
         <script type="text/javascript" src="js/offscreenMenuMessages.js"></script>
+        <script type="text/javascript" src="ajax/clickMessage.js"></script>
     </body>
 </html>
