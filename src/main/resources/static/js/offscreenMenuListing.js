@@ -58,6 +58,7 @@ function clickStockListing(stockListingName, stockListingSymbol, stockListingPri
 
         const inputStockQuantity = document.getElementById("inputStockQuantity");
         inputStockQuantity.value = "0";
+        buySellQuantity = 0;
 
         userCredits = userTotalCredits;
 
@@ -189,22 +190,22 @@ function toggleConfirmScreen(screenNum) {
             var maxBuyAmount = Math.floor(parseFloat(userCredits) / parseFloat(selectedStockPrice));
             if(buySellQuantity > maxBuyAmount) {
                 buySellQuantity = maxBuyAmount;
-                buySellPrice = parseFloat(selectedStockPrice) * parseInt(buySellQuantity);
-
-                const textBuySellPrice = document.getElementById("buySellPrice");
-                textBuySellPrice.innerHTML = formatNumber(buySellPrice);
-                inputStockQuantity.value = buySellQuantity;
             }
+            buySellPrice = parseFloat(selectedStockPrice) * parseInt(buySellQuantity);
+
+            const textBuySellPrice = document.getElementById("buySellPrice");
+            textBuySellPrice.innerHTML = formatNumber(buySellPrice);
+            inputStockQuantity.value = buySellQuantity;
         }
         else if(targetAction == "Sell") {
             if(parseInt(buySellQuantity) > parseInt(selectedStockQuantity)) {
                 buySellQuantity = selectedStockQuantity;
-                buySellPrice = parseFloat(selectedStockPrice) * parseInt(buySellQuantity);
-
-                const textBuySellPrice = document.getElementById("buySellPrice");
-                textBuySellPrice.innerHTML = formatNumber(buySellPrice);;
-                inputStockQuantity.value = buySellQuantity;
             }
+            buySellPrice = parseFloat(selectedStockPrice) * parseInt(buySellQuantity);
+
+            const textBuySellPrice = document.getElementById("buySellPrice");
+            textBuySellPrice.innerHTML = formatNumber(buySellPrice);
+            inputStockQuantity.value = buySellQuantity;
         }
 
         totalBuySellPrice.innerHTML = formatNumber(buySellPrice);

@@ -4,6 +4,7 @@
         <meta charset="UTF-8"/>
         <title>StockInc</title>
         <link th:href="@{/styles/main.css}" rel="stylesheet"/>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     </head>
     
     <body class="background-container">
@@ -57,10 +58,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="member : ${memberList}" class="table-row">
+                            <tr th:each="member, iter : ${memberList}" class="table-row">
                                 <td class="table-column-0"><span th:text="${member}"></span></td>
                                 <td><span th:text="'$' + ${accountService.getTotalInvestmentString(member)}"></span></td>
-                                <td><button class="button" style="margin: 2px; font-size: 11px;">Remove</button></td>
+                                <td><div id="ajaxClickRemoveFromGroup" th:data-group-symbol="${groupSymbol}" th:data-target-user="${member}"><button class="button" name="removeFromGroupButton" th:attr="onclick=|clickRemoveFromGroup('${iter.index}')|" style="margin: 2px; font-size: 11px;">Remove</button></div></td>
                             </tr>
                         </tbody>
                     </table>
@@ -79,11 +80,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="requestedUser : ${requestedUserList}" class="table-row">
+                            <tr th:each="requestedUser, iter : ${requestedUserList}" class="table-row">
                                 <td class="table-column-0"><span th:text="${requestedUser}"></span></td>
                                 <td><span th:text="'$' + ${accountService.getTotalInvestmentString(requestedUser)}"></span></td>
-                                <td><button class="button" style="margin: 2px; font-size: 11px; margin-right: 0;">Accept</button></td>
-                                <td><button class="button" style="margin: 2px; font-size: 11px; margin-right: 0;">Deny</button></td>
+                                <td><div id="ajaxClickAcceptToGroup" th:data-group-symbol="${groupSymbol}" th:data-target-user="${requestedUser}"><button class="button" name="acceptToGroupButton" th:attr="onclick=|clickAcceptToGroup('${iter.index}')|" style="margin: 2px; font-size: 11px; margin-right: 0;">Accept</button></div></td>
+                                <td><div id="ajaxClickDenyFromGroup" th:data-group-symbol="${groupSymbol}" th:data-target-user="${requestedUser}"><button class="button" name="denyFromGroupButton" th:attr="onclick=|clickDenyFromGroup('${iter.index}')|" style="margin: 2px; font-size: 11px; margin-right: 0;">Deny</button></div></td>
                             </tr>
                         </tbody>
                     </table>
@@ -178,5 +179,6 @@
         </div>
 
         <script type="text/javascript" src="js/offscreenMenuGroup.js"></script>
+        <script type="text/javascript" src="ajax/groupSettings.js"></script>
     </body>
 </html>

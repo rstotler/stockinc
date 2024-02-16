@@ -3,15 +3,12 @@ package com.jbs.StockGame.controller;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -203,6 +200,36 @@ public class StockGameController {
         }
 
         return "redirect:/groups";
+    }
+
+    @GetMapping("/removeFromGroup")
+    public @ResponseBody void removeFromGroup(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("groupSymbol") String groupSymbol, @RequestParam("targetUser") String targetUser) {
+        Group group = groupService.findBySymbol(groupSymbol);
+        if(group.getFounder().equals(userDetails.getUsername())
+        && group.getMemberList().contains(targetUser)) {
+            group.getMemberList().remove(targetUser);
+        }
+    }
+
+    @GetMapping("/acceptDenyFromGroup")
+    public @ResponseBody void acceptDenyFromGroup(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("groupSymbol") String groupSymbol, @RequestParam("targetUser") String targetUser, @RequestParam("targetAction") String targetAction) {
+        Group group = groupService.findBySymbol(groupSymbol);
+        if(group.getFounder().equals(userDetails.getUsername())
+        && group.getRequestList().contains(targetUser)) {
+            if(targetAction.equals("Accept")) {
+                group.getMemberList().add(targetUser);
+                group.getRequestList().remove(targetUser);
+
+                for(Group otherGroup : groupService.findAll()) {
+                    if(otherGroup.getRequestList().contains(targetUser)) {
+                        otherGroup.getRequestList().remove(targetUser);
+                    }
+                }
+            }
+            else if(targetAction.equals("Deny")) {
+                group.getRequestList().remove(targetUser);
+            }
+        }
     }
 
     @GetMapping("/requestJoinGroup")

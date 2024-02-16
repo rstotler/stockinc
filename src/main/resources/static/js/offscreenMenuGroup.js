@@ -61,3 +61,32 @@ function clickGroupSettingsTab(groupName, groupSymbol, groupStatus) {
 
     offscreenMenuCreateGroup.classList.toggle("active");
 }
+
+function clickRemoveFromGroup(clickIndex) {
+    const removeButton = document.getElementsByName("removeFromGroupButton");
+    removeButton[clickIndex].innerHTML = "Removed";
+    removeButton[clickIndex].classList.add("button-inactive");
+    removeButton[clickIndex].disabled = true;
+}
+
+function clickAcceptToGroup(clickIndex) {
+    const acceptToGroupButton = document.getElementsByName("acceptToGroupButton");
+    acceptToGroupButton[clickIndex].innerHTML = "Accepted";
+    acceptToGroupButton[clickIndex].classList.add("button-inactive");
+    acceptToGroupButton[clickIndex].disabled = true;
+
+    const denyFromGroupButton = document.getElementsByName("denyFromGroupButton");
+    denyFromGroupButton[clickIndex].classList.add("button-inactive");
+    denyFromGroupButton[clickIndex].disabled = true;
+}
+
+function clickDenyFromGroup(clickIndex) {
+    const denyFromGroupButton = document.getElementsByName("denyFromGroupButton");
+    denyFromGroupButton[clickIndex].innerHTML = "Denied";
+    denyFromGroupButton[clickIndex].classList.add("button-inactive");
+    denyFromGroupButton[clickIndex].disabled = true;
+
+    const acceptToGroupButton = document.getElementsByName("acceptToGroupButton");
+    acceptToGroupButton[clickIndex].classList.add("button-inactive");
+    acceptToGroupButton[clickIndex].disabled = true;
+}
