@@ -257,7 +257,7 @@ public class StockGameController {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
 
-        List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Hacker"));
+        List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Hacker", "Influencer"));
 
         String tipsterCooldown = "None";
         LocalDateTime tipsterCooldownTime = null;

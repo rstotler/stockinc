@@ -91,9 +91,11 @@
             <div class="same-line" style="flex-flow: wrap;">
                 <a href="#" th:each="unitType : ${unitList}">
                     <div th:attr="onclick=|clickInfrastructureUnit('${unitType}', '${servicePrices}', '${unitPrices}', '${unitCounts}')|" style="position: relative; margin-right: 10px;">
-                        <img th:src="@{/images/IconTemplate.png}"/>
+                        <img th:if="${unitType} == 'Tipster'" th:src="@{/images/IconTipster.png}"/>
+                        <img th:if="${unitType} == 'Hacker'" th:src="@{/images/IconHacker.png}"/>
+                        <img th:if="${unitType} == 'Influencer'" th:src="@{/images/IconInfluencer.png}"/>
 
-                        <div th:if="${unitType} == 'Hacker'">
+                        <div th:if="${unitType} == 'Hacker' OR ${unitType} == 'Influencer'">
                             <div class="bottom-icon-left-corner" style="bottom: 60px; left: 16px;"></div>
                             <div th:with="userName=${userName}, unitType=${unitType}" th:text="${accountService.getUnitCount(userName, unitType)}" class="bottom-icon-banner" style="bottom: 60px; left: 28px; width: 26px;"></div>
                             <div class="bottom-icon-right-corner" style="bottom: 60px; left: 60px;"></div>
@@ -145,9 +147,10 @@
             <div class="border-box-3-header" style="font-size: 13px; padding-bottom: 0;">Unit Queue</div>
             <span class="same-line" style="flex-flow: wrap;">
                 <div th:each="queueObject : ${unitQueue}" style="position: relative; margin-right: 6px; margin-top: 6px;">
-                    <img th:src="@{/images/IconTemplateSmall.png}"/>
+                    <img th:if="${queueObject.unitType} == 'Hacker'" th:src="@{/images/IconHackerSmall.png}"/>
+                    <img th:if="${queueObject.unitType} == 'Influencer'" th:src="@{/images/IconInfluencerSmall.png}"/>
 
-                    <div th:if="${queueObject.unitType} == 'Hacker'">
+                    <div th:if="${queueObject.unitType} == 'Hacker' OR ${queueObject.unitType} == 'Influencer'">
                         <div class="bottom-icon-left-corner" style="bottom: 45px; left: 9px; border-top-width: 10px; border-left-width: 10px;"></div>
                         <div th:text="${queueObject.unitCount}" class="bottom-icon-banner" style="bottom: 45px; left: 18px; width: 22px; font-size: 9px;"></div>
                         <div class="bottom-icon-right-corner" style="bottom: 45px; left: 46px; border-bottom-width: 10px; border-right-width: 10px;"></div>

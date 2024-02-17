@@ -150,18 +150,13 @@
                             <th class="table-head-0">Name</th>
                             <th class="table-head-1">Symbol</th>
                             <th class="table-head-2">Price</th>
-                            <th class="table-head-3">Change %</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}', '${groupStatus}', '${requestedJoinGroupList}')|">
                             <td class="table-column-0"><span th:text="${group.name}"></span></td>
                             <td class="table-column-1"><span th:text="${group.symbol}"></span></td>
-                            <td><span th:with="groupSymbol=${group.symbol}" th:text="'$' + ${groupService.getTotalValueString(groupSymbol)}"></span></td>
-        
-                            <td class="table-column-3">
-                                <span th:text="${group.priceChange} + '%'"></span>
-                            </td>
+                            <td style="padding-right: 5px;"><span th:with="groupSymbol=${group.symbol}" th:text="'$' + ${groupService.getTotalValueString(groupSymbol)}"></span></td>
                         </tr>
                     </tbody>
                 </table>

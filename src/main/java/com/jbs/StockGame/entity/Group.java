@@ -12,15 +12,11 @@ public class Group {
     private List<String> memberList;
     private List<String> requestList;
 
-    private float priceChange;
-
     public Group(String name, String symbol, String founder) {
         this.name = name;
         this.symbol = symbol;
         this.founder = founder;
         memberList = new ArrayList<>();
         requestList = new ArrayList<>();
-
-        priceChange = 0.0f;
     }
 }
