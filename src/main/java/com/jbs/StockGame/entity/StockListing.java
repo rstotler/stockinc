@@ -15,6 +15,9 @@ public class StockListing {
     private List<Integer> keyCountList;
     private int nextKeyCount;
 
+    private Map<String, Integer> influencerUpCount;
+    private Map<String, Integer> influencerDownCount;
+
     public StockListing(String name, String symbol, List<String> keyList) {
         this.name = name;
         this.symbol = symbol;
@@ -23,6 +26,9 @@ public class StockListing {
         priceList = new ArrayList<>();
         keyCountList = new ArrayList<>();
         nextKeyCount = -9999;
+
+        influencerUpCount = new HashMap<>();
+        influencerDownCount = new HashMap<>();
     }
 
     public void addNewPrice() {

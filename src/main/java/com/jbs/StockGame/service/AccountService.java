@@ -181,4 +181,24 @@ public class AccountService {
 
         return unreadMessages;
     }
+
+    public int getAvailableInfluencerCount(String username) {
+        Account account = findByUsername(username);
+
+        int totalCount = 0;
+        if(account.getOwnedUnits().containsKey("Influencer")) {
+            totalCount = account.getOwnedUnits().get("Influencer");
+        }
+        
+        for(StockListing stockListing : stockListingService.findAll()) {
+            if(stockListing.getInfluencerUpCount().containsKey(username)) {
+                totalCount -= stockListing.getInfluencerUpCount().get(username);
+            }
+            if(stockListing.getInfluencerDownCount().containsKey(username)) {
+                totalCount -= stockListing.getInfluencerDownCount().get(username);
+            }
+        }
+
+        return totalCount;
+    }
 }

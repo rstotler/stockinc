@@ -39,13 +39,14 @@ public class StockGameController {
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
-
+        
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
         model.addAttribute("userCreditsString", account.getCreditsString());
         model.addAttribute("stockListings", stockListingService.findAll());
         model.addAttribute("ownedStockString", account.getOwnedStock().toString());
+        model.addAttribute("availableInfluencerCount", accountService.getAvailableInfluencerCount(userDetails.getUsername()));
         
         return "game/index";
     }
@@ -100,6 +101,11 @@ public class StockGameController {
             }
         }
 
+        return "redirect:/index";
+    }
+
+    @GetMapping("/influenceStock/{stock_name}")
+    public String influenceStock(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("stock_name") String stockName, @RequestParam(value="amountString", required=false) String amountString, @RequestParam(value="influenceDirection", required=false) String influenceDirection) {
         return "redirect:/index";
     }
 
@@ -257,7 +263,7 @@ public class StockGameController {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
 
-        List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Hacker", "Influencer"));
+        List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Hacker", "Analyst", "Influencer"));
 
         String tipsterCooldown = "None";
         LocalDateTime tipsterCooldownTime = null;

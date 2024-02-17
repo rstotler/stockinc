@@ -8,66 +8,103 @@
     
     <body class="background-container">
         <!-- Offscreen Menu -->
-        <div class="offscreen-menu">
-            <div class="offscreen-menu-header" id="offscreenMenuHeader">Buy Stock</div>
-            <div class="offscreen-menu-subheader" id="stockListingName">Stock Name</div>
-
-            <!-- Buy/Sell Screen 1 -->
-            <div id="buySellScreen1">
-                <span class="same-line" style="align-items: center;">
-                    <div class="offscreen-menu-item" id="stockListingSymbol">Stock Symbol</div>
-                    <div class="same-line offscreen-menu-item" style="justify-content: center;">
-                        <a style="padding-right: 3px;"><button type="button" th:onclick="toggleBuyButton()" class="button button-green" id="toggleBuyButton">Buy</button></a>
-                        <a><button type="button" th:attr="onclick=|toggleSellButton()|" class="button button-red-inactive" id="toggleSellButton">Sell</button></a>
-                    </div>
-                </span>
-                <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
-                    <div class="same-line offscreen-menu-item" style="justify-content: center;">
-                        <div>$</div>
-                        <div id="stockListingPrice">Stock Price</div>
-                    </div>
-                    <div class="offscreen-menu-item">Shares</div>
-                </span>
-                <span class="same-line" style="margin-bottom: 5px; align-items: center;">
-                    <div class="same-line offscreen-menu-item red" id="buySellPriceLine" style="justify-content: center;">
-                        <div id="buySellPriceSymbol">-$</div>
-                        <div id="buySellPrice">Price</div>
-                    </div>
-                    <div class="offscreen-menu-item"><input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" id="inputStockQuantity"></div>
-                </span>
-                <button th:onclick="toggleConfirmScreen(2)" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Next</button>
+        <div class="same-line offscreen-menu">
+            <div class="offscreen-menu-tabs">
+                <div class="offscreen-menu-tab" th:attr="onclick=|clickTab('tabBuySell', '${availableInfluencerCount}')|">$</div>
+                <div class="offscreen-menu-tab" th:attr="onclick=|clickTab('tabInfluence', '${availableInfluencerCount}')|">I</div>
             </div>
 
-            <!-- Buy/Sell Screen 2 -->
-            <div id="buySellScreen2" style="display: none;">
-                <span class="same-line">
-                    <div class="offscreen-menu-item">Total</div>
-                    <div class="offscreen-menu-item">Shares</div>
+            <!-- Buy/Sell Stocks -->
+            <div class="offscreen-menu-screen" id="tabBuySell" name="offscreenMenuTab" style="width: 100%;">
+                <div class="offscreen-menu-header" id="offscreenMenuHeader">Buy Stock</div>
+                <div class="offscreen-menu-subheader" name="stockListingName">Stock Name</div>
+
+                <!-- Buy/Sell Screen 1 -->
+                <div id="buySellScreen1">
+                    <span class="same-line" style="align-items: center;">
+                        <div class="offscreen-menu-item" id="stockListingSymbol">Stock Symbol</div>
+                        <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                            <a style="padding-right: 3px;"><button type="button" th:onclick="toggleBuyButton()" class="button button-green" id="toggleBuyButton">Buy</button></a>
+                            <a><button type="button" th:attr="onclick=|toggleSellButton()|" class="button button-red-inactive" id="toggleSellButton">Sell</button></a>
+                        </div>
+                    </span>
+                    <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                        <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                            <div>$</div>
+                            <div id="stockListingPrice">Stock Price</div>
+                        </div>
+                        <div class="offscreen-menu-item">Shares</div>
+                    </span>
+                    <span class="same-line" style="margin-bottom: 5px; align-items: center;">
+                        <div class="same-line offscreen-menu-item red" id="buySellPriceLine" style="justify-content: center;">
+                            <div id="buySellPriceSymbol">-$</div>
+                            <div id="buySellPrice">Price</div>
+                        </div>
+                        <div class="offscreen-menu-item"><input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" id="inputStockQuantity"></div>
+                    </span>
+                    <button th:onclick="toggleConfirmScreen(2)" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Next</button>
+                </div>
+
+                <!-- Buy/Sell Screen 2 -->
+                <div id="buySellScreen2" style="display: none;">
+                    <span class="same-line">
+                        <div class="offscreen-menu-item">Total</div>
+                        <div class="offscreen-menu-item">Shares</div>
+                    </span>
+                    <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                        <div class="same-line offscreen-menu-item red" id="buySellPriceLine2" style="justify-content: center;">
+                            <div id="buySellPriceSymbol2">-$</div>
+                            <div id="totalBuySellPrice">Total Price</div>
+                        </div>
+                        <div class="offscreen-menu-item" id="totalBuySellShares">Total Shares</div>
+                    </span>
+                    <a href="#" th:onclick="toggleConfirmScreen(1)" class="amend-offer-text"><< Amend Offer</a>
+                    
+                    <!-- Buy Form -->
+                    <div id="buyForm">
+                        <form th:action="0" method="get" id="buyStockForm">
+                            <input type="hidden" th:value="0" name="amountString" id="buyStockAmount"/>
+                            <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Buy</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Sell Form -->
+                    <div id="sellForm" style="display: none;">
+                        <form th:action="0" method="get" id="sellStockForm">
+                            <input type="hidden" th:value="0" name="amountString" id="sellStockAmount"/>
+                            <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Sell</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Influence Tab -->
+            <div class="offscreen-menu-screen" id="tabInfluence" name="offscreenMenuTab" style="display: none; width: 100%;">
+                <div class="offscreen-menu-header">Influence Stock</div>
+                <div class="offscreen-menu-subheader" name="stockListingName">Stock Name</div>
+
+                <span class="same-line" style="align-items: center;">
+                    <div class="offscreen-menu-item">Influence Direction</div>
+                    <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                        <a style="padding-right: 3px;"><button type="button" class="button button-green" th:attr="onclick=|toggleInfluenceUpButton()|" id="toggleInfluenceUpButton" style="padding-left: 7px; padding-right: 7px;">+</button></a>
+                        <a><button type="button" class="button button-red-inactive" th:attr="onclick=|toggleInfluenceDownButton()|" id="toggleInfluenceDownButton" style="padding-left: 9px; padding-right: 9px;">-</button></a>
+                    </div>
                 </span>
                 <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
-                    <div class="same-line offscreen-menu-item red" id="buySellPriceLine2" style="justify-content: center;">
-                        <div id="buySellPriceSymbol2">-$</div>
-                        <div id="totalBuySellPrice">Total Price</div>
-                    </div>
-                    <div class="offscreen-menu-item" id="totalBuySellShares">Total Shares</div>
+                    <div class="same-line offscreen-menu-item" style="justify-content: center;">Available:</div>
+                    <div class="offscreen-menu-item" id="availableInfluencerCount">Available #</div>
                 </span>
-                <a href="#" th:onclick="toggleConfirmScreen(1)" class="amend-offer-text"><< Amend Offer</a>
-                
-                <!-- Buy Form -->
-                <div id="buyForm">
-                    <form th:action="0" method="get" id="buyStockForm">
-                        <input type="hidden" th:value="0" name="amountString" id="buyStockAmount"/>
-                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Buy</button>
-                    </form>
-                </div>
-                
-                <!-- Sell Form -->
-                <div id="sellForm" style="display: none;">
-                    <form th:action="0" method="get" id="sellStockForm">
-                        <input type="hidden" th:value="0" name="amountString" id="sellStockAmount"/>
-                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Sell</button>
-                    </form>
-                </div>
+                <form th:action="0" method="get" id="influenceStockForm">
+                    <span class="same-line" style="margin-bottom: 5px; align-items: center;">
+                        <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                        </div>
+                        <div class="offscreen-menu-item">
+                            <input type="hidden" id="influenceDirection" name="influenceDirection">
+                            <input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" name="amountString">
+                        </div>
+                    </span>
+                    <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Influence</button>
+                </form>
             </div>
         </div>
 

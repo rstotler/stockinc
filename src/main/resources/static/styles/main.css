@@ -224,13 +224,15 @@ img { display: block; }
     border-left-color: #172325;
     border-left-style: solid;
     border-width: 3px;
-    padding-top: 30px;
-    padding-left: 30px;
-    padding-right: 30px;
     transition: right .5s;
 }
 .offscreen-menu.active {
     right: 0;
+}
+.offscreen-menu-screen {
+    padding-top: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 .offscreen-menu-messages {
     width: 87%;
@@ -264,6 +266,27 @@ img { display: block; }
     width: 100%;
     text-align: center;
     font-weight: bold;
+}
+.offscreen-menu-tabs {
+    width: 10%;
+    border-right: 2px;
+    border-color: #172325;
+    border-right-style: solid;
+    background-color: #263B3F;
+}
+.offscreen-menu-tab {
+    border-right: 2px;
+    border-color: #172325;
+    border-bottom-style: solid;
+    height: 30px;
+    background-color: #5C868B;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+.offscreen-menu-tab:hover {
+    background-color: #416165;
 }
 
 .amend-offer-text {

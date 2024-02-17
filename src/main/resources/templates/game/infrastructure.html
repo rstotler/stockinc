@@ -9,39 +9,41 @@
     <body class="background-container">
         <!-- Offscreen Menu -->
         <div class="offscreen-menu">
-            <div class="offscreen-menu-header" id="offscreenMenuHeader">Buy Infrastructure</div>
-            
-            <!-- Buy Tipster Screen -->
-            <div id="buyTipsterScreen" style="display: none;">
-                <div class="offscreen-menu-item" style="justify-content: center; margin-top: 5px; margin-bottom: 5px;" id="tipsterPrice">Tipster Price</div>
-                <form th:action="@{/buyTipster}" method="get">
-                    <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Buy Tip</button>
-                </form>
-            </div>
+            <div class="offscreen-menu-screen">
+                <div class="offscreen-menu-header" id="offscreenMenuHeader">Buy Infrastructure</div>
+                
+                <!-- Buy Tipster Screen -->
+                <div id="buyTipsterScreen" style="display: none;">
+                    <div class="offscreen-menu-item" style="justify-content: center; margin-top: 5px; margin-bottom: 5px;" id="tipsterPrice">Tipster Price</div>
+                    <form th:action="@{/buyTipster}" method="get">
+                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Buy Tip</button>
+                    </form>
+                </div>
 
-            <!-- Buy Unit Screen -->
-            <div id="buyUnitScreen" style="display: none;">
-                <div class="offscreen-menu-subheader" id="unitType">Unit Type</div>
-                <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
-                    <div class="same-line offscreen-menu-item" style="justify-content: center;">
-                        <div>$</div>
-                        <div id="unitPrice">Unit Price</div>
-                    </div>
-                    <div class="offscreen-menu-item">Count</div>
-                </span>
-                <form th:action="@{/buyUnits}" method="get">
-                    <span class="same-line" style="margin-bottom: 5px; align-items: center;">
-                        <div class="same-line offscreen-menu-item red" style="width: 50%; justify-content: center;">
-                            <div>-$</div>
-                            <div id="buyPrice">0.00</div>
+                <!-- Buy Unit Screen -->
+                <div id="buyUnitScreen" style="display: none;">
+                    <div class="offscreen-menu-subheader" id="unitType">Unit Type</div>
+                    <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                        <div class="same-line offscreen-menu-item" style="justify-content: center;">
+                            <div>$</div>
+                            <div id="unitPrice">Unit Price</div>
                         </div>
-                        <div style="width: 50%; text-align: center;">
-                            <input type="hidden" th:value="0" name="unitType" id="unitTypeInput"/>
-                            <input type="number" name="unitCount" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" id="inputBuyCount">
-                        </div>
+                        <div class="offscreen-menu-item">Count</div>
                     </span>
-                    <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Hire</button>
-                </form>
+                    <form th:action="@{/buyUnits}" method="get">
+                        <span class="same-line" style="margin-bottom: 5px; align-items: center;">
+                            <div class="same-line offscreen-menu-item red" style="width: 50%; justify-content: center;">
+                                <div>-$</div>
+                                <div id="buyPrice">0.00</div>
+                            </div>
+                            <div style="width: 50%; text-align: center;">
+                                <input type="hidden" th:value="0" name="unitType" id="unitTypeInput"/>
+                                <input type="number" name="unitCount" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center; width: 90%;" id="inputBuyCount">
+                            </div>
+                        </span>
+                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Hire</button>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -93,9 +95,10 @@
                     <div th:attr="onclick=|clickInfrastructureUnit('${unitType}', '${servicePrices}', '${unitPrices}', '${unitCounts}')|" style="position: relative; margin-right: 10px;">
                         <img th:if="${unitType} == 'Tipster'" th:src="@{/images/IconTipster.png}"/>
                         <img th:if="${unitType} == 'Hacker'" th:src="@{/images/IconHacker.png}"/>
+                        <img th:if="${unitType} == 'Analyst'" th:src="@{/images/IconAnalyst.png}"/>
                         <img th:if="${unitType} == 'Influencer'" th:src="@{/images/IconInfluencer.png}"/>
 
-                        <div th:if="${unitType} == 'Hacker' OR ${unitType} == 'Influencer'">
+                        <div th:if="${unitType} == 'Hacker' OR ${unitType} == 'Analyst' OR ${unitType} == 'Influencer'">
                             <div class="bottom-icon-left-corner" style="bottom: 60px; left: 16px;"></div>
                             <div th:with="userName=${userName}, unitType=${unitType}" th:text="${accountService.getUnitCount(userName, unitType)}" class="bottom-icon-banner" style="bottom: 60px; left: 28px; width: 26px;"></div>
                             <div class="bottom-icon-right-corner" style="bottom: 60px; left: 60px;"></div>
@@ -148,9 +151,10 @@
             <span class="same-line" style="flex-flow: wrap;">
                 <div th:each="queueObject : ${unitQueue}" style="position: relative; margin-right: 6px; margin-top: 6px;">
                     <img th:if="${queueObject.unitType} == 'Hacker'" th:src="@{/images/IconHackerSmall.png}"/>
+                    <img th:if="${queueObject.unitType} == 'Analyst'" th:src="@{/images/IconAnalystSmall.png}"/>
                     <img th:if="${queueObject.unitType} == 'Influencer'" th:src="@{/images/IconInfluencerSmall.png}"/>
 
-                    <div th:if="${queueObject.unitType} == 'Hacker' OR ${queueObject.unitType} == 'Influencer'">
+                    <div th:if="${queueObject.unitType} == 'Hacker' OR ${queueObject.unitType} == 'Analyst' OR ${queueObject.unitType} == 'Influencer'">
                         <div class="bottom-icon-left-corner" style="bottom: 45px; left: 9px; border-top-width: 10px; border-left-width: 10px;"></div>
                         <div th:text="${queueObject.unitCount}" class="bottom-icon-banner" style="bottom: 45px; left: 18px; width: 22px; font-size: 9px;"></div>
                         <div class="bottom-icon-right-corner" style="bottom: 45px; left: 46px; border-bottom-width: 10px; border-right-width: 10px;"></div>

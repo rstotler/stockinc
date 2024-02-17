@@ -15,6 +15,9 @@ var buyStockAmount = document.getElementById("buyStockAmount");
 var sellStockForm = document.getElementById("sellStockForm");
 var sellStockAmount = document.getElementById("sellStockAmount");
 
+var influenceStockForm = document.getElementById("influenceStockForm");
+var influenceDirection = document.getElementById("influenceDirection");
+
 function formatNumber(num) {
     var roundedNum = (Math.round(num * 100) / 100).toFixed(2);
     return roundedNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -40,12 +43,14 @@ function clickStockListing(stockListingName, stockListingSymbol, stockListingPri
         targetStockName = stockListingName;
         selectedStockPrice = stockListingPrice;
 
-        const textStockListingName = document.getElementById("stockListingName");
+        const textStockListingName = document.getElementsByName("stockListingName");
         const textStockListingSymbol = document.getElementById("stockListingSymbol");
         const textStockListingPrice = document.getElementById("stockListingPrice");
         const textBuySellPrice = document.getElementById("buySellPrice");
     
-        textStockListingName.innerHTML = stockListingName;
+        for(i = 0; i < textStockListingName.length; i++) {
+            textStockListingName[i].innerHTML = stockListingName;
+        }
         textStockListingSymbol.innerHTML = selectedStockSymbol + " (" + selectedStockQuantity + " Owned)";
         textStockListingPrice.innerHTML = formatNumber(stockListingPrice);
         textBuySellPrice.innerHTML = "0.00";
@@ -216,4 +221,58 @@ function toggleConfirmScreen(screenNum) {
         sellStockForm.action = "/sellStock/" + targetStockName;
         sellStockAmount.value = buySellQuantity;
     }
+}
+
+function clickTab(tabTitle, availableInfluencerCount) {
+    const offscreenMenuTabs = document.getElementsByName("offscreenMenuTab");
+    for(let i = 0; i < offscreenMenuTabs.length; i++) {
+        offscreenMenuTabs[i].style.display = "none";
+    }
+
+    if(tabTitle == "tabBuySell") {
+        const tabBuySell = document.getElementById("tabBuySell");
+        tabBuySell.style.display = "block";
+    }
+    else if(tabTitle == "tabInfluence") {
+        const availableInfluencerCountText = document.getElementById("availableInfluencerCount");
+        availableInfluencerCountText.innerHTML = availableInfluencerCount;
+
+        influenceStockForm.action = "/influenceStock/" + targetStockName;
+        influenceDirection.value = "Up";
+
+        const tabInfluence = document.getElementById("tabInfluence");
+        tabInfluence.style.display = "block";
+    }
+}
+
+function toggleInfluenceUpButton() {
+    const toggleInfluenceDownButton = document.getElementById("toggleInfluenceDownButton");
+    if(toggleInfluenceDownButton.classList.contains("button-red")) {
+        toggleInfluenceDownButton.classList.remove("button-red");
+        toggleInfluenceDownButton.classList.add("button-red-inactive");
+    }
+
+    const toggleInfluenceUpButton = document.getElementById("toggleInfluenceUpButton");
+    if(toggleInfluenceUpButton.classList.contains("button-green-inactive")) {
+        toggleInfluenceUpButton.classList.remove("button-green-inactive");
+        toggleInfluenceUpButton.classList.add("button-green");
+    }
+
+    influenceDirection.value = "Up";
+}
+
+function toggleInfluenceDownButton() {
+    const toggleInfluenceUpButton = document.getElementById("toggleInfluenceUpButton");
+    if(toggleInfluenceUpButton.classList.contains("button-green")) {
+        toggleInfluenceUpButton.classList.remove("button-green");
+        toggleInfluenceUpButton.classList.add("button-green-inactive");
+    }
+
+    const toggleInfluenceDownButton = document.getElementById("toggleInfluenceDownButton");
+    if(toggleInfluenceDownButton.classList.contains("button-red-inactive")) {
+        toggleInfluenceDownButton.classList.remove("button-red-inactive");
+        toggleInfluenceDownButton.classList.add("button-red");
+    }
+
+    influenceDirection.value = "Down";
 }

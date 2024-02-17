@@ -19,12 +19,14 @@ public class GameDataService {
     public Map<String, Float> unitPrices = new HashMap<>();
     {
         unitPrices.put("Hacker", 100.0f);
+        unitPrices.put("Analyst", 100.0f);
         unitPrices.put("Influencer", 100.0f);
     }
 
     public Map<String, Integer> createUnitLength = new HashMap<>();
     {
         createUnitLength.put("Hacker", 5);
+        createUnitLength.put("Analyst", 5);
         createUnitLength.put("Influencer", 5);
     }
 }

@@ -125,7 +125,7 @@ function clickInfrastructureUnit(unitType, servicePrices, unitPrices, unitCounts
             buyUnitScreen.style.display = "none";
         }
         
-        else if(unitType == "Hacker" || unitType == "Influencer") {
+        else if(unitType == "Hacker" || unitType == "Analyst" || unitType == "Influencer") {
             const textUnitType = document.getElementById("unitType");
             offscreenMenuHeader.innerHTML = "Hire Units";
             textUnitType.innerHTML = unitType + " (Owned: " + parseMap(unitType, unitCounts) + ")";
