@@ -106,6 +106,16 @@ public class StockGameController {
 
     @GetMapping("/influenceStock/{stock_name}")
     public String influenceStock(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("stock_name") String stockName, @RequestParam(value="amountString", required=false) String amountString, @RequestParam(value="influenceDirection", required=false) String influenceDirection) {
+        int availableCount = accountService.getAvailableInfluencerCount(userDetails.getUsername());
+        int influencerCount = Integer.valueOf(amountString);
+        if(influencerCount > availableCount) {
+            influencerCount = availableCount;
+        }
+
+        if(influencerCount > 0) {
+            stockListingService.addInfluencers(userDetails.getUsername(), stockName, influencerCount, influenceDirection);
+        }
+
         return "redirect:/index";
     }
 

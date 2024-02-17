@@ -136,18 +136,8 @@ public class AccountService {
             targetStock = listCopy.get(0);
         }
 
-        int dayCount = 29;
-        if(targetStock.getPriceList().size() < 29) {
-            dayCount = targetStock.getPriceList().size();
-        }
-        float nextPrice = targetStock.getNextKeyCount();
-        for(int i = 0; i < dayCount; i++) {
-            nextPrice += targetStock.getKeyCountList().get(targetStock.getKeyCountList().size() - 1 - i);
-        }
-        nextPrice /= (dayCount + 1);
-
         float currentPrice = targetStock.getPrice();
-        float changePercent = ((nextPrice - currentPrice) / currentPrice) * 100;
+        float changePercent = ((targetStock.getNextPrice() - currentPrice) / currentPrice) * 100;
         
         String riseDropString = "";
         if(changePercent > 10.0) {

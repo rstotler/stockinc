@@ -40,7 +40,7 @@
                             <div id="buySellPriceSymbol">-$</div>
                             <div id="buySellPrice">Price</div>
                         </div>
-                        <div class="offscreen-menu-item"><input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" id="inputStockQuantity"></div>
+                        <div class="offscreen-menu-item"><input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center; width: 50%;" id="inputStockQuantity"></div>
                     </span>
                     <button th:onclick="toggleConfirmScreen(2)" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Next</button>
                 </div>
@@ -90,17 +90,12 @@
                         <a><button type="button" class="button button-red-inactive" th:attr="onclick=|toggleInfluenceDownButton()|" id="toggleInfluenceDownButton" style="padding-left: 9px; padding-right: 9px;">-</button></a>
                     </div>
                 </span>
-                <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
-                    <div class="same-line offscreen-menu-item" style="justify-content: center;">Available:</div>
-                    <div class="offscreen-menu-item" id="availableInfluencerCount">Available #</div>
-                </span>
                 <form th:action="0" method="get" id="influenceStockForm">
-                    <span class="same-line" style="margin-bottom: 5px; align-items: center;">
-                        <div class="same-line offscreen-menu-item" style="justify-content: center;">
-                        </div>
+                    <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                        <div class="offscreen-menu-item" id="availableInfluencerCount">Available #</div>
                         <div class="offscreen-menu-item">
                             <input type="hidden" id="influenceDirection" name="influenceDirection">
-                            <input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center;" name="amountString">
+                            <input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center; width: 50%;" name="amountString">
                         </div>
                     </span>
                     <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Influence</button>

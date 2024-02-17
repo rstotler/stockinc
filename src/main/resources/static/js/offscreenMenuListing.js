@@ -235,7 +235,7 @@ function clickTab(tabTitle, availableInfluencerCount) {
     }
     else if(tabTitle == "tabInfluence") {
         const availableInfluencerCountText = document.getElementById("availableInfluencerCount");
-        availableInfluencerCountText.innerHTML = availableInfluencerCount;
+        availableInfluencerCountText.innerHTML = "Available: " + availableInfluencerCount;
 
         influenceStockForm.action = "/influenceStock/" + targetStockName;
         influenceDirection.value = "Up";

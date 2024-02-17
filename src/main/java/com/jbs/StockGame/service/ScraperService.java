@@ -85,8 +85,11 @@ public class ScraperService {
         // Set Next Price //
         for(StockListing stockListing : stockListingService.findAll()) {
             if(stockListing.getNextKeyCount() != -9999) {
-                stockListing.getKeyCountList().add(stockListing.getNextKeyCount());
+                stockListing.getKeyCountList().add(stockListing.getNextKeyCount() + stockListing.getTotalInfluence());
                 stockListing.addNewPrice();
+
+                stockListing.getInfluencerUpCount().clear();
+                stockListing.getInfluencerDownCount().clear();
             }
         }
 

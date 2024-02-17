@@ -43,4 +43,20 @@ public class StockListingService {
             .findFirst()
             .orElse(null);
     }
+
+    public void addInfluencers(String username, String name, int count, String direction) {
+        StockListing stock = findByName(name);
+        Map<String, Integer> targetMap;
+        if(direction.equals("Up")) {
+            targetMap = stock.getInfluencerUpCount();
+        } else {
+            targetMap = stock.getInfluencerDownCount();
+        }
+
+        if(targetMap.containsKey(username)) {
+            targetMap.put(username, targetMap.get(username) + count);
+        } else {
+            targetMap.put(username, count);
+        }
+    }
 }

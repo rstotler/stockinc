@@ -69,6 +69,7 @@ public class StockListing {
         for(int i = 0; i < dayCount; i++) {
             nextPrice += keyCountList.get(keyCountList.size() - 1 - i);
         }
+        nextPrice += getTotalInfluence();
         nextPrice /= (dayCount + 1);
 
         return nextPrice;
@@ -99,5 +100,17 @@ public class StockListing {
     public String getPriceChangePercentString() {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
         return decimalFormat.format(getPriceChangePercent());
+    }
+
+    public int getTotalInfluence() {
+        int totalInfluence = 0;
+        for(String username : influencerUpCount.keySet()) {
+            totalInfluence += (influencerUpCount.get(username) * 10);
+        }
+        for(String username : influencerDownCount.keySet()) {
+            totalInfluence -= (influencerDownCount.get(username) * 10);
+        }
+
+        return totalInfluence;
     }
 }
