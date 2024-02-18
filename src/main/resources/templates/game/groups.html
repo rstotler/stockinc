@@ -165,7 +165,10 @@
             </div>
         </span>
         <span th:if="${hackTarget} != null" class="same-line nav-bar-hack-attack">
-            <div th:text="'Hacking: ' + ${hackTarget.targetGroupSymbol} + ' -'" style="padding-right: 5px;"></div>
+            <div th:text="'Hacking: ' + ${hackTarget.targetGroupSymbol} + ' -'" style="padding-right: 3px;"></div>
+            <div th:text="${hackTarget.hackTimeLength}" id="hackTimeLength" style="display: none;"></div>
+            <div th:text="${hackTarget.startTime}" id="hackTime" style="display: none;"></div>
+            <div id="hackTimeField"></div>
         </span>
 
         <!-- Group Table & Create Group Box -->
