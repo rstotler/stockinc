@@ -38,6 +38,14 @@ img { display: block; }
     font-size: 14px;
     color: #263B3F;
 }
+.nav-bar-hack-attack {
+    background-color: #581C24;
+    padding-left: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-size: 14px;
+    color: #CfA4AD;
+}
 
 .border-box {
     background-color: #FFFFFF;

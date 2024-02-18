@@ -164,6 +164,9 @@
                 </span>
             </div>
         </span>
+        <span th:if="${hackTarget} != null" class="same-line nav-bar-hack-attack">
+            <div th:text="'Hacking: ' + ${hackTarget.targetGroupSymbol} + ' -'" style="padding-right: 5px;"></div>
+        </span>
 
         <!-- Group Table & Create Group Box -->
         <div style="display: flex;">

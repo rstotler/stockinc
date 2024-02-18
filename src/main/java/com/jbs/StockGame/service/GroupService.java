@@ -72,4 +72,15 @@ public class GroupService {
         float amount = getTotalValue(symbol);
         return decimalFormat.format(amount);
     }
+
+    public int getAvailableAnalystCount(String symbol) {
+        Group group = findBySymbol(symbol);
+
+        int availableCount = accountService.getAvailableAnalystCount(group.getFounder());
+        for(String username : group.getMemberList()) {
+            availableCount += accountService.getAvailableAnalystCount(username);
+        }
+
+        return availableCount;
+    }
 }

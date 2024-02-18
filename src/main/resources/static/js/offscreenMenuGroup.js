@@ -123,6 +123,6 @@ function clickTab(tabTitle, availableHackerCount) {
         const availableHackerCountText = document.getElementById("availableHackerCount");
         availableHackerCountText.innerHTML = "Hackers Available: " + availableHackerCount;
 
-        hackGroupForm.action = "/hackGroup/" + selectedGroupSymbol;
+        hackGroupForm.action = "/startHackGroup/" + selectedGroupSymbol;
     }
 }

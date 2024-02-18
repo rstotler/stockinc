@@ -21,6 +21,8 @@ public class Account {
     private Map<String, Integer> ownedUnits;
     private List<UnitQueue> unitQueue;
 
+    private HackAction hackTarget;
+
     private List<Message> messages;
 
     public String getCreditsString() {

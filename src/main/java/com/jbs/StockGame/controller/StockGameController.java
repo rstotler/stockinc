@@ -3,6 +3,7 @@ package com.jbs.StockGame.controller;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jbs.StockGame.config.TaskHackGroup;
 import com.jbs.StockGame.entity.Account;
 import com.jbs.StockGame.entity.Group;
+import com.jbs.StockGame.entity.HackAction;
 import com.jbs.StockGame.entity.StockListing;
 import com.jbs.StockGame.entity.UnitQueue;
 import com.jbs.StockGame.service.AccountService;
@@ -34,6 +37,7 @@ public class StockGameController {
     private final ScraperService scraperService;
     private final GameDataService gameDataService;
     private final MessageService messageService;
+    private final TaskScheduler taskScheduler;
 
     @GetMapping("/index")
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -90,6 +94,10 @@ public class StockGameController {
 
                 int newAmount = account.getOwnedStockQuantity(stockListing.getSymbol()) - amount;
                 account.getOwnedStock().put(stockListing.getSymbol(), newAmount);
+                if(account.getOwnedStock().get(stockListing.getSymbol()) == 0) {
+                    account.getOwnedStock().remove(stockListing.getSymbol());
+                }
+
                 account.setCredits(account.getCredits() + (stockListing.getPrice() * amount));
 
                 if(account.getLastInvestmentAmount() > 0) {
@@ -161,6 +169,7 @@ public class StockGameController {
         model.addAttribute("groupService", groupService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCreditsString", account.getCreditsString());
+        model.addAttribute("hackTarget", accountService.getHackTarget(userDetails.getUsername()));
         model.addAttribute("groups", groupService.findAll());
         model.addAttribute("groupName", groupName);
         model.addAttribute("groupSymbol", groupSymbol);
@@ -270,9 +279,26 @@ public class StockGameController {
         return "redirect:/groups";
     }
 
-    @GetMapping("/hackGroup/{group_symbol}")
-    public String hackGroup(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("group_symbol") String groupSymbol, @RequestParam(value="amountString", required=false) String amountString) {
-        System.out.println(userDetails.getUsername() + " " + groupSymbol + " " + amountString);
+    @SuppressWarnings("deprecation")
+    @GetMapping("/startHackGroup/{group_symbol}")
+    public String startHackGroup(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("group_symbol") String groupSymbol, @RequestParam(value="amountString", required=false) String amountString) {
+        Account account = accountService.findByUsername(userDetails.getUsername());
+
+        int hackerAmount = Integer.valueOf(amountString);
+        if(hackerAmount > accountService.getAvailableHackerCount(userDetails.getUsername())) {
+            hackerAmount = accountService.getAvailableHackerCount(userDetails.getUsername());
+        }
+
+        Group targetGroup = groupService.findBySymbol(groupSymbol);
+        if(!targetGroup.getFounder().equals(userDetails.getUsername()) && !targetGroup.getMemberList().contains(userDetails.getUsername())
+        && hackerAmount > 0 && account.getHackTarget() == null) {
+            HackAction hackAction = new HackAction(userDetails.getUsername(), groupSymbol, hackerAmount, LocalDateTime.now());
+            account.setHackTarget(hackAction);
+            
+            Date targetTime = new Date();
+            targetTime.setSeconds(targetTime.getSeconds() + hackAction.getHackTimeLength());
+            taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, hackAction), targetTime);
+        }
 
         return "redirect:/groups";
     }

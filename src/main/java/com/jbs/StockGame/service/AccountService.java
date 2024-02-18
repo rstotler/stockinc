@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jbs.StockGame.entity.Account;
+import com.jbs.StockGame.entity.HackAction;
 import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
 
@@ -200,6 +201,25 @@ public class AccountService {
             totalAvailableCount = account.getOwnedUnits().get("Hacker");
         }
 
+        if(account.getHackTarget() != null) {
+            totalAvailableCount -= account.getHackTarget().getHackerCount();
+        }
+
         return totalAvailableCount;
+    }
+
+    public int getAvailableAnalystCount(String username) {
+        Account account = findByUsername(username);
+
+        int availableCount = 0;
+        if(account.getOwnedUnits().containsKey("Analyst")) {
+            availableCount = account.getOwnedUnits().get("Analyst");
+        }
+
+        return availableCount;
+    }
+
+    public HackAction getHackTarget(String username) {
+        return findByUsername(username).getHackTarget();
     }
 }
