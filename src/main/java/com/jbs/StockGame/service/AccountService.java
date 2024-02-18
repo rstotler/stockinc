@@ -175,20 +175,31 @@ public class AccountService {
     public int getAvailableInfluencerCount(String username) {
         Account account = findByUsername(username);
 
-        int totalCount = 0;
+        int totalAvailableCount = 0;
         if(account.getOwnedUnits().containsKey("Influencer")) {
-            totalCount = account.getOwnedUnits().get("Influencer");
+            totalAvailableCount = account.getOwnedUnits().get("Influencer");
         }
         
         for(StockListing stockListing : stockListingService.findAll()) {
             if(stockListing.getInfluencerUpCount().containsKey(username)) {
-                totalCount -= stockListing.getInfluencerUpCount().get(username);
+                totalAvailableCount -= stockListing.getInfluencerUpCount().get(username);
             }
             if(stockListing.getInfluencerDownCount().containsKey(username)) {
-                totalCount -= stockListing.getInfluencerDownCount().get(username);
+                totalAvailableCount -= stockListing.getInfluencerDownCount().get(username);
             }
         }
 
-        return totalCount;
+        return totalAvailableCount;
+    }
+
+    public int getAvailableHackerCount(String username) {
+        Account account = findByUsername(username);
+
+        int totalAvailableCount = 0;
+        if(account.getOwnedUnits().containsKey("Hacker")) {
+            totalAvailableCount = account.getOwnedUnits().get("Hacker");
+        }
+
+        return totalAvailableCount;
     }
 }

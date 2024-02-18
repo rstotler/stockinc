@@ -9,19 +9,40 @@
     
     <body class="background-container">
         <!-- Offscreen Menu Group Listing -->
-        <div class="offscreen-menu" id="groupListingMenu">
-            <div class="offscreen-menu-screen">
-                <div class="offscreen-menu-header" id="groupListingMenuHeaderName">Group Name</div>
+        <div class="same-line offscreen-menu" id="groupListingMenu">
+            <div class="offscreen-menu-tabs">
+                <div class="offscreen-menu-tab" th:attr="onclick=|clickTab('tabInfo', '${availableHackerCount}')|">Co</div>
+                <div class="offscreen-menu-tab" th:attr="onclick=|clickTab('tabHack', '${availableHackerCount}')|">H</div>
+            </div>
 
-                <!-- Join Group Form -->
-                <div id="joinGroupForm" style="display: none;">
-                    <form th:action="@{/requestJoinGroup}" method="get">
-                        <div style="display: flex; justify-content: center;">
-                            <div style="width: 60%; text-align: center;">
-                                <input type="hidden" th:value="0" name="groupSymbol" id="groupJoinSymbolInput"/>
-                                <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;" id="requestJoinGroupButton">Request To Join</button>
+            <div class="offscreen-menu-screen" style="width: 100%;">
+                <div class="offscreen-menu-header" id="groupListingMenuHeaderName">Company Name</div>
+
+                <!-- Group Info Form -->
+                <div id="joinGroupTab" name="offscreenMenuTab" style="display: none;">
+                    <div th:if="${groupStatus} == 'None'">
+                        <form th:action="@{/requestJoinGroup}" method="get">
+                            <div style="display: flex; justify-content: center;">
+                                <div style="width: 60%; text-align: center;">
+                                    <input type="hidden" th:value="0" name="groupSymbol" id="groupJoinSymbolInput"/>
+                                    <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;" id="requestJoinGroupButton">Request To Join</button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Hack Group Form -->
+                <div id="hackGroupTab" name="offscreenMenuTab" style="display: none; width: 100%;">
+                    <div class="offscreen-menu-subheader">Hack Group</div>
+                    <form th:action="0" method="get" id="hackGroupForm">
+                        <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
+                            <div class="offscreen-menu-item" id="availableHackerCount">Available #</div>
+                            <div class="offscreen-menu-item">
+                                <input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center; width: 50%;" id="hackerAmountInput" name="amountString">
+                            </div>
+                        </span>
+                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Hack</button>
                     </form>
                 </div>
             </div>
@@ -46,7 +67,7 @@
 
                 <!-- Group Settings Form -->
                 <div id="groupSettingsForm" style="display: none;">
-                    <div class="offscreen-menu-header">Group Settings</div>
+                    <div class="offscreen-menu-header">Company Settings</div>
                     <div class="offscreen-menu-subheader" id="groupName">Stock Name</div>
                     
                     <!-- Member List -->
@@ -64,7 +85,7 @@
                                 <tr th:each="member, iter : ${memberList}" class="table-row">
                                     <td class="table-column-0"><span th:text="${member}"></span></td>
                                     <td><span th:text="'$' + ${accountService.getTotalInvestmentString(member)}"></span></td>
-                                    <td><div id="ajaxClickRemoveFromGroup" th:data-group-symbol="${groupSymbol}" th:data-target-user="${member}"><button class="button" name="removeFromGroupButton" th:attr="onclick=|clickRemoveFromGroup('${iter.index}')|" style="margin: 2px; font-size: 11px;">Remove</button></div></td>
+                                    <td><div id="ajaxClickRemoveFromGroup" th:data-group-symbol="${groupSymbol}" th:data-target-user="${member}"><button th:if="${iter.index} &gt; 0" class="button" name="removeFromGroupButton" th:attr="onclick=|clickRemoveFromGroup('${iter.index}')|" style="margin: 2px; font-size: 11px;">Remove</button></div></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -144,7 +165,7 @@
             </div>
         </span>
 
-        <!-- Table/Create Group Box -->
+        <!-- Group Table & Create Group Box -->
         <div style="display: flex;">
             <!-- Group Listing Table -->
             <div style="width: 100%;">
@@ -153,11 +174,11 @@
                         <tr>
                             <th class="table-head-0">Name</th>
                             <th class="table-head-1">Symbol</th>
-                            <th class="table-head-2">Price</th>
+                            <th class="table-head-2">Value</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}', '${groupStatus}', '${requestedJoinGroupList}')|">
+                        <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}', '${groupStatus}', '${requestedJoinGroupList}', '${groupSymbol}')|">
                             <td class="table-column-0"><span th:text="${group.name}"></span></td>
                             <td class="table-column-1"><span th:text="${group.symbol}"></span></td>
                             <td style="padding-right: 5px;"><span th:with="groupSymbol=${group.symbol}" th:text="'$' + ${groupService.getTotalValueString(groupSymbol)}"></span></td>
@@ -170,8 +191,8 @@
             <div th:if="${groupStatus} != 'Member'" style="width: 30%;">
                 <a href="#" th:attr="onclick=|clickGroupSettingsTab('${groupName}', '${groupSymbol}', '${groupStatus}')|">
                     <div class="border-box-2">
-                        <div th:if="${groupStatus} == 'None'" class="border-box-2-header">Create Group</div>
-                        <div th:if="${groupStatus} == 'Founder'" class="border-box-2-header">Group Settings</div>
+                        <div th:if="${groupStatus} == 'None'" class="border-box-2-header">Create Company</div>
+                        <div th:if="${groupStatus} == 'Founder'" class="border-box-2-header">Company Settings</div>
                     </div>
                 </a>
             </div>

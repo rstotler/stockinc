@@ -147,7 +147,8 @@ public class StockGameController {
                 groupName = group.getName();
                 groupSymbol = group.getSymbol();
                 groupStatus = "Founder";
-                memberList = group.getMemberList();
+                memberList.add(userDetails.getUsername());
+                memberList.addAll(group.getMemberList());
                 requestedUserList = group.getRequestList();
             } else if(group.getMemberList().contains(userDetails.getUsername())) {
                 groupStatus = "Member";
@@ -167,6 +168,7 @@ public class StockGameController {
         model.addAttribute("memberList", memberList);
         model.addAttribute("requestedJoinGroupList", requestedJoinGroupList.toString());
         model.addAttribute("requestedUserList", requestedUserList);
+        model.addAttribute("availableHackerCount", accountService.getAvailableHackerCount(userDetails.getUsername()));
 
         return "game/groups";
     }
@@ -268,12 +270,19 @@ public class StockGameController {
         return "redirect:/groups";
     }
 
+    @GetMapping("/hackGroup/{group_symbol}")
+    public String hackGroup(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("group_symbol") String groupSymbol, @RequestParam(value="amountString", required=false) String amountString) {
+        System.out.println(userDetails.getUsername() + " " + groupSymbol + " " + amountString);
+
+        return "redirect:/groups";
+    }
+
     @GetMapping("/infrastructure")
     public String assets(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
 
-        List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Hacker", "Analyst", "Influencer"));
+        List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Influencer", "Hacker", "Analyst"));
 
         String tipsterCooldown = "None";
         LocalDateTime tipsterCooldownTime = null;

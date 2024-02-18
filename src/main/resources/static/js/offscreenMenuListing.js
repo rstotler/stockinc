@@ -68,6 +68,16 @@ function clickStockListing(stockListingName, stockListingSymbol, stockListingPri
         userCredits = userTotalCredits;
 
         toggleBuyButton();
+
+        const offscreenMenuTabs = document.getElementsByName("offscreenMenuTab");
+        for(let i = 0; i < offscreenMenuTabs.length; i++) {
+            offscreenMenuTabs[i].style.display = "none";
+        }
+        const tabBuySell = document.getElementById("tabBuySell");
+        tabBuySell.style.display = "block";
+
+        const influencerAmountInput = document.getElementById("influencerAmountInput");
+        influencerAmountInput.value = "0";
     }
 
     offscreenMenu.classList.toggle('active');
@@ -235,7 +245,7 @@ function clickTab(tabTitle, availableInfluencerCount) {
     }
     else if(tabTitle == "tabInfluence") {
         const availableInfluencerCountText = document.getElementById("availableInfluencerCount");
-        availableInfluencerCountText.innerHTML = "Available: " + availableInfluencerCount;
+        availableInfluencerCountText.innerHTML = "Influencers Available: " + availableInfluencerCount;
 
         influenceStockForm.action = "/influenceStock/" + targetStockName;
         influenceDirection.value = "Up";

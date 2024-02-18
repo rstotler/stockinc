@@ -1,4 +1,9 @@
-function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupList) {
+var selectedGroupSymbol = "None";
+var playerGroupSymbol = "None";
+
+var hackGroupForm = document.getElementById("hackGroupForm");
+
+function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupList, playerGroup) {
     const offscreenMenuGroupListing = document.getElementById("groupListingMenu");
     const offscreenMenuCreateGroup = document.getElementById("createGroupMenu");
 
@@ -10,10 +15,20 @@ function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupLi
         const groupListingMenuHeaderName = document.getElementById("groupListingMenuHeaderName");
         groupListingMenuHeaderName.innerHTML = groupName;
 
-        if(groupStatus == "None") {
-            const joinGroupForm = document.getElementById("joinGroupForm");
-            joinGroupForm.style.display = "block";
+        selectedGroupSymbol = groupSymbol;
+        playerGroupSymbol = playerGroup;
 
+        const offscreenMenuTabs = document.getElementsByName("offscreenMenuTab");
+        for(let i = 0; i < offscreenMenuTabs.length; i++) {
+            offscreenMenuTabs[i].style.display = "none";
+        }
+        const joinGroupTab = document.getElementById("joinGroupTab");
+        joinGroupTab.style.display = "block";
+
+        const hackerAmountInput = document.getElementById("hackerAmountInput");
+        hackerAmountInput.value = "0";
+
+        if(groupStatus == "None") {
             const groupJoinSymbolInput = document.getElementById("groupJoinSymbolInput");
             groupJoinSymbolInput.value = groupSymbol;
 
@@ -64,9 +79,9 @@ function clickGroupSettingsTab(groupName, groupSymbol, groupStatus) {
 
 function clickRemoveFromGroup(clickIndex) {
     const removeButton = document.getElementsByName("removeFromGroupButton");
-    removeButton[clickIndex].innerHTML = "Removed";
-    removeButton[clickIndex].classList.add("button-inactive");
-    removeButton[clickIndex].disabled = true;
+    removeButton[clickIndex - 1].innerHTML = "Removed"; // -1 To Account For Group Founder In List
+    removeButton[clickIndex - 1].classList.add("button-inactive");
+    removeButton[clickIndex - 1].disabled = true;
 }
 
 function clickAcceptToGroup(clickIndex) {
@@ -89,4 +104,25 @@ function clickDenyFromGroup(clickIndex) {
     const acceptToGroupButton = document.getElementsByName("acceptToGroupButton");
     acceptToGroupButton[clickIndex].classList.add("button-inactive");
     acceptToGroupButton[clickIndex].disabled = true;
+}
+
+function clickTab(tabTitle, availableHackerCount) {
+    const offscreenMenuTabs = document.getElementsByName("offscreenMenuTab");
+    for(let i = 0; i < offscreenMenuTabs.length; i++) {
+        offscreenMenuTabs[i].style.display = "none";
+    }
+
+    if(tabTitle == "tabInfo") {
+        const joinGroupTab = document.getElementById("joinGroupTab");
+        joinGroupTab.style.display = "block";
+    }
+    else if(tabTitle == "tabHack" && (playerGroupSymbol == "None" || selectedGroupSymbol != playerGroupSymbol)) {
+        const hackGroupTab = document.getElementById("hackGroupTab");
+        hackGroupTab.style.display = "block";
+
+        const availableHackerCountText = document.getElementById("availableHackerCount");
+        availableHackerCountText.innerHTML = "Hackers Available: " + availableHackerCount;
+
+        hackGroupForm.action = "/hackGroup/" + selectedGroupSymbol;
+    }
 }
