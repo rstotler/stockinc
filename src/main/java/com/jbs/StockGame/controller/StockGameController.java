@@ -17,6 +17,7 @@ import com.jbs.StockGame.config.TaskHackGroup;
 import com.jbs.StockGame.entity.Account;
 import com.jbs.StockGame.entity.Group;
 import com.jbs.StockGame.entity.HackAction;
+import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
 import com.jbs.StockGame.entity.UnitQueue;
 import com.jbs.StockGame.service.AccountService;
@@ -28,12 +29,10 @@ import com.jbs.StockGame.service.StockListingService;
 
 import lombok.AllArgsConstructor;
 
-/* To-Do List
- * 1 - Create Firewall Infrastructure And Make It Upgradeable
- * 2 - Stop Hack If Player Joins Group They Are Hacking
- * 3 - Create Group Hacks
- * 4 - Data Persistence Layer
- * 5 - Show Newest Messages First
+/* To-Do List:
+ * 1 - Make Firewall Infrastructure Upgradeable
+ * 2 - Create Group Hacks
+ * 3 - Create Data Persistence Layer
 */
 
 @Controller
@@ -262,6 +261,11 @@ public class StockGameController {
                         otherGroup.getRequestList().remove(targetUser);
                     }
                 }
+
+                Account joinedAccount = accountService.findByUsername(targetUser);
+                if(joinedAccount.getHackTarget() != null && joinedAccount.getHackTarget().getTargetGroupSymbol().equals(groupSymbol)) {
+                    joinedAccount.setHackTarget(null);
+                }
             }
             else if(targetAction.equals("Deny")) {
                 group.getRequestList().remove(targetUser);
@@ -319,6 +323,7 @@ public class StockGameController {
         account.updateQueues();
 
         List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Influencer", "Hacker", "Analyst"));
+        List<String> infrastructureList = new ArrayList<>(Arrays.asList("Firewall"));
 
         String tipsterCooldown = "None";
         LocalDateTime tipsterCooldownTime = null;
@@ -355,6 +360,9 @@ public class StockGameController {
         model.addAttribute("creatingUnitTime", creatingUnitTime);
         model.addAttribute("creatingUnitTimeLength", creatingUnitTimeLength);
         model.addAttribute("unitQueue", account.getUnitQueue());
+
+        model.addAttribute("infrastructureList", infrastructureList);
+        model.addAttribute("infrastructurePrices", gameDataService.infrastructurePrices.toString());
         
         return "game/infrastructure";
     }
@@ -396,11 +404,14 @@ public class StockGameController {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
 
+        List<Message> messages = new ArrayList<>(account.getMessages());
+        Collections.reverse(messages);
+
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCreditsString", account.getCreditsString());
         model.addAttribute("hackTarget", accountService.getHackTarget(userDetails.getUsername()));
-        model.addAttribute("messages", account.getMessages());
+        model.addAttribute("messages", messages);
         model.addAttribute("messageService", messageService);
 
         return "game/messages"; 
@@ -416,17 +427,21 @@ public class StockGameController {
     }
 
     @GetMapping("/deleteMessage")
-    public String deleteMessage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="messageIndex", required=false) String messageIndex) {
+    public String deleteMessage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="messageIndex", required=false) String messageIndexString) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-        for(int i = account.getMessages().size() - 1; i >= 0; i--) {
-            if(messageIndex.equals("All") || Integer.valueOf(messageIndex) == i) {
-                account.getMessages().remove(i);
-            }
-            if(!messageIndex.equals("All") && i == Integer.valueOf(messageIndex)) {
-                break;
+
+        if(messageIndexString.equals("All")) {
+            account.getMessages().clear();
+        } else {
+            int messageIndex = account.getMessages().size() - Integer.valueOf(messageIndexString) - 1;
+            for(int i = 0; i < account.getMessages().size(); i++) {
+                if(messageIndex == i) {
+                    account.getMessages().remove(i);
+                    break;
+                }
             }
         }
-        
+
         return "redirect:/messages";
     }
 

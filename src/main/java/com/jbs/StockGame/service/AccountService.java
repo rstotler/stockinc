@@ -218,6 +218,10 @@ public class AccountService {
         return availableCount;
     }
 
+    public int getInfrastructureLevel(String username, String infrastructureType) {
+        return 1;
+    }
+
     public HackAction getHackTarget(String username) {
         return findByUsername(username).getHackTarget();
     }

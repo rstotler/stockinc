@@ -112,6 +112,9 @@ function clickInfrastructureUnit(unitType, servicePrices, unitPrices, unitCounts
     const buyTipsterScreen = document.getElementById("buyTipsterScreen");
     const buyUnitScreen = document.getElementById("buyUnitScreen");
 
+    const upgradeInfrastructureScreen = document.getElementById("upgradeInfrastructureScreen");
+    upgradeInfrastructureScreen.style.display = "none";
+
     if(!offscreenMenu.classList.contains("active")) {
         selectedUnitPrice = parseMap(unitType, unitPrices);
         
@@ -138,6 +141,25 @@ function clickInfrastructureUnit(unitType, servicePrices, unitPrices, unitCounts
             buyTipsterScreen.style.display = "none";
             buyUnitScreen.style.display = "block";
         }
+    }
+
+    offscreenMenu.classList.toggle("active");
+}
+
+function clickInfrastructure(infrastructureType, infrastructurePrices) {
+    const offscreenMenu = document.querySelector(".offscreen-menu");
+
+    const buyTipsterScreen = document.getElementById("buyTipsterScreen");
+    const buyUnitScreen = document.getElementById("buyUnitScreen");
+    buyTipsterScreen.style.display = "none";
+    buyUnitScreen.style.display = "none";
+    
+    if(!offscreenMenu.classList.contains("active")) {
+        const upgradeInfrastructureScreen = document.getElementById("upgradeInfrastructureScreen");
+        
+        const offscreenMenuHeader = document.getElementById("offscreenMenuHeader");
+
+        upgradeInfrastructureScreen.style.display = "block";
     }
 
     offscreenMenu.classList.toggle("active");

@@ -9,10 +9,14 @@
     
     <body class="background-container">
         <!-- Offscreen Menu -->
-        <div class="offscreen-menu offscreen-menu-screen offscreen-menu-messages" th:attr="onclick=|clickMessage('None', 'None', 'None', 'None')|">
-            <div id="messageTitle" class="border-box-3-header" style="padding-bottom: 0px; color: #263B3F;">Title</div>
-            <div id="messageDate" style="padding-bottom: 13px;">Date</div>
-            <div id="messageContent">Content</div>
+        <div class="offscreen-menu offscreen-menu-screen offscreen-menu-messages" th:attr="onclick=|clickMessage('None', 'None', 'None', 'None')|" style="background-color: #5C868B; padding-top: 20px; padding-left: 20px; padding-right: 20px;">
+            <div class="offscreen-menu-inset">
+                <div class="offscreen-menu-inset-header">
+                    <div id="messageTitle" class="border-box-3-header" style="padding-bottom: 0px; color: #263B3F;">Title</div>
+                    <div id="messageDate">Date</div>
+                </div>
+                <div class="offscreen-menu-inset-header" id="messageContent" style="margin-top: 13px; height: 80%;">Content</div>
+            </div>
         </div>
 
         <!-- Navbar -->
@@ -66,7 +70,10 @@
                 <span>Messages</span>
                 <form th:action="@{/deleteMessage}" method="get" style="width: 100%;">
                     <input type="hidden" th:value="All" name="messageIndex"/>
-                    <span><button type="submit" class="button" style="font-size: 12px; background-color: #721B1B; color: #EF8383;">Delete All</button></span>
+                    <span>
+                        <button th:if="${messages.size} == 0" type="submit" disabled class="button button-inactive" style="font-size: 12px;">Delete All</button>
+                        <button th:if="${messages.size} &gt; 0" type="submit" class="button button-red" style="font-size: 12px; color: #EF8383;">Delete All</button>
+                    </span>
                 </form>
             </div>
             <div th:each="message, iter : ${messages}" class="message-list-box" style="padding: 1px;">

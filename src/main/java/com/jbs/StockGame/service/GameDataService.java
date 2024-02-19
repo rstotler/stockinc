@@ -29,4 +29,9 @@ public class GameDataService {
         createUnitLength.put("Hacker", 3);
         createUnitLength.put("Analyst", 3);
     }
+
+    public Map<String, Float> infrastructurePrices = new HashMap<>();
+    {
+        infrastructurePrices.put("Firewall", 150.0f);
+    }
 }

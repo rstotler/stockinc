@@ -245,10 +245,26 @@ img { display: block; }
 .offscreen-menu-messages {
     width: 87%;
     height: 87%;
-    margin: 20px;
+    margin: 28px;
+    margin-top: 23px;
     border-style: solid;
     color: #000000;
     transition: none;
+}
+.offscreen-menu-inset {
+    background-color: #89BEC6;
+    border-color: #263B3F;
+    border-style: solid;
+    border-width: 7px;
+    padding: 10px;
+    height: 88%;
+}
+.offscreen-menu-inset-header {
+    border-color: #000000;
+    border-style: solid;
+    border-width: 2px;
+    padding: 5px;
+    background-color: #A4C9D0;
 }
 .offscreen-menu-header {
     margin-bottom: 10px;
