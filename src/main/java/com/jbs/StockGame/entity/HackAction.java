@@ -18,6 +18,6 @@ public class HackAction {
         this.hackerCount = hackerCount;
         this.startTime = startTime;
 
-        hackTimeLength = 5;
+        hackTimeLength = 4;
     }
 }

@@ -42,7 +42,7 @@
                                 <input type="number" size="4" value=0 min=0 oninput="validity.valid||(value='');" class="text-field-large" style="text-align: center; width: 50%;" id="hackerAmountInput" name="amountString">
                             </div>
                         </span>
-                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Hack</button>
+                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;" id="buttonStartHack">Hack</button>
                     </form>
                 </div>
             </div>
@@ -132,11 +132,11 @@
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
             <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Companies</a></span>
             <span class="nav-bar-item"><a th:href="@{/infrastructure}" style="color: #C6EBF2;">Infrastructure</a></span>
-            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == false" class="nav-bar-item">
+            <span th:with="userName=${userName}" th:if="${accountService.getUnreadMessageCount(userName)} == 0" class="nav-bar-item">
                 <a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a>
             </span>
-            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == true" class="nav-bar-item">
-                <a th:href="@{/messages}" style="color: #34737D;">Messages</a>
+            <span th:with="userName=${userName}" th:if="${accountService.getUnreadMessageCount(userName)} &gt; 0" class="nav-bar-item">
+                <a th:with="userName=${userName}" th:text="'Messages (' + ${accountService.getUnreadMessageCount(userName)} + ')'" th:href="@{/messages}" style="color: #34737D; white-space: nowrap;"></a>
             </span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
@@ -184,7 +184,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}', '${groupStatus}', '${requestedJoinGroupList}', '${groupSymbol}')|">
+                        <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}', '${groupStatus}', '${requestedJoinGroupList}', '${groupSymbol}', '${hackTarget}', '${availableHackerCount}')|">
                             <td class="table-column-0"><span th:text="${group.name}"></span></td>
                             <td class="table-column-1"><span th:text="${group.symbol}"></span></td>
                             <td style="padding-right: 5px;"><span th:with="groupSymbol=${group.symbol}" th:text="'$' + ${groupService.getTotalValueString(groupSymbol)}"></span></td>
@@ -205,6 +205,7 @@
         </div>
 
         <script type="text/javascript" src="js/offscreenMenuGroup.js"></script>
+        <script type="text/javascript" src="js/hackTargetCountdown.js"></script>
         <script type="text/javascript" src="ajax/groupSettings.js"></script>
     </body>
 </html>

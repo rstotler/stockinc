@@ -21,11 +21,11 @@
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
             <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Companies</a></span>
             <span class="nav-bar-item"><a th:href="@{/infrastructure}" style="color: #C6EBF2;">Infrastructure</a></span>
-            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == false" class="nav-bar-item">
+            <span th:with="userName=${userName}" th:if="${accountService.getUnreadMessageCount(userName)} == 0" class="nav-bar-item">
                 <a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a>
             </span>
-            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == true" class="nav-bar-item">
-                <a th:href="@{/messages}" style="color: #34737D;">Messages</a>
+            <span th:with="userName=${userName}" th:if="${accountService.getUnreadMessageCount(userName)} &gt; 0" class="nav-bar-item">
+                <a th:with="userName=${userName}" th:text="'Messages (' + ${accountService.getUnreadMessageCount(userName)} + ')'" th:href="@{/messages}" style="color: #34737D; white-space: nowrap;"></a>
             </span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
@@ -53,10 +53,22 @@
                 </span>
             </div>
         </span>
+        <span th:if="${hackTarget} != null" class="same-line nav-bar-hack-attack">
+            <div th:text="'Hacking: ' + ${hackTarget.targetGroupSymbol} + ' -'" style="padding-right: 3px;"></div>
+            <div th:text="${hackTarget.hackTimeLength}" id="hackTimeLength" style="display: none;"></div>
+            <div th:text="${hackTarget.startTime}" id="hackTime" style="display: none;"></div>
+            <div id="hackTimeField"></div>
+        </span>
 
         <!-- Messages Box -->
         <div class="border-box-3" style="border-width: 2px; background-color: #263B3F; border-color: #5C868B;">
-            <div class="border-box-3-header" style="padding-bottom: 0px;">Messages</div>
+            <div class="same-line border-box-3-header" style="padding-bottom: 0px; width: 100%; text-align: right;">
+                <span>Messages</span>
+                <form th:action="@{/deleteMessage}" method="get" style="width: 100%;">
+                    <input type="hidden" th:value="All" name="messageIndex"/>
+                    <span><button type="submit" class="button" style="font-size: 12px; background-color: #721B1B; color: #EF8383;">Delete All</button></span>
+                </form>
+            </div>
             <div th:each="message, iter : ${messages}" class="message-list-box" style="padding: 1px;">
                 <span class="same-line" style="align-items: center;">
                     <div th:if="${message.isRead} != true" class="same-line" th:attr="onclick=|clickMessage('${message.title}', '${message.date}', '${message.content}', '${iter.index}')|" id="ajaxClickMessage" th:data-message-index="${iter.index}" style="width: 100%;">
@@ -78,6 +90,7 @@
         </div>
 
         <script type="text/javascript" src="js/offscreenMenuMessages.js"></script>
+        <script type="text/javascript" src="js/hackTargetCountdown.js"></script>
         <script type="text/javascript" src="ajax/clickMessage.js"></script>
     </body>
 </html>

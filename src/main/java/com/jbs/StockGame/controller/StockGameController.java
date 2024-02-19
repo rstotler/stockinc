@@ -28,6 +28,14 @@ import com.jbs.StockGame.service.StockListingService;
 
 import lombok.AllArgsConstructor;
 
+/* To-Do List
+ * 1 - Create Firewall Infrastructure And Make It Upgradeable
+ * 2 - Stop Hack If Player Joins Group They Are Hacking
+ * 3 - Create Group Hacks
+ * 4 - Data Persistence Layer
+ * 5 - Show Newest Messages First
+*/
+
 @Controller
 @AllArgsConstructor
 public class StockGameController {
@@ -48,6 +56,7 @@ public class StockGameController {
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
         model.addAttribute("userCreditsString", account.getCreditsString());
+        model.addAttribute("hackTarget", accountService.getHackTarget(userDetails.getUsername()));
         model.addAttribute("stockListings", stockListingService.findAll());
         model.addAttribute("ownedStockString", account.getOwnedStock().toString());
         model.addAttribute("availableInfluencerCount", accountService.getAvailableInfluencerCount(userDetails.getUsername()));
@@ -177,6 +186,7 @@ public class StockGameController {
         model.addAttribute("memberList", memberList);
         model.addAttribute("requestedJoinGroupList", requestedJoinGroupList.toString());
         model.addAttribute("requestedUserList", requestedUserList);
+        model.addAttribute("hackTarget", accountService.findByUsername(userDetails.getUsername()).getHackTarget());
         model.addAttribute("availableHackerCount", accountService.getAvailableHackerCount(userDetails.getUsername()));
 
         return "game/groups";
@@ -331,6 +341,7 @@ public class StockGameController {
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCreditsString", account.getCreditsString());
+        model.addAttribute("hackTarget", accountService.getHackTarget(userDetails.getUsername()));
 
         model.addAttribute("servicePrices", gameDataService.servicePrices.toString());
         model.addAttribute("tipsterCooldown", tipsterCooldown);
@@ -388,6 +399,7 @@ public class StockGameController {
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCreditsString", account.getCreditsString());
+        model.addAttribute("hackTarget", accountService.getHackTarget(userDetails.getUsername()));
         model.addAttribute("messages", account.getMessages());
         model.addAttribute("messageService", messageService);
 
@@ -404,12 +416,17 @@ public class StockGameController {
     }
 
     @GetMapping("/deleteMessage")
-    public String deleteMessage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="messageIndex", required=false) int messageIndex) {
+    public String deleteMessage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="messageIndex", required=false) String messageIndex) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-        if(messageIndex <= account.getMessages().size() - 1) {
-            account.getMessages().remove(messageIndex);
+        for(int i = account.getMessages().size() - 1; i >= 0; i--) {
+            if(messageIndex.equals("All") || Integer.valueOf(messageIndex) == i) {
+                account.getMessages().remove(i);
+            }
+            if(!messageIndex.equals("All") && i == Integer.valueOf(messageIndex)) {
+                break;
+            }
         }
-
+        
         return "redirect:/messages";
     }
 

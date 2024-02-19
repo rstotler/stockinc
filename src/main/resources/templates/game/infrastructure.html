@@ -53,11 +53,11 @@
             <span class="nav-bar-item"><a th:href="@{/index}" style="color: #C6EBF2;">Listings</a></span>
             <span class="nav-bar-item"><a th:href="@{/groups}" style="color: #C6EBF2;">Companies</a></span>
             <span class="nav-bar-item"><a th:href="@{/infrastructure}" style="color: #C6EBF2;">Infrastructure</a></span>
-            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == false" class="nav-bar-item">
+            <span th:with="userName=${userName}" th:if="${accountService.getUnreadMessageCount(userName)} == 0" class="nav-bar-item">
                 <a th:href="@{/messages}" style="color: #C6EBF2;">Messages</a>
             </span>
-            <span th:with="userName=${userName}" th:if="${accountService.unreadMessagesCheck(userName)} == true" class="nav-bar-item">
-                <a th:href="@{/messages}" style="color: #34737D;">Messages</a>
+            <span th:with="userName=${userName}" th:if="${accountService.getUnreadMessageCount(userName)} &gt; 0" class="nav-bar-item">
+                <a th:with="userName=${userName}" th:text="'Messages (' + ${accountService.getUnreadMessageCount(userName)} + ')'" th:href="@{/messages}" style="color: #34737D; white-space: nowrap;"></a>
             </span>
             <span class="nav-bar-item nav-bar-item-end"><a th:href="@{/logout}" style="color: #C6EBF2;">Logout</a></span>
         </div>
@@ -84,6 +84,12 @@
                     </span>
                 </span>
             </div>
+        </span>
+        <span th:if="${hackTarget} != null" class="same-line nav-bar-hack-attack">
+            <div th:text="'Hacking: ' + ${hackTarget.targetGroupSymbol} + ' -'" style="padding-right: 3px;"></div>
+            <div th:text="${hackTarget.hackTimeLength}" id="hackTimeLength" style="display: none;"></div>
+            <div th:text="${hackTarget.startTime}" id="hackTime" style="display: none;"></div>
+            <div id="hackTimeField"></div>
         </span>
 
         <!-- Infrastructure Box -->
@@ -134,14 +140,6 @@
                         <div class="bottom-icon-right-corner"></div>
                     </div>
                 </a>
-                <a href="#">
-                    <div style="position: relative; margin-right: 10px;">
-                        <img th:src="@{/images/IconTemplate.png}"/>
-                        <div class="bottom-icon-left-corner"></div>
-                        <div class="bottom-icon-banner">???</div>
-                        <div class="bottom-icon-right-corner"></div>
-                    </div>
-                </a>
             </div>
         </div>
 
@@ -168,5 +166,6 @@
         </div>
 
         <script type="text/javascript" src="js/offscreenMenuInfrastructure.js"></script>
+        <script type="text/javascript" src="js/hackTargetCountdown.js"></script>
     </body>
 </html>

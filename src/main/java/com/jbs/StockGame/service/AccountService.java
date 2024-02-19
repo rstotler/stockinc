@@ -159,18 +159,17 @@ public class AccountService {
         account.getMessages().add(new Message(title, content, date));
     }
 
-    public boolean unreadMessagesCheck(String username) {
+    public int getUnreadMessageCount(String username) {
         Account account = findByUsername(username);
         
-        boolean unreadMessages = false;
+        int unreadMessageCount = 0;
         for(Message message : account.getMessages()) {
             if(!message.isRead()) {
-                unreadMessages = true;
-                break;
+                unreadMessageCount++;
             }
         }
 
-        return unreadMessages;
+        return unreadMessageCount;
     }
 
     public int getAvailableInfluencerCount(String username) {
