@@ -56,6 +56,11 @@ public class AccountService {
         account.setOwnedUnits(new HashMap<>());
         account.setUnitQueue(new ArrayList<>());
 
+        account.setInfrastructureLevels(new HashMap<>());
+        account.getInfrastructureLevels().put("Firewall", 1);
+
+        account.setInfrastructureQueue(null);
+
         account.setMessages(new ArrayList<>());
         
         accounts.add(account);
@@ -219,7 +224,12 @@ public class AccountService {
     }
 
     public int getInfrastructureLevel(String username, String infrastructureType) {
-        return 1;
+        Account account = findByUsername(username);
+        if(account.getInfrastructureLevels().containsKey(infrastructureType)) {
+            return account.getInfrastructureLevels().get(infrastructureType);
+        }
+
+        return 0;
     }
 
     public HackAction getHackTarget(String username) {

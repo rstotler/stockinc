@@ -49,14 +49,15 @@
                 <div id="upgradeInfrastructureScreen" style="display: none;">
                     <div class="offscreen-menu-subheader" id="infrastructureType">Infrastructure Type</div>
                     <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
-                        <div class="offscreen-menu-item">Level</div>
+                        <div class="offscreen-menu-item" id="infrastructureLevel">Level</div>
                         <div class="same-line offscreen-menu-item" style="justify-content: center;">
                             <div>$</div>
                             <div id="infrastructurePrice">Infrastructure Price</div>
                         </div>
                     </span>
                     <form th:action="@{/upgradeInfrastructure}" method="get">
-                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;">Upgrade</button>
+                        <input type="hidden" name="infrastructureType" id="infrastructureTypeField"/>
+                        <button type="submit" class="button" style="width: 100%; padding-top: 7px; padding-bottom: 7px;" id="upgradeInfrastructureButton">Upgrade</button>
                     </form>
                 </div>
             </div>
@@ -148,7 +149,7 @@
             <div class="border-box-3-header" style="padding-top: 20px;">Infrastructure</div>
             <div class="same-line" style="flex-flow: wrap;">
                 <a href="#" th:each="infrastructureType : ${infrastructureList}">
-                    <div th:attr="onclick=|clickInfrastructure('${infrastructureType}', '${infrastructurePrices}')|" style="position: relative; margin-right: 10px;">
+                    <div th:attr="onclick=|clickInfrastructure('${infrastructureType}', '${infrastructurePrices}', '${infrastructureLevels}' , '${infrastructureQueue}')|" style="position: relative; margin-right: 10px;">
                         <img th:if="${infrastructureType} == 'Firewall'" th:src="@{/images/IconFirewall.png}"/>
 
                         <div th:if="${infrastructureType} == 'Firewall'">
@@ -157,11 +158,11 @@
                             <div class="bottom-icon-right-corner" style="bottom: 60px; left: 60px;"></div>
                         </div>
 
-                        <!-- <div th:if="${tipsterCooldown} == ${unitType}">
-                            <div th:text="${tipsterCooldownTimeLength}" id="tipsterCooldownTimeLength" style="display: none;"></div>
-                            <div th:text="${tipsterCooldownTime}" id="tipsterCooldownTime" style="display: none;"></div>
-                            <div class="bottom-icon-banner" style="left: 0px; width: 65px; bottom: 30px; background-color: RGBA(38, 59, 63, 0.75);" id="tipsterCooldownTimeField"></div>
-                        </div> -->
+                        <div th:if="${infrastructureQueue} != null AND ${infrastructureQueue.unitType} == ${infrastructureType}">
+                            <div th:text="${infrastructureQueue.createUnitLength}" id="infrastructureTimeLength" style="display: none;"></div>
+                            <div th:text="${infrastructureQueue.startTime}" id="infrastructureTime" style="display: none;"></div>
+                            <div class="bottom-icon-banner" style="left: 0px; width: 65px; bottom: 30px; background-color: RGBA(38, 59, 63, 0.75);" id="infrastructureTimeField"></div>
+                        </div>
                         
                         <div class="bottom-icon-left-corner"></div>
                         <div th:text="${infrastructureType}" class="bottom-icon-banner"></div>

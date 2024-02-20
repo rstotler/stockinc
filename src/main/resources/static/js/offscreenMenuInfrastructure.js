@@ -7,6 +7,7 @@ var unitTypeInput = document.getElementById("unitTypeInput");
 
 var creatingUnitTime = document.getElementById("creatingUnitTime");
 var tipsterCooldownTime = document.getElementById("tipsterCooldownTime");
+var infrastructureTime = document.getElementById("infrastructureTime");
 var currentDateTime = new Date();
 var unitCreationDateTime;
 if(creatingUnitTime != null) {
@@ -15,6 +16,10 @@ if(creatingUnitTime != null) {
 var tipsterCooldownDateTime;
 if(tipsterCooldownTime != null) {
     tipsterCooldownDateTime = parseDateTimeString(tipsterCooldownTime.innerHTML);
+}
+var infrastructureDateTime;
+if(infrastructureTime != null) {
+    infrastructureDateTime = parseDateTimeString(infrastructureTime.innerHTML);
 }
 
 var creatingUnitTimeLength = document.getElementById("creatingUnitTimeLength");
@@ -35,6 +40,16 @@ if(tipsterCooldownTimeLength != null) {
 }
 if(tipsterCooldownTimeField != null) {
     tipsterCooldownTimeField.innerHTML = parseTimeRemaining(tipsterCooldownTimeRemaining);
+}
+
+var infrastructureTimeLength = document.getElementById("infrastructureTimeLength");
+var infrastructureTimeField = document.getElementById("infrastructureTimeField");
+var infrastructureTimeRemaining;
+if(infrastructureTimeLength != null) {
+    infrastructureTimeRemaining = parseInt(infrastructureTimeLength.innerHTML) - parseInt((currentDateTime.getTime() - infrastructureDateTime.getTime()) / 1000);
+}
+if(infrastructureTimeField != null) {
+    infrastructureTimeField.innerHTML = parseTimeRemaining(infrastructureTimeRemaining);
 }
 
 setInterval(updateCountdownTimers, 1000);
@@ -60,6 +75,15 @@ function updateCountdownTimers() {
             unitCreationTimeField.innerHTML = parseTimeRemaining(unitCreationTimeRemaining);
         } else if(unitCreationTimeRemaining == 0) {
             unitCreationTimeField.innerHTML = "Done";
+        }
+    }
+
+    if(infrastructureTimeRemaining != null) {
+        if(infrastructureTimeRemaining > 0) {
+            infrastructureTimeRemaining = infrastructureTimeRemaining - 1;
+            infrastructureTimeField.innerHTML = parseTimeRemaining(infrastructureTimeRemaining);
+        } else if(infrastructureTimeRemaining == 0) {
+            infrastructureTimeField.innerHTML = "Done";
         }
     }
 }
@@ -146,7 +170,7 @@ function clickInfrastructureUnit(unitType, servicePrices, unitPrices, unitCounts
     offscreenMenu.classList.toggle("active");
 }
 
-function clickInfrastructure(infrastructureType, infrastructurePrices) {
+function clickInfrastructure(infrastructureType, infrastructurePrices, infrastructureLevels, infrastructureQueue) {
     const offscreenMenu = document.querySelector(".offscreen-menu");
 
     const buyTipsterScreen = document.getElementById("buyTipsterScreen");
@@ -158,6 +182,28 @@ function clickInfrastructure(infrastructureType, infrastructurePrices) {
         const upgradeInfrastructureScreen = document.getElementById("upgradeInfrastructureScreen");
         
         const offscreenMenuHeader = document.getElementById("offscreenMenuHeader");
+        offscreenMenuHeader.innerHTML = "Upgrade Infrastructure";
+
+        const infrastructureTypeText = document.getElementById("infrastructureType");
+        infrastructureTypeText.innerHTML = infrastructureType;
+
+        const infrastructureLevelText = document.getElementById("infrastructureLevel");
+        infrastructureLevel = parseMap(infrastructureType, infrastructureLevels);
+        infrastructureLevelText.innerHTML = "Level " + infrastructureLevel + " -> " + (parseInt(infrastructureLevel) + 1);
+
+        const infrastructurePriceText = document.getElementById("infrastructurePrice");
+        infrastructurePriceText.innerHTML = formatNumber(parseMap(infrastructureType, infrastructurePrices));
+
+        const infrastructureTypeField = document.getElementById("infrastructureTypeField");
+        infrastructureTypeField.value = infrastructureType;
+
+        const upgradeInfrastructureButton = document.getElementById("upgradeInfrastructureButton");
+        if(infrastructureQueue != "null") {
+            if(!upgradeInfrastructureButton.classList.contains("button-inactive")) {
+                upgradeInfrastructureButton.classList.add("button-inactive");
+            }
+            upgradeInfrastructureButton.disabled = true;
+        }
 
         upgradeInfrastructureScreen.style.display = "block";
     }

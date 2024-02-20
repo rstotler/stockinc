@@ -34,4 +34,9 @@ public class GameDataService {
     {
         infrastructurePrices.put("Firewall", 150.0f);
     }
+
+    public Map<String, Integer> infrastructureUpgradeLength = new HashMap<>();
+    {
+        infrastructureUpgradeLength.put("Firewall", 3);
+    }
 }

@@ -30,9 +30,8 @@ import com.jbs.StockGame.service.StockListingService;
 import lombok.AllArgsConstructor;
 
 /* To-Do List:
- * 1 - Make Firewall Infrastructure Upgradeable
- * 2 - Create Group Hacks
- * 3 - Create Data Persistence Layer
+ * 1 - Create Group Hacks
+ * 2 - Create Data Persistence Layer
 */
 
 @Controller
@@ -363,6 +362,8 @@ public class StockGameController {
 
         model.addAttribute("infrastructureList", infrastructureList);
         model.addAttribute("infrastructurePrices", gameDataService.infrastructurePrices.toString());
+        model.addAttribute("infrastructureLevels", account.getInfrastructureLevels().toString());
+        model.addAttribute("infrastructureQueue", account.getInfrastructureQueue());
         
         return "game/infrastructure";
     }
@@ -394,6 +395,18 @@ public class StockGameController {
                 float totalCost = gameDataService.unitPrices.get(unitType) * unitCount;
                 account.setCredits(account.getCredits() - totalCost);
             }
+        }
+
+        return "redirect:/infrastructure";
+    }
+
+    @GetMapping("/upgradeInfrastructure")
+    public String upgradeInfrastructure(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="infrastructureType", required=false) String infrastructureType) {
+        Account account = accountService.findByUsername(userDetails.getUsername());
+
+        if(account.getInfrastructureQueue() == null && account.getCredits() >= gameDataService.infrastructurePrices.get(infrastructureType)) {
+            account.setInfrastructureQueue(new UnitQueue(infrastructureType, gameDataService.infrastructurePrices.get(infrastructureType), 1, gameDataService.infrastructureUpgradeLength.get(infrastructureType), LocalDateTime.now()));
+            account.setCredits(account.getCredits() - gameDataService.infrastructurePrices.get(infrastructureType));
         }
 
         return "redirect:/infrastructure";

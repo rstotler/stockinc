@@ -20,6 +20,8 @@ public class Account {
     private UnitQueue tipsterQueue;
     private Map<String, Integer> ownedUnits;
     private List<UnitQueue> unitQueue;
+    private Map<String, Integer> infrastructureLevels;
+    private UnitQueue infrastructureQueue;
 
     private HackAction hackTarget;
 
@@ -53,6 +55,16 @@ public class Account {
             LocalDateTime creationStartTime = unitQueue.get(0).getStartTime();
             long secondsPassed = ChronoUnit.SECONDS.between(creationStartTime, now);
             updateUnitQueueUtility(secondsPassed);
+        }
+
+        if(infrastructureQueue != null) {
+            LocalDateTime upgradeStartTime = infrastructureQueue.getStartTime();
+            long secondsPassed = ChronoUnit.SECONDS.between(upgradeStartTime, now);
+            if(secondsPassed >= infrastructureQueue.getCreateUnitLength()) {
+                int currentLevel = infrastructureLevels.get(infrastructureQueue.getUnitType());
+                infrastructureLevels.put(infrastructureQueue.getUnitType(), currentLevel + 1);
+                infrastructureQueue = null;
+            }
         }
     }
 
