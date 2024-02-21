@@ -114,7 +114,7 @@ function clickDenyFromGroup(clickIndex) {
     acceptToGroupButton[clickIndex].disabled = true;
 }
 
-function clickTab(tabTitle, availableHackerCount) {
+function clickTab(tabTitle, groupStatus, availableHackerCount) {
     const offscreenMenuTabs = document.getElementsByName("offscreenMenuTab");
     for(let i = 0; i < offscreenMenuTabs.length; i++) {
         offscreenMenuTabs[i].style.display = "none";
@@ -128,9 +128,28 @@ function clickTab(tabTitle, availableHackerCount) {
         const hackGroupTab = document.getElementById("hackGroupTab");
         hackGroupTab.style.display = "block";
 
+        if(groupStatus == "Founder") {
+            const groupHackersDiv = document.getElementById("groupHackersDiv");
+            groupHackersDiv.style.display = "flex";
+        } else {
+            const groupHackersDiv = document.getElementById("groupHackersDiv");
+            groupHackersDiv.style.display = "none";
+        }
+
         const availableHackerCountText = document.getElementById("availableHackerCount");
         availableHackerCountText.innerHTML = "Hackers Available: " + availableHackerCount;
 
         hackGroupForm.action = "/startHackGroup/" + selectedGroupSymbol;
+    }
+}
+
+function toggleGroupHack(availableHackerCount, availableGroupHackerCount) {
+    const toggleGroupHackCheckbox = document.getElementById("toggleGroupHackCheckbox");
+    const availableHackerCountText = document.getElementById("availableHackerCount");
+
+    if(toggleGroupHackCheckbox.checked == true) {
+        availableHackerCountText.innerHTML = "Hackers Available: " + availableGroupHackerCount;
+    } else {
+        availableHackerCountText.innerHTML = "Hackers Available: " + availableHackerCount;
     }
 }

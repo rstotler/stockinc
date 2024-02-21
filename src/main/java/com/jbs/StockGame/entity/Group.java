@@ -11,6 +11,7 @@ public class Group {
     private String founder;
     private List<String> memberList;
     private List<String> requestList;
+    private HackAction hackTarget;
 
     public Group(String name, String symbol, String founder) {
         this.name = name;
@@ -18,5 +19,6 @@ public class Group {
         this.founder = founder;
         memberList = new ArrayList<>();
         requestList = new ArrayList<>();
+        hackTarget = null;
     }
 }

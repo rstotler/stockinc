@@ -23,6 +23,7 @@ public class Account {
     private Map<String, Integer> infrastructureLevels;
     private UnitQueue infrastructureQueue;
 
+    private Group inGroup;
     private HackAction hackTarget;
 
     private List<Message> messages;

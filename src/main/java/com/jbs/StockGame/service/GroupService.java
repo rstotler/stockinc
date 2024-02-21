@@ -43,8 +43,30 @@ public class GroupService {
             .orElse(null);
     }
 
+    public Group findByMember(String username) {
+        Group group = null;
+        for(Group listGroup : findAll()) {
+            if(listGroup.getFounder().equals(username) || listGroup.getMemberList().contains(username)) {
+                group = listGroup;
+                break;
+            }
+        }
+
+        return group;
+    }
+
     public List<Group> findAll() {
         return groups;
+    }
+
+    public List<String> getTotalMemberList(String symbol) {
+        Group group = findBySymbol(symbol);
+
+        List<String> memberList = new ArrayList<>();
+        memberList.add(group.getFounder());
+        memberList.addAll(group.getMemberList());
+
+        return memberList;
     }
 
     public float getTotalValue(String symbol) {
@@ -71,6 +93,20 @@ public class GroupService {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
         float amount = getTotalValue(symbol);
         return decimalFormat.format(amount);
+    }
+
+    public int getAvailableHackerCount(String symbol) {
+        Group group = findBySymbol(symbol);
+
+        int availableCount = 0;
+        if(group != null) {
+            availableCount += accountService.getAvailableHackerCount(group.getFounder());
+            for(String username : group.getMemberList()) {
+                availableCount += accountService.getAvailableHackerCount(username);
+            }
+        }
+
+        return availableCount;
     }
 
     public int getAvailableAnalystCount(String symbol) {

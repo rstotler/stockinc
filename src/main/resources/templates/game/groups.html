@@ -11,8 +11,8 @@
         <!-- Offscreen Menu Group Listing -->
         <div class="same-line offscreen-menu" id="groupListingMenu">
             <div class="offscreen-menu-tabs">
-                <div class="offscreen-menu-tab" th:attr="onclick=|clickTab('tabInfo', '${availableHackerCount}')|">Co</div>
-                <div class="offscreen-menu-tab" th:attr="onclick=|clickTab('tabHack', '${availableHackerCount}')|">H</div>
+                <div class="offscreen-menu-tab" th:attr="onclick=|clickTab('tabInfo', '${groupStatus}', '${availableHackerCount}')|">Co</div>
+                <div class="offscreen-menu-tab" th:attr="onclick=|clickTab('tabHack', '${groupStatus}', '${availableHackerCount}')|">H</div>
             </div>
 
             <div class="offscreen-menu-screen" style="width: 100%;">
@@ -36,6 +36,12 @@
                 <div id="hackGroupTab" name="offscreenMenuTab" style="display: none; width: 100%;">
                     <div class="offscreen-menu-subheader">Hack Group</div>
                     <form th:action="0" method="get" id="hackGroupForm">
+                        <span class="same-line" id="groupHackersDiv" style="margin-top: 5px; margin-bottom: 5px; display: none;">
+                            <div class="offscreen-menu-item">
+                                Group Hack <input type="checkbox" name="groupHack" id="toggleGroupHackCheckbox" th:attr="onclick=|toggleGroupHack('${availableHackerCount}', '${availableGroupHackerCount}')|">
+                            </div>
+                            <div class="offscreen-menu-item"></div>
+                        </span>
                         <span class="same-line" style="margin-top: 5px; margin-bottom: 5px;">
                             <div class="offscreen-menu-item" id="availableHackerCount">Available #</div>
                             <div class="offscreen-menu-item">

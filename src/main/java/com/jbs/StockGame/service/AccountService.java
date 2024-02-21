@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jbs.StockGame.entity.Account;
+import com.jbs.StockGame.entity.Group;
 import com.jbs.StockGame.entity.HackAction;
 import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
@@ -41,6 +42,8 @@ public class AccountService {
                 StockListing s = stockListingService.findAll().get(sNum);
                 account.getOwnedStock().put(s.getSymbol(), new Random().nextInt(10) + 1);
             }
+
+            account.getOwnedUnits().put("Hacker", new Random().nextInt(5) + 1);
         }
     }
 
@@ -207,6 +210,10 @@ public class AccountService {
 
         if(account.getHackTarget() != null) {
             totalAvailableCount -= account.getHackTarget().getHackerCount();
+        }
+        
+        if(account.getInGroup() != null && account.getInGroup().getHackTarget() != null) {
+            totalAvailableCount = 0;
         }
 
         return totalAvailableCount;

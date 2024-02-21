@@ -186,6 +186,7 @@ public class StockGameController {
         model.addAttribute("requestedUserList", requestedUserList);
         model.addAttribute("hackTarget", accountService.findByUsername(userDetails.getUsername()).getHackTarget());
         model.addAttribute("availableHackerCount", accountService.getAvailableHackerCount(userDetails.getUsername()));
+        model.addAttribute("availableGroupHackerCount", groupService.getAvailableHackerCount(groupSymbol));
 
         return "game/groups";
     }
@@ -209,6 +210,7 @@ public class StockGameController {
         if(createGroupCheck) {
             account.setCredits(account.getCredits() - 100.0f);
             groupService.create(groupName, groupSymbol, userDetails.getUsername());
+            account.setInGroup(groupService.findBySymbol(groupSymbol));
 
             // Remove Any Open Group Requests //
             for(Group group : groupService.findAll()) {
@@ -224,7 +226,15 @@ public class StockGameController {
     @GetMapping("/disbandGroup")
     public String disbandGroup(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value="groupSymbol", required=false) String groupSymbol) {
         Group group = groupService.findBySymbol(groupSymbol);
-        if(group != null && group.getFounder().equals(userDetails.getUsername()))  {
+        if(group != null && group.getFounder().equals(userDetails.getUsername())) {
+            Account account = accountService.findByUsername(userDetails.getUsername());
+            account.setInGroup(null);
+
+            for(String memberUsername : group.getMemberList()) {
+                Account memberAccount = accountService.findByUsername(memberUsername);
+                memberAccount.setInGroup(null);
+            }
+
             List<Group> groups = groupService.findAll();
             for(int i = 0; i < groups.size(); i++) {
                 if(groups.get(i).getSymbol().equals(groupSymbol)) {
@@ -243,6 +253,9 @@ public class StockGameController {
         if(group.getFounder().equals(userDetails.getUsername())
         && group.getMemberList().contains(targetUser)) {
             group.getMemberList().remove(targetUser);
+
+            Account targetUserAccount = accountService.findByUsername(targetUser);
+            targetUserAccount.setInGroup(null);
         }
     }
 
@@ -262,8 +275,11 @@ public class StockGameController {
                 }
 
                 Account joinedAccount = accountService.findByUsername(targetUser);
-                if(joinedAccount.getHackTarget() != null && joinedAccount.getHackTarget().getTargetGroupSymbol().equals(groupSymbol)) {
-                    joinedAccount.setHackTarget(null);
+                if(joinedAccount.getHackTarget() != null) {
+                    if(joinedAccount.getHackTarget().getTargetGroupSymbol().equals(groupSymbol)) {
+                        joinedAccount.setHackTarget(null);
+                    }
+                    joinedAccount.setInGroup(group);
                 }
             }
             else if(targetAction.equals("Deny")) {
@@ -294,23 +310,45 @@ public class StockGameController {
 
     @SuppressWarnings("deprecation")
     @GetMapping("/startHackGroup/{group_symbol}")
-    public String startHackGroup(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("group_symbol") String groupSymbol, @RequestParam(value="amountString", required=false) String amountString) {
+    public String startHackGroup(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("group_symbol") String groupSymbol, @RequestParam(value="amountString", required=false) String amountString, @RequestParam(value="groupHack", required=false) String groupHackString) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-
+        Group hackerGroup = groupService.findByMember(userDetails.getUsername());
+        
+        boolean groupHack = false;
         int hackerAmount = Integer.valueOf(amountString);
-        if(hackerAmount > accountService.getAvailableHackerCount(userDetails.getUsername())) {
-            hackerAmount = accountService.getAvailableHackerCount(userDetails.getUsername());
+        int maxHackerAmount = accountService.getAvailableHackerCount(userDetails.getUsername());
+        if(groupHackString != null && groupHackString.equals("on") && hackerGroup != null && hackerGroup.getFounder().equals(userDetails.getUsername())) {
+            maxHackerAmount = groupService.getAvailableHackerCount(groupSymbol);
+            groupHack = true;
+        }
+
+        if(hackerAmount > maxHackerAmount) {
+            hackerAmount = maxHackerAmount;
         }
 
         Group targetGroup = groupService.findBySymbol(groupSymbol);
         if(!targetGroup.getFounder().equals(userDetails.getUsername()) && !targetGroup.getMemberList().contains(userDetails.getUsername())
         && hackerAmount > 0 && account.getHackTarget() == null) {
-            HackAction hackAction = new HackAction(userDetails.getUsername(), groupSymbol, hackerAmount, LocalDateTime.now());
-            account.setHackTarget(hackAction);
             
-            Date targetTime = new Date();
-            targetTime.setSeconds(targetTime.getSeconds() + hackAction.getHackTimeLength());
-            taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, hackAction), targetTime);
+            // User Hack Group //
+            if(groupHack == false) {
+                HackAction hackAction = new HackAction(userDetails.getUsername(), "None", groupSymbol, hackerAmount, LocalDateTime.now());
+                account.setHackTarget(hackAction);
+            
+                Date targetTime = new Date();
+                targetTime.setSeconds(targetTime.getSeconds() + hackAction.getHackTimeLength());
+                taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, hackAction), targetTime);
+            }
+
+            // Group Hack Group //
+            else {
+                HackAction groupHackAction = new HackAction("None", hackerGroup.getSymbol(), groupSymbol, hackerAmount, LocalDateTime.now());
+                hackerGroup.setHackTarget(groupHackAction);
+            
+                Date targetTime = new Date();
+                targetTime.setSeconds(targetTime.getSeconds() + groupHackAction.getHackTimeLength());
+                taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, groupHackAction), targetTime);
+            }
         }
 
         return "redirect:/groups";
