@@ -3,7 +3,7 @@ var playerGroupSymbol = "None";
 
 var hackGroupForm = document.getElementById("hackGroupForm");
 
-function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupList, playerGroup, hackTarget, availableHackerCount, availableGroupHackerCount) {
+function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupList, playerGroup, hackTarget, groupHackTarget, availableHackerCount, availableGroupHackerCount) {
     const offscreenMenuGroupListing = document.getElementById("groupListingMenu");
     const offscreenMenuCreateGroup = document.getElementById("createGroupMenu");
 
@@ -28,16 +28,19 @@ function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupLi
         const hackerAmountInput = document.getElementById("hackerAmountInput");
         hackerAmountInput.value = "0";
 
-        //const toggleGroupHackCheckbox = document.getElementById("toggleGroupHackCheckbox");
-        // toggleGroupHackCheckbox.checked == true
-        //if(hackTarget != "null" || availableHackerCount == 0) {
-        // if() {
-        //     const buttonStartHack = document.getElementById("buttonStartHack");
-        //     if(!buttonStartHack.classList.contains("button-inactive")) {
-        //         buttonStartHack.classList.add("button-inactive");
-        //     }
-        //     buttonStartHack.disabled = true;
-        // }
+        const toggleGroupHackCheckbox = document.getElementById("toggleGroupHackCheckbox");
+        if((groupStatus != "Founder" && (availableHackerCount == 0 || hackTarget != "null"))
+        || (groupStatus == "Founder" && ((hackTarget != "null" && groupHackTarget != "null")
+        || (toggleGroupHackCheckbox.checked == true && groupHackTarget != "null")
+        || (toggleGroupHackCheckbox.checked == false && hackTarget != "null")
+        || (toggleGroupHackCheckbox.checked == true && availableGroupHackerCount == 0)
+        || (toggleGroupHackCheckbox.checked == false && availableHackerCount == 0)))) {
+            const buttonStartHack = document.getElementById("buttonStartHack");
+            if(!buttonStartHack.classList.contains("button-inactive")) {
+                buttonStartHack.classList.add("button-inactive");
+            }
+            buttonStartHack.disabled = true;
+        }
 
         if(groupStatus == "None") {
             const groupJoinSymbolInput = document.getElementById("groupJoinSymbolInput");
@@ -146,7 +149,7 @@ function clickTab(tabTitle, groupStatus, availableHackerCount) {
     }
 }
 
-function toggleGroupHack(availableHackerCount, availableGroupHackerCount) {
+function toggleGroupHack(groupStatus, hackTarget, groupHackTarget, availableHackerCount, availableGroupHackerCount) {
     const toggleGroupHackCheckbox = document.getElementById("toggleGroupHackCheckbox");
     const availableHackerCountText = document.getElementById("availableHackerCount");
 
@@ -154,5 +157,23 @@ function toggleGroupHack(availableHackerCount, availableGroupHackerCount) {
         availableHackerCountText.innerHTML = "Hackers Available: " + availableGroupHackerCount;
     } else {
         availableHackerCountText.innerHTML = "Hackers Available: " + availableHackerCount;
+    }
+
+    const buttonStartHack = document.getElementById("buttonStartHack");
+    if((groupStatus != "Founder" && (availableHackerCount == 0 || hackTarget != "null"))
+    || (groupStatus == "Founder" && ((hackTarget != "null" && groupHackTarget != "null")
+    || (toggleGroupHackCheckbox.checked == true && groupHackTarget != "null")
+    || (toggleGroupHackCheckbox.checked == false && hackTarget != "null")
+    || (toggleGroupHackCheckbox.checked == true && availableGroupHackerCount == 0)
+    || (toggleGroupHackCheckbox.checked == false && availableHackerCount == 0)))) {
+        if(!buttonStartHack.classList.contains("button-inactive")) {
+            buttonStartHack.classList.add("button-inactive");
+        }
+        buttonStartHack.disabled = true;
+    } else {
+        if(buttonStartHack.classList.contains("button-inactive")) {
+            buttonStartHack.classList.remove("button-inactive");
+        }
+        buttonStartHack.disabled = false;
     }
 }

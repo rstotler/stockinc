@@ -57,11 +57,20 @@
                 </span>
             </div>
         </span>
-        <span th:if="${hackTarget} != null" class="same-line nav-bar-hack-attack">
-            <div th:text="'Hacking: ' + ${hackTarget.targetGroupSymbol} + ' -'" style="padding-right: 3px;"></div>
-            <div th:text="${hackTarget.hackTimeLength}" id="hackTimeLength" style="display: none;"></div>
-            <div th:text="${hackTarget.startTime}" id="hackTime" style="display: none;"></div>
-            <div id="hackTimeField"></div>
+        <span th:if="${hackTarget} != null OR ${groupHackTarget} != null" class="same-line nav-bar-hack-attack">
+            <span th:if="${hackTarget} != null" class="same-line">
+                <div th:text="'Hacking: ' + ${hackTarget.targetGroupSymbol} + ' -'" style="padding-right: 3px; white-space: nowrap;"></div>
+                <div th:text="${hackTarget.hackTimeLength}" id="hackTimeLength" style="display: none;"></div>
+                <div th:text="${hackTarget.startTime}" id="hackTime" style="display: none;"></div>
+                <div id="hackTimeField" style="white-space: nowrap;"></div>
+            </span>
+
+            <span th:if="${groupHackTarget} != null" class="same-line" style="width: 100%; justify-content: end;">
+                <div th:text="'Hacking: ' + ${groupHackTarget.targetGroupSymbol} + ' -'" style="padding-right: 3px;"></div>
+                <div th:text="${groupHackTarget.hackTimeLength}" id="groupHackTimeLength" style="display: none;"></div>
+                <div th:text="${groupHackTarget.startTime}" id="groupHackTime" style="display: none;"></div>
+                <div id="groupHackTimeField"></div>
+            </span>
         </span>
 
         <!-- Messages Box -->

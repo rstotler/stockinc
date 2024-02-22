@@ -14,6 +14,21 @@ if(hackTimeField != null) {
     hackTimeField.innerHTML = "[Time Left: " + parseTimeRemaining(hackTimeRemaining) + "]";
 }
 
+groupHackTime = document.getElementById("groupHackTime");
+var groupHackDateTime;
+if(groupHackTime != null) {
+    groupHackDateTime = parseCountdownDateTimeString(groupHackTime.innerHTML);
+}
+var groupHackTimeLength = document.getElementById("groupHackTimeLength");
+var groupHackTimeField = document.getElementById("groupHackTimeField");
+var groupHackTimeRemaining;
+if(groupHackTimeLength != null) {
+    groupHackTimeRemaining = parseInt(groupHackTimeLength.innerHTML) - parseInt((currentDateTime.getTime() - groupHackDateTime.getTime()) / 1000);
+}
+if(groupHackTimeField != null) {
+    groupHackTimeField.innerHTML = "[Time Left: " + parseTimeRemaining(groupHackTimeRemaining) + "]";
+}
+
 setInterval(updateCountdownTimers, 1000);
 
 function updateCountdownTimers() {
@@ -23,6 +38,15 @@ function updateCountdownTimers() {
             hackTimeField.innerHTML = "[Time Left: " + parseTimeRemaining(hackTimeRemaining) + "]";
         } else if(hackTimeRemaining == 0) {
             hackTimeField.innerHTML = "[Hack Complete!]";
+        }
+    }
+
+    if(groupHackTimeRemaining != null) {
+        if(groupHackTimeRemaining > 0) {
+            groupHackTimeRemaining = groupHackTimeRemaining - 1;
+            groupHackTimeField.innerHTML = "[Time Left: " + parseTimeRemaining(groupHackTimeRemaining) + "]";
+        } else if(groupHackTimeRemaining == 0) {
+            groupHackTimeField.innerHTML = "[Hack Complete!]";
         }
     }
 }

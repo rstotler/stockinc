@@ -30,7 +30,6 @@ import com.jbs.StockGame.service.StockListingService;
 import lombok.AllArgsConstructor;
 
 /* To-Do List:
- * 1 - Create Group Hacks Timer
  * what if you disband a group while being hacked
  * clear groupHackers on disband group
  * 2 - Create Data Persistence Layer
@@ -51,12 +50,28 @@ public class StockGameController {
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
+
+        HackAction groupHackTarget = null;
+        for(Group group : groupService.findAll()) {
+            if(group.getFounder().equals(userDetails.getUsername())) {
+                if(group.getHackTarget() != null) {
+                    groupHackTarget = group.getHackTarget();
+                    break;
+                }
+            } else if(group.getMemberList().contains(userDetails.getUsername())) {
+                if(group.getHackTarget() != null) {
+                    groupHackTarget = group.getHackTarget();
+                    break;
+                }
+            }
+        }
         
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCredits", account.getCredits());
         model.addAttribute("userCreditsString", account.getCreditsString());
         model.addAttribute("hackTarget", accountService.getHackTarget(userDetails.getUsername()));
+        model.addAttribute("groupHackTarget", groupHackTarget);
         model.addAttribute("stockListings", stockListingService.findAll());
         model.addAttribute("ownedStockString", account.getOwnedStock().toString());
         model.addAttribute("availableInfluencerCount", accountService.getAvailableInfluencerCount(userDetails.getUsername()));
@@ -368,6 +383,21 @@ public class StockGameController {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
 
+        HackAction groupHackTarget = null;
+        for(Group group : groupService.findAll()) {
+            if(group.getFounder().equals(userDetails.getUsername())) {
+                if(group.getHackTarget() != null) {
+                    groupHackTarget = group.getHackTarget();
+                    break;
+                }
+            } else if(group.getMemberList().contains(userDetails.getUsername())) {
+                if(group.getHackTarget() != null) {
+                    groupHackTarget = group.getHackTarget();
+                    break;
+                }
+            }
+        }
+
         List<String> unitList = new ArrayList<>(Arrays.asList("Tipster", "Influencer", "Hacker", "Analyst"));
         List<String> infrastructureList = new ArrayList<>(Arrays.asList("Firewall"));
 
@@ -388,11 +418,12 @@ public class StockGameController {
             creatingUnitTime = account.getUnitQueue().get(0).getStartTime();
             creatingUnitTimeLength = account.getUnitQueue().get(0).getCreateUnitLength();
         }
-        
+
         model.addAttribute("accountService", accountService);
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCreditsString", account.getCreditsString());
         model.addAttribute("hackTarget", accountService.getHackTarget(userDetails.getUsername()));
+        model.addAttribute("groupHackTarget", groupHackTarget);
 
         model.addAttribute("servicePrices", gameDataService.servicePrices.toString());
         model.addAttribute("tipsterCooldown", tipsterCooldown);
@@ -464,6 +495,21 @@ public class StockGameController {
         Account account = accountService.findByUsername(userDetails.getUsername());
         account.updateQueues();
 
+        HackAction groupHackTarget = null;
+        for(Group group : groupService.findAll()) {
+            if(group.getFounder().equals(userDetails.getUsername())) {
+                if(group.getHackTarget() != null) {
+                    groupHackTarget = group.getHackTarget();
+                    break;
+                }
+            } else if(group.getMemberList().contains(userDetails.getUsername())) {
+                if(group.getHackTarget() != null) {
+                    groupHackTarget = group.getHackTarget();
+                    break;
+                }
+            }
+        }
+
         List<Message> messages = new ArrayList<>(account.getMessages());
         Collections.reverse(messages);
 
@@ -471,6 +517,7 @@ public class StockGameController {
         model.addAttribute("userName", userDetails.getUsername());
         model.addAttribute("userCreditsString", account.getCreditsString());
         model.addAttribute("hackTarget", accountService.getHackTarget(userDetails.getUsername()));
+        model.addAttribute("groupHackTarget", groupHackTarget);
         model.addAttribute("messages", messages);
         model.addAttribute("messageService", messageService);
 

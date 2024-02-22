@@ -38,7 +38,7 @@
                     <form th:action="0" method="get" id="hackGroupForm">
                         <span class="same-line" id="groupHackersDiv" style="margin-top: 5px; margin-bottom: 5px; display: none;">
                             <div class="offscreen-menu-item">
-                                Group Hack <input type="checkbox" name="groupHack" id="toggleGroupHackCheckbox" th:attr="onclick=|toggleGroupHack('${availableHackerCount}', '${availableGroupHackerCount}')|">
+                                Group Hack <input type="checkbox" name="groupHack" id="toggleGroupHackCheckbox" th:attr="onclick=|toggleGroupHack('${groupStatus}', '${hackTarget}', '${groupHackTarget}', '${availableHackerCount}', '${availableGroupHackerCount}')|">
                             </div>
                             <div class="offscreen-menu-item"></div>
                         </span>
@@ -178,7 +178,7 @@
                 <div id="hackTimeField" style="white-space: nowrap;"></div>
             </span>
 
-            <span th:if="${groupHackTarget} != null" style="width: 100%; text-align: end;">
+            <span th:if="${groupHackTarget} != null" class="same-line" style="width: 100%; justify-content: end;">
                 <div th:text="'Hacking: ' + ${groupHackTarget.targetGroupSymbol} + ' -'" style="padding-right: 3px;"></div>
                 <div th:text="${groupHackTarget.hackTimeLength}" id="groupHackTimeLength" style="display: none;"></div>
                 <div th:text="${groupHackTarget.startTime}" id="groupHackTime" style="display: none;"></div>
@@ -199,7 +199,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}', '${groupStatus}', '${requestedJoinGroupList}', '${groupSymbol}', '${hackTarget}', '${availableHackerCount}', '${availableGroupHackerCount}')|">
+                        <tr th:each="group : ${groups}" class="table-row" th:attr="onclick=|clickGroupListing('${group.name}', '${group.symbol}', '${groupStatus}', '${requestedJoinGroupList}', '${groupSymbol}', '${hackTarget}', '${groupHackTarget}', '${availableHackerCount}', '${availableGroupHackerCount}')|">
                             <td class="table-column-0"><span th:text="${group.name}"></span></td>
                             <td class="table-column-1"><span th:text="${group.symbol}"></span></td>
                             <td style="padding-right: 5px;"><span th:with="groupSymbol=${group.symbol}" th:text="'$' + ${groupService.getTotalValueString(groupSymbol)}"></span></td>
