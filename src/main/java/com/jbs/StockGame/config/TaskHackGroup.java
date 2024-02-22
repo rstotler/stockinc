@@ -157,12 +157,18 @@ public class TaskHackGroup implements Runnable {
             }
         }
 
+        // Reset Hack Target & Group Hackers //
         if(!hackAction.getHackerUsername().equals("None")) {
             account = accountService.findByUsername(hackAction.getHackerUsername());
             account.setHackTarget(null);
         } else {
             Group group = groupService.findBySymbol(hackAction.getHackerGroupSymbol());
             group.setHackTarget(null);
+            
+            accountService.findByUsername(group.getFounder()).setGroupHackers(0);
+            for(String memberUsername : group.getMemberList()) {
+                accountService.findByUsername(memberUsername).setGroupHackers(0);
+            }
         }
     }
 }

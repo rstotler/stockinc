@@ -25,6 +25,7 @@ public class Account {
 
     private Group inGroup;
     private HackAction hackTarget;
+    private int groupHackers;
 
     private List<Message> messages;
 

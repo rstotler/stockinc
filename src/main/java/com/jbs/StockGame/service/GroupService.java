@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.springframework.stereotype.Service;
 
+import com.jbs.StockGame.entity.Account;
 import com.jbs.StockGame.entity.Group;
 
 import jakarta.annotation.PostConstruct;
@@ -23,6 +24,9 @@ public class GroupService {
         noKidHero.getMemberList().add(accountService.findAll().get(3).getUsername());
         noKidHero.getMemberList().add(accountService.findAll().get(8).getUsername());
         noKidHero.getMemberList().add(accountService.findAll().get(9).getUsername());
+        for(String username : noKidHero.getMemberList()) {
+            accountService.findByUsername(username).setInGroup(noKidHero);
+        }
         groups.add(noKidHero);
 
         Group theGirls = new Group("Girl Power", "GIRL", accountService.findAll().get(4).getUsername());
@@ -30,6 +34,9 @@ public class GroupService {
         theGirls.getMemberList().add(accountService.findAll().get(6).getUsername());
         theGirls.getMemberList().add(accountService.findAll().get(7).getUsername());
         theGirls.getMemberList().add(accountService.findAll().get(10).getUsername());
+        for(String username : theGirls.getMemberList()) {
+            accountService.findByUsername(username).setInGroup(theGirls);
+        }
         groups.add(theGirls);
     }
 
@@ -93,6 +100,34 @@ public class GroupService {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
         float amount = getTotalValue(symbol);
         return decimalFormat.format(amount);
+    }
+
+    public void setGroupHackers(String symbol, int totalAmount) {
+        Group group = findBySymbol(symbol);
+
+        // Founder //
+        int amount = accountService.getAvailableHackerCount(group.getFounder());
+        if(amount > totalAmount) {
+            amount = totalAmount;
+        }
+        Account account = accountService.findByUsername(group.getFounder());
+        account.setGroupHackers(amount);
+        totalAmount -= amount;
+
+        // Group Members //
+        for(String username : group.getMemberList()) {
+            amount = accountService.getAvailableHackerCount(username);
+            if(amount > totalAmount) {
+                amount = totalAmount;
+            }
+            account = accountService.findByUsername(username);
+            account.setGroupHackers(amount);
+            totalAmount -= amount;
+
+            if(totalAmount == 0) {
+                break;
+            }
+        }
     }
 
     public int getAvailableHackerCount(String symbol) {

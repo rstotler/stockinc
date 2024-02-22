@@ -64,6 +64,10 @@ public class AccountService {
 
         account.setInfrastructureQueue(null);
 
+        account.setInGroup(null);
+        account.setHackTarget(null);
+        account.setGroupHackers(0);
+
         account.setMessages(new ArrayList<>());
         
         accounts.add(account);
@@ -212,8 +216,8 @@ public class AccountService {
             totalAvailableCount -= account.getHackTarget().getHackerCount();
         }
         
-        if(account.getInGroup() != null && account.getInGroup().getHackTarget() != null) {
-            totalAvailableCount = 0;
+        if(account.getGroupHackers() > 0) {
+            totalAvailableCount -= account.getGroupHackers();
         }
 
         return totalAvailableCount;

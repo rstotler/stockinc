@@ -3,7 +3,7 @@ var playerGroupSymbol = "None";
 
 var hackGroupForm = document.getElementById("hackGroupForm");
 
-function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupList, playerGroup, hackTarget, availableHackerCount) {
+function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupList, playerGroup, hackTarget, availableHackerCount, availableGroupHackerCount) {
     const offscreenMenuGroupListing = document.getElementById("groupListingMenu");
     const offscreenMenuCreateGroup = document.getElementById("createGroupMenu");
 
@@ -28,13 +28,16 @@ function clickGroupListing(groupName, groupSymbol, groupStatus, requestedGroupLi
         const hackerAmountInput = document.getElementById("hackerAmountInput");
         hackerAmountInput.value = "0";
 
-        if(hackTarget != "null" || availableHackerCount == 0) {
-            const buttonStartHack = document.getElementById("buttonStartHack");
-            if(!buttonStartHack.classList.contains("button-inactive")) {
-                buttonStartHack.classList.add("button-inactive");
-            }
-            buttonStartHack.disabled = true;
-        }
+        //const toggleGroupHackCheckbox = document.getElementById("toggleGroupHackCheckbox");
+        // toggleGroupHackCheckbox.checked == true
+        //if(hackTarget != "null" || availableHackerCount == 0) {
+        // if() {
+        //     const buttonStartHack = document.getElementById("buttonStartHack");
+        //     if(!buttonStartHack.classList.contains("button-inactive")) {
+        //         buttonStartHack.classList.add("button-inactive");
+        //     }
+        //     buttonStartHack.disabled = true;
+        // }
 
         if(groupStatus == "None") {
             const groupJoinSymbolInput = document.getElementById("groupJoinSymbolInput");

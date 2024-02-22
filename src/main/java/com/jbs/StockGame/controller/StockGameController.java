@@ -30,7 +30,9 @@ import com.jbs.StockGame.service.StockListingService;
 import lombok.AllArgsConstructor;
 
 /* To-Do List:
- * 1 - Create Group Hacks
+ * 1 - Create Group Hacks Timer
+ * what if you disband a group while being hacked
+ * clear groupHackers on disband group
  * 2 - Create Data Persistence Layer
 */
 
@@ -154,6 +156,7 @@ public class StockGameController {
         String groupName = "None";
         String groupSymbol = "None";
         String groupStatus = "None";
+        HackAction groupHackTarget = null;
         List<String> memberList = new ArrayList<>();
         ArrayList<String> requestedJoinGroupList = new ArrayList<>();
         List<String> requestedUserList = new ArrayList<>();
@@ -165,8 +168,14 @@ public class StockGameController {
                 memberList.add(userDetails.getUsername());
                 memberList.addAll(group.getMemberList());
                 requestedUserList = group.getRequestList();
+                if(group.getHackTarget() != null) {
+                    groupHackTarget = group.getHackTarget();
+                }
             } else if(group.getMemberList().contains(userDetails.getUsername())) {
                 groupStatus = "Member";
+                if(group.getHackTarget() != null) {
+                    groupHackTarget = group.getHackTarget();
+                }
             } else if(group.getRequestList().contains(userDetails.getUsername())) {
                 requestedJoinGroupList.add(group.getSymbol());
             }
@@ -185,6 +194,7 @@ public class StockGameController {
         model.addAttribute("requestedJoinGroupList", requestedJoinGroupList.toString());
         model.addAttribute("requestedUserList", requestedUserList);
         model.addAttribute("hackTarget", accountService.findByUsername(userDetails.getUsername()).getHackTarget());
+        model.addAttribute("groupHackTarget", groupHackTarget);
         model.addAttribute("availableHackerCount", accountService.getAvailableHackerCount(userDetails.getUsername()));
         model.addAttribute("availableGroupHackerCount", groupService.getAvailableHackerCount(groupSymbol));
 
@@ -318,7 +328,7 @@ public class StockGameController {
         int hackerAmount = Integer.valueOf(amountString);
         int maxHackerAmount = accountService.getAvailableHackerCount(userDetails.getUsername());
         if(groupHackString != null && groupHackString.equals("on") && hackerGroup != null && hackerGroup.getFounder().equals(userDetails.getUsername())) {
-            maxHackerAmount = groupService.getAvailableHackerCount(groupSymbol);
+            maxHackerAmount = groupService.getAvailableHackerCount(hackerGroup.getSymbol());
             groupHack = true;
         }
 
@@ -327,14 +337,13 @@ public class StockGameController {
         }
 
         Group targetGroup = groupService.findBySymbol(groupSymbol);
-        if(!targetGroup.getFounder().equals(userDetails.getUsername()) && !targetGroup.getMemberList().contains(userDetails.getUsername())
-        && hackerAmount > 0 && account.getHackTarget() == null) {
+        if(!targetGroup.getFounder().equals(userDetails.getUsername()) && !targetGroup.getMemberList().contains(userDetails.getUsername()) && hackerAmount > 0
+        && ((groupHack == false && account.getHackTarget() == null) || (groupHack == true && hackerGroup.getHackTarget() == null))) {
             
             // User Hack Group //
             if(groupHack == false) {
                 HackAction hackAction = new HackAction(userDetails.getUsername(), "None", groupSymbol, hackerAmount, LocalDateTime.now());
                 account.setHackTarget(hackAction);
-            
                 Date targetTime = new Date();
                 targetTime.setSeconds(targetTime.getSeconds() + hackAction.getHackTimeLength());
                 taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, hackAction), targetTime);
@@ -344,10 +353,10 @@ public class StockGameController {
             else {
                 HackAction groupHackAction = new HackAction("None", hackerGroup.getSymbol(), groupSymbol, hackerAmount, LocalDateTime.now());
                 hackerGroup.setHackTarget(groupHackAction);
-            
                 Date targetTime = new Date();
                 targetTime.setSeconds(targetTime.getSeconds() + groupHackAction.getHackTimeLength());
                 taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, groupHackAction), targetTime);
+                groupService.setGroupHackers(hackerGroup.getSymbol(), hackerAmount);
             }
         }
 

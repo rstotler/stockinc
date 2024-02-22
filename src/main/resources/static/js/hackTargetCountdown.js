@@ -22,7 +22,7 @@ function updateCountdownTimers() {
             hackTimeRemaining = hackTimeRemaining - 1;
             hackTimeField.innerHTML = "[Time Left: " + parseTimeRemaining(hackTimeRemaining) + "]";
         } else if(hackTimeRemaining == 0) {
-            hackTimeField.innerHTML = "[Hack Complete]";
+            hackTimeField.innerHTML = "[Hack Complete!]";
         }
     }
 }
