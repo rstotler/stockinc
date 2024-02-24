@@ -30,9 +30,7 @@ import com.jbs.StockGame.service.StockListingService;
 import lombok.AllArgsConstructor;
 
 /* To-Do List:
- * what if you disband a group while being hacked
- * clear groupHackers on disband group
- * 2 - Create Data Persistence Layer
+ * 1 - Create Data Persistence Layer
 */
 
 @Controller
@@ -258,13 +256,30 @@ public class StockGameController {
             for(String memberUsername : group.getMemberList()) {
                 Account memberAccount = accountService.findByUsername(memberUsername);
                 memberAccount.setInGroup(null);
+                memberAccount.setGroupHackers(0);
             }
 
+            int targetGroupIndex = -1;
             List<Group> groups = groupService.findAll();
             for(int i = 0; i < groups.size(); i++) {
                 if(groups.get(i).getSymbol().equals(groupSymbol)) {
-                    groups.remove(i);
-                    break;
+                    targetGroupIndex = i;
+                }
+
+                if(groups.get(i).getHackTarget() != null && groups.get(i).getHackTarget().getTargetGroupSymbol().equals(groupSymbol)) {
+                    groups.get(i).setHackTarget(null);
+                    for(String groupMember : group.getMemberList()) {
+                        accountService.findByUsername(groupMember).setGroupHackers(0);
+                    }
+                }
+            }
+            if(targetGroupIndex != -1) {
+                groups.remove(targetGroupIndex);
+            }
+
+            for(Account otherAccount : accountService.findAll()) {
+                if(otherAccount.getHackTarget() != null && otherAccount.getHackTarget().getTargetGroupSymbol().equals(groupSymbol)) {
+                    otherAccount.setHackTarget(null);
                 }
             }
         }
