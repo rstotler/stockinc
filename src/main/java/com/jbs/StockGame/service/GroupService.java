@@ -19,25 +19,25 @@ public class GroupService {
 
     @PostConstruct
     public void postConstruct() {
-        Group noKidHero = new Group("No Kid Hero", "NKH", accountService.findAll().get(1).getUsername());
-        noKidHero.getMemberList().add(accountService.findAll().get(2).getUsername());
-        noKidHero.getMemberList().add(accountService.findAll().get(3).getUsername());
-        noKidHero.getMemberList().add(accountService.findAll().get(8).getUsername());
-        noKidHero.getMemberList().add(accountService.findAll().get(9).getUsername());
-        for(String username : noKidHero.getMemberList()) {
-            accountService.findByUsername(username).setInGroup(noKidHero);
-        }
-        groups.add(noKidHero);
+        // Group noKidHero = new Group("No Kid Hero", "NKH", accountService.findAll().get(1).getUsername());
+        // noKidHero.getMemberList().add(accountService.findAll().get(2).getUsername());
+        // noKidHero.getMemberList().add(accountService.findAll().get(3).getUsername());
+        // noKidHero.getMemberList().add(accountService.findAll().get(8).getUsername());
+        // noKidHero.getMemberList().add(accountService.findAll().get(9).getUsername());
+        // for(String username : noKidHero.getMemberList()) {
+        //     accountService.findByUsername(username).setInGroup(noKidHero);
+        // }
+        // groups.add(noKidHero);
 
-        Group theGirls = new Group("Girl Power", "GIRL", accountService.findAll().get(4).getUsername());
-        theGirls.getMemberList().add(accountService.findAll().get(5).getUsername());
-        theGirls.getMemberList().add(accountService.findAll().get(6).getUsername());
-        theGirls.getMemberList().add(accountService.findAll().get(7).getUsername());
-        theGirls.getMemberList().add(accountService.findAll().get(10).getUsername());
-        for(String username : theGirls.getMemberList()) {
-            accountService.findByUsername(username).setInGroup(theGirls);
-        }
-        groups.add(theGirls);
+        // Group theGirls = new Group("Girl Power", "GIRL", accountService.findAll().get(4).getUsername());
+        // theGirls.getMemberList().add(accountService.findAll().get(5).getUsername());
+        // theGirls.getMemberList().add(accountService.findAll().get(6).getUsername());
+        // theGirls.getMemberList().add(accountService.findAll().get(7).getUsername());
+        // theGirls.getMemberList().add(accountService.findAll().get(10).getUsername());
+        // for(String username : theGirls.getMemberList()) {
+        //     accountService.findByUsername(username).setInGroup(theGirls);
+        // }
+        // groups.add(theGirls);
     }
 
     public void create(String groupName, String groupSymbol, String founder) {

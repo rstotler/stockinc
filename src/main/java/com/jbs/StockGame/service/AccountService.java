@@ -12,6 +12,7 @@ import com.jbs.StockGame.entity.Group;
 import com.jbs.StockGame.entity.HackAction;
 import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
+import com.jbs.StockGame.repository.AccountRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
@@ -21,30 +22,30 @@ import lombok.AllArgsConstructor;
 public class AccountService {
     private final StockListingService stockListingService;
     private final ScraperService scraperService;
-    private List<Account> accounts = new ArrayList<>();
     private PasswordEncoder passwordEncoder;
+    private AccountRepository accountRepository;
 
     @PostConstruct
     public void postConstruct() {
-        for(int i = 0; i < 3; i++) {
-            scraperService.simulateUpdate();
-        }
+        // for(int i = 0; i < 3; i++) {
+        //     scraperService.simulateUpdate();
+        // }
 
-        ArrayList<String> nameList = new ArrayList<>(Arrays.asList("a", "adeaddecember", "shootloadshoot", "againwithlove", "charmofadeadpoet", "bleedmylove", "noisenkisses12", "leshshshock", "ourmidairlove", "rafiko", "thefallbyavalon"));
-        for(int i = 0; i < 11; i++) {
-            Account account = new Account();
-            account.setUsername(nameList.get(i));
-            account.setPassword(nameList.get(i));
-            register(account);
+        // ArrayList<String> nameList = new ArrayList<>(Arrays.asList("a", "adeaddecember", "shootloadshoot", "againwithlove", "charmofadeadpoet", "bleedmylove", "noisenkisses12", "leshshshock", "ourmidairlove", "rafiko", "thefallbyavalon"));
+        // for(int i = 0; i < 11; i++) {
+        //     Account account = new Account();
+        //     account.setUsername(nameList.get(i));
+        //     account.setPassword(nameList.get(i));
+        //     register(account);
 
-            for(int ii = 0; ii < new Random().nextInt(4); ii++) {
-                int sNum = new Random().nextInt(stockListingService.findAll().size());
-                StockListing s = stockListingService.findAll().get(sNum);
-                account.getOwnedStock().put(s.getSymbol(), new Random().nextInt(10) + 1);
-            }
+        //     for(int ii = 0; ii < new Random().nextInt(4); ii++) {
+        //         int sNum = new Random().nextInt(stockListingService.findAll().size());
+        //         StockListing s = stockListingService.findAll().get(sNum);
+        //         account.getOwnedStock().put(s.getSymbol(), new Random().nextInt(10) + 1);
+        //     }
 
-            account.getOwnedUnits().put("Hacker", new Random().nextInt(5) + 1);
-        }
+        //     account.getOwnedUnits().put("Hacker", new Random().nextInt(5) + 1);
+        // }
     }
 
     public void register(Account account) {
@@ -70,17 +71,20 @@ public class AccountService {
 
         account.setMessages(new ArrayList<>());
         
-        accounts.add(account);
+        accountRepository.save(account);
     }
 
     public List<Account> findAll() {
-        return accounts;
+        return accountRepository.findAll();
     }
 
     public Account findByUsername(String username) {
-        return accounts.stream().filter(account -> account.getUsername().equals(username))
-            .findFirst()
-            .orElse(null);
+        Optional<Account> account = accountRepository.findById(username);
+        if(account.isPresent()) {
+            return account.get();
+        }
+
+        return null;
     }
 
     public float getTotalInvestment(String username) {

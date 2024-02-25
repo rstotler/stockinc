@@ -3,24 +3,36 @@ package com.jbs.StockGame.entity;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Entity
+@NoArgsConstructor
 public class StockListing {
-    private String name;
+    @Id
     private String symbol;
+    private String name;
+    @Column(length = 1000)
     private List<String> keyList;
     
     private List<Float> priceList;
     private List<Integer> keyCountList;
     private int nextKeyCount;
 
+    @ElementCollection
     private Map<String, Integer> influencerUpCount;
+    @ElementCollection
     private Map<String, Integer> influencerDownCount;
 
     public StockListing(String name, String symbol, List<String> keyList) {
-        this.name = name;
         this.symbol = symbol;
+        this.name = name;
         this.keyList = keyList;
 
         priceList = new ArrayList<>();

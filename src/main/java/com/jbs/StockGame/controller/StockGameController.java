@@ -29,10 +29,6 @@ import com.jbs.StockGame.service.StockListingService;
 
 import lombok.AllArgsConstructor;
 
-/* To-Do List:
- * 1 - Create Data Persistence Layer
-*/
-
 @Controller
 @AllArgsConstructor
 public class StockGameController {
