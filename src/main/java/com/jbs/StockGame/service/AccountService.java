@@ -2,6 +2,7 @@ package com.jbs.StockGame.service;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +13,9 @@ import com.jbs.StockGame.entity.Group;
 import com.jbs.StockGame.entity.HackAction;
 import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
+import com.jbs.StockGame.entity.UnitQueue;
 import com.jbs.StockGame.repository.AccountRepository;
+import com.jbs.StockGame.repository.MessageRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
@@ -24,6 +27,7 @@ public class AccountService {
     private final ScraperService scraperService;
     private PasswordEncoder passwordEncoder;
     private AccountRepository accountRepository;
+    private MessageRepository messageRepository;
 
     @PostConstruct
     public void postConstruct() {
@@ -170,9 +174,12 @@ public class AccountService {
         String title = "Tipster Report";
         LocalDateTime date = LocalDateTime.now();
         String content = "I have it on good authority that " + targetStock.getName() + " (" + targetStock.getSymbol() + ") will see a " + riseDropString + " tomorrow.";
-        
+        Message message = new Message(title, content, date);
+
         Account account = findByUsername(username);
-        account.getMessages().add(new Message(title, content, date));
+        account.getMessages().add(message);
+
+        messageRepository.save(message);
     }
 
     public int getUnreadMessageCount(String username) {
@@ -249,5 +256,74 @@ public class AccountService {
 
     public HackAction getHackTarget(String username) {
         return findByUsername(username).getHackTarget();
+    }
+
+    public void updateQueues(String username) {
+        Account account = findByUsername(username);
+        LocalDateTime now = LocalDateTime.now();
+
+        if(account.getTipsterQueue() != null) {
+            LocalDateTime serviceStartTime = account.getTipsterQueue().getStartTime();
+            long secondsPassed = ChronoUnit.SECONDS.between(serviceStartTime, now);
+            if(secondsPassed >= account.getTipsterQueue().getCreateUnitLength()) {
+                account.setTipsterQueue(null);
+            }
+        }
+
+        if(account.getUnitQueue().size() > 0) {
+            LocalDateTime creationStartTime = account.getUnitQueue().get(0).getStartTime();
+            long secondsPassed = ChronoUnit.SECONDS.between(creationStartTime, now);
+            updateUnitQueueUtility(account, secondsPassed);
+        }
+
+        if(account.getInfrastructureQueue() != null) {
+            LocalDateTime upgradeStartTime = account.getInfrastructureQueue().getStartTime();
+            long secondsPassed = ChronoUnit.SECONDS.between(upgradeStartTime, now);
+            if(secondsPassed >= account.getInfrastructureQueue().getCreateUnitLength()) {
+                int currentLevel = account.getInfrastructureLevels().get(account.getInfrastructureQueue().getUnitType());
+                account.getInfrastructureLevels().put(account.getInfrastructureQueue().getUnitType(), currentLevel + 1);
+                account.setInfrastructureQueue(null);
+            }
+        }
+
+        accountRepository.save(account);
+    }
+
+    public void updateUnitQueueUtility(Account account, long secondsPassed) {
+        int unitsToCreate = (int) (secondsPassed / account.getUnitQueue().get(0).getCreateUnitLength());
+        if(unitsToCreate > 0) {
+            if(unitsToCreate > account.getUnitQueue().get(0).getUnitCount()) {
+                unitsToCreate = account.getUnitQueue().get(0).getUnitCount();
+            }
+            createUnits(account, unitsToCreate);
+            secondsPassed -= (account.getUnitQueue().get(0).getCreateUnitLength() * unitsToCreate);
+
+            if(unitsToCreate == account.getUnitQueue().get(0).getUnitCount()) {
+                account.getUnitQueue().remove(0);
+            } else {
+                int newCount = account.getUnitQueue().get(0).getUnitCount() - unitsToCreate;
+                account.getUnitQueue().get(0).setUnitCount(newCount);
+            }
+            
+            if(account.getUnitQueue().size() > 0) {
+                updateUnitQueueStartTimes(account);
+                updateUnitQueueUtility(account, secondsPassed);
+            }
+        }
+    }
+
+    public void updateUnitQueueStartTimes(Account account) {
+        for(UnitQueue unitQueueItem : account.getUnitQueue()) {
+            unitQueueItem.setStartTime(LocalDateTime.now());
+        }
+    }
+
+    public void createUnits(Account account, int unitCount) {
+        String unitType = account.getUnitQueue().get(0).getUnitType();
+        if(account.getOwnedUnits().containsKey(unitType)) {
+            account.getOwnedUnits().put(unitType, account.getOwnedUnits().get(unitType) + unitCount);
+        } else {
+            account.getOwnedUnits().put(unitType, unitCount);
+        }
     }
 }

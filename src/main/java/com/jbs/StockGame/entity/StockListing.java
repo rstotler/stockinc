@@ -6,8 +6,8 @@ import java.util.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,9 +25,9 @@ public class StockListing {
     private List<Integer> keyCountList;
     private int nextKeyCount;
 
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     private Map<String, Integer> influencerUpCount;
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     private Map<String, Integer> influencerDownCount;
 
     public StockListing(String name, String symbol, List<String> keyList) {

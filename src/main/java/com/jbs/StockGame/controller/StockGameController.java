@@ -20,6 +20,8 @@ import com.jbs.StockGame.entity.HackAction;
 import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
 import com.jbs.StockGame.entity.UnitQueue;
+import com.jbs.StockGame.repository.AccountRepository;
+import com.jbs.StockGame.repository.GroupRepository;
 import com.jbs.StockGame.service.AccountService;
 import com.jbs.StockGame.service.GameDataService;
 import com.jbs.StockGame.service.GroupService;
@@ -33,8 +35,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class StockGameController {
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
     private final StockListingService stockListingService;
     private final GroupService groupService;
+    private final GroupRepository groupRepository;
     private final ScraperService scraperService;
     private final GameDataService gameDataService;
     private final MessageService messageService;
@@ -43,7 +47,7 @@ public class StockGameController {
     @GetMapping("/index")
     public String loginSuccess(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-        account.updateQueues();
+        accountService.updateQueues(userDetails.getUsername());
 
         HackAction groupHackTarget = null;
         for(Group group : groupService.findAll()) {
@@ -93,6 +97,8 @@ public class StockGameController {
             account.setCredits(account.getCredits() - (amount * stockListing.getPrice()));
 
             account.setLastInvestmentAmount(account.getLastInvestmentAmount() + (amount * stockListing.getPrice()));
+
+            accountRepository.save(account);
         }
 
         return "redirect:/index";
@@ -124,6 +130,8 @@ public class StockGameController {
                         account.setLastInvestmentAmount(0.0f);
                     }
                 }
+
+                accountRepository.save(account);
             }
         }
 
@@ -140,6 +148,9 @@ public class StockGameController {
 
         if(influencerCount > 0) {
             stockListingService.addInfluencers(userDetails.getUsername(), stockName, influencerCount, influenceDirection);
+
+            Account account = accountService.findByUsername(userDetails.getUsername());
+            accountRepository.save(account);
         }
 
         return "redirect:/index";
@@ -159,9 +170,9 @@ public class StockGameController {
 
     @GetMapping("/groups")
     public String groups(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        accountService.updateQueues(userDetails.getUsername());
         Account account = accountService.findByUsername(userDetails.getUsername());
-        account.updateQueues();
-
+        
         String groupName = "None";
         String groupSymbol = "None";
         String groupStatus = "None";
@@ -228,15 +239,23 @@ public class StockGameController {
         
         if(createGroupCheck) {
             account.setCredits(account.getCredits() - 100.0f);
-            groupService.create(groupName, groupSymbol, userDetails.getUsername());
+            Group createdGroup = groupService.create(groupName, groupSymbol, userDetails.getUsername());
             account.setInGroup(groupService.findBySymbol(groupSymbol));
 
             // Remove Any Open Group Requests //
             for(Group group : groupService.findAll()) {
+                boolean saveCheck = false;
                 if(group.getRequestList().contains(account.getUsername())) {
                     group.getRequestList().remove(account.getUsername());
+                    saveCheck = true;
+                }
+                if(saveCheck == true) {
+                    groupRepository.save(group);
                 }
             }
+
+            accountRepository.save(account);
+            groupRepository.save(createdGroup);
         }
         
         return "redirect:/groups";
@@ -248,34 +267,35 @@ public class StockGameController {
         if(group != null && group.getFounder().equals(userDetails.getUsername())) {
             Account account = accountService.findByUsername(userDetails.getUsername());
             account.setInGroup(null);
+            accountRepository.save(account);
 
             for(String memberUsername : group.getMemberList()) {
                 Account memberAccount = accountService.findByUsername(memberUsername);
                 memberAccount.setInGroup(null);
                 memberAccount.setGroupHackers(0);
+                accountRepository.save(memberAccount);
             }
 
-            int targetGroupIndex = -1;
             List<Group> groups = groupService.findAll();
             for(int i = 0; i < groups.size(); i++) {
-                if(groups.get(i).getSymbol().equals(groupSymbol)) {
-                    targetGroupIndex = i;
-                }
-
                 if(groups.get(i).getHackTarget() != null && groups.get(i).getHackTarget().getTargetGroupSymbol().equals(groupSymbol)) {
-                    groups.get(i).setHackTarget(null);
+                    Group hackedGroup = groups.get(i);
+                    hackedGroup.setHackTarget(null);
+                    groupRepository.save(hackedGroup);
+
                     for(String groupMember : group.getMemberList()) {
-                        accountService.findByUsername(groupMember).setGroupHackers(0);
+                        Account groupMemberAccount = accountService.findByUsername(groupMember);
+                        groupMemberAccount.setGroupHackers(0);
+                        accountRepository.save(groupMemberAccount);
                     }
                 }
             }
-            if(targetGroupIndex != -1) {
-                groups.remove(targetGroupIndex);
-            }
+            groupRepository.delete(group);
 
             for(Account otherAccount : accountService.findAll()) {
                 if(otherAccount.getHackTarget() != null && otherAccount.getHackTarget().getTargetGroupSymbol().equals(groupSymbol)) {
                     otherAccount.setHackTarget(null);
+                    accountRepository.save(otherAccount);
                 }
             }
         }
@@ -289,9 +309,11 @@ public class StockGameController {
         if(group.getFounder().equals(userDetails.getUsername())
         && group.getMemberList().contains(targetUser)) {
             group.getMemberList().remove(targetUser);
+            groupRepository.save(group);
 
             Account targetUserAccount = accountService.findByUsername(targetUser);
             targetUserAccount.setInGroup(null);
+            accountRepository.save(targetUserAccount);
         }
     }
 
@@ -307,6 +329,7 @@ public class StockGameController {
                 for(Group otherGroup : groupService.findAll()) {
                     if(otherGroup.getRequestList().contains(targetUser)) {
                         otherGroup.getRequestList().remove(targetUser);
+                        groupRepository.save(otherGroup);
                     }
                 }
 
@@ -316,11 +339,14 @@ public class StockGameController {
                         joinedAccount.setHackTarget(null);
                     }
                     joinedAccount.setInGroup(group);
+                    accountRepository.save(joinedAccount);
                 }
             }
             else if(targetAction.equals("Deny")) {
                 group.getRequestList().remove(targetUser);
             }
+
+            groupRepository.save(group);
         }
     }
 
@@ -339,6 +365,7 @@ public class StockGameController {
         if(!inGroupCheck) {
             Group targetGroup = groupService.findBySymbol(groupSymbol);
             targetGroup.getRequestList().add(userDetails.getUsername());
+            groupRepository.save(targetGroup);
         }
 
         return "redirect:/groups";
@@ -392,7 +419,7 @@ public class StockGameController {
     @GetMapping("/infrastructure")
     public String assets(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-        account.updateQueues();
+        accountService.updateQueues(userDetails.getUsername());
 
         HackAction groupHackTarget = null;
         for(Group group : groupService.findAll()) {
@@ -465,6 +492,7 @@ public class StockGameController {
             account.setTipsterQueue(new UnitQueue("Tipster", 0, 0, gameDataService.serviceResetLength.get("Tipster"), LocalDateTime.now()));
             account.setCredits(account.getCredits() - gameDataService.servicePrices.get("Tipster"));
             accountService.generateTipsterReport(userDetails.getUsername());
+            accountRepository.save(account);
         }
 
         return "redirect:/infrastructure"; 
@@ -484,6 +512,8 @@ public class StockGameController {
                 float totalCost = gameDataService.unitPrices.get(unitType) * unitCount;
                 account.setCredits(account.getCredits() - totalCost);
             }
+
+            accountRepository.save(account);
         }
 
         return "redirect:/infrastructure";
@@ -496,6 +526,7 @@ public class StockGameController {
         if(account.getInfrastructureQueue() == null && account.getCredits() >= gameDataService.infrastructurePrices.get(infrastructureType)) {
             account.setInfrastructureQueue(new UnitQueue(infrastructureType, gameDataService.infrastructurePrices.get(infrastructureType), 1, gameDataService.infrastructureUpgradeLength.get(infrastructureType), LocalDateTime.now()));
             account.setCredits(account.getCredits() - gameDataService.infrastructurePrices.get(infrastructureType));
+            accountRepository.save(account);
         }
 
         return "redirect:/infrastructure";
@@ -504,7 +535,7 @@ public class StockGameController {
     @GetMapping("/messages")
     public String messages(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.findByUsername(userDetails.getUsername());
-        account.updateQueues();
+        accountService.updateQueues(userDetails.getUsername());
 
         HackAction groupHackTarget = null;
         for(Group group : groupService.findAll()) {
@@ -541,6 +572,7 @@ public class StockGameController {
         Account account = accountService.findByUsername(userDetails.getUsername());
         if(messageIndex < account.getMessages().size() && !account.getMessages().get(messageIndex).isRead()) {
             account.getMessages().get(messageIndex).setRead(true);
+            accountRepository.save(account);
         }
     }
 
@@ -559,6 +591,8 @@ public class StockGameController {
                 }
             }
         }
+
+        accountRepository.save(account);
 
         return "redirect:/messages";
     }

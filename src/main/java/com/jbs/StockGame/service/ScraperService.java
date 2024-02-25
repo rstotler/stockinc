@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import com.jbs.StockGame.entity.StockListing;
+import com.jbs.StockGame.repository.StockListingRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -19,6 +20,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ScraperService {
     private StockListingService stockListingService;
+    private StockListingRepository stockListingRepository;
 
     public void generatePrice(String stockName) {
         System.out.println("Generating Price For: " + stockName);
@@ -46,7 +48,9 @@ public class ScraperService {
         }
 
         // System.out.println("Mentions Found: " + count);
-        // stockListingService.findByName(stockName).setPrice(count);
+        // Stock stock = stockListingService.findByName(stockName);
+        // stock.setPrice(count);
+        // stockListingRepository.save(stock);
     }
 
     public void simulateUpdateOld() {
@@ -81,9 +85,9 @@ public class ScraperService {
     }
 
     public void simulateUpdate() {
-
-        // Set Next Price //
         for(StockListing stockListing : stockListingService.findAll()) {
+
+            // Set Next Price //
             if(stockListing.getNextKeyCount() != -9999) {
                 stockListing.getKeyCountList().add(stockListing.getNextKeyCount() + stockListing.getTotalInfluence());
                 stockListing.addNewPrice();
@@ -91,12 +95,11 @@ public class ScraperService {
                 stockListing.getInfluencerUpCount().clear();
                 stockListing.getInfluencerDownCount().clear();
             }
-        }
 
-        // Get Next Day's Price Change //
-        for(StockListing stockListing : stockListingService.findAll()) {
+            // Get Next Day's Price Change //
             int nextCount = new Random().nextInt(2500);
             stockListing.setNextKeyCount(nextCount);
+            stockListingRepository.save(stockListing);
         }
     }
 }

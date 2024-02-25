@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.jbs.StockGame.entity.Account;
 import com.jbs.StockGame.entity.Group;
+import com.jbs.StockGame.repository.GroupRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GroupService {
     private AccountService accountService;
-    private List<Group> groups = new ArrayList<>();
+    private GroupRepository groupRepository;
 
     @PostConstruct
     public void postConstruct() {
@@ -40,14 +41,20 @@ public class GroupService {
         // groups.add(theGirls);
     }
 
-    public void create(String groupName, String groupSymbol, String founder) {
-        groups.add(new Group(groupName, groupSymbol, founder));
+    public Group create(String groupName, String groupSymbol, String founder) {
+        Group group = new Group(groupName, groupSymbol, founder);
+        groupRepository.save(group);
+        
+        return group;
     }
 
     public Group findBySymbol(String symbol) {
-        return groups.stream().filter(group -> group.getSymbol().equals(symbol))
-            .findFirst()
-            .orElse(null);
+        Optional<Group> group = groupRepository.findById(symbol);
+        if(group.isPresent()) {
+            return group.get();
+        }
+
+        return null;
     }
 
     public Group findByMember(String username) {
@@ -63,7 +70,7 @@ public class GroupService {
     }
 
     public List<Group> findAll() {
-        return groups;
+        return groupRepository.findAll();
     }
 
     public List<String> getTotalMemberList(String symbol) {
@@ -78,7 +85,7 @@ public class GroupService {
 
     public float getTotalValue(String symbol) {
         Group targetGroup = null;
-        for(Group group : groups) {
+        for(Group group : findAll()) {
             if(group.getSymbol() == symbol) {
                 targetGroup = group;
                 break;

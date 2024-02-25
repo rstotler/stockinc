@@ -71,5 +71,7 @@ public class StockListingService {
         } else {
             targetMap.put(username, count);
         }
+
+        stockListingRepository.save(stock);
     }
 }
