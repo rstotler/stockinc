@@ -1,17 +1,14 @@
 package com.jbs.StockGame.entity;
 
 import java.text.DecimalFormat;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import com.jbs.StockGame.repository.AccountRepository;
-
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
 import lombok.Data;
@@ -28,28 +25,27 @@ public class Account {
 
     private float credits;
     private float lastInvestmentAmount;
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     private Map<String, Integer> ownedStock;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private UnitQueue tipsterQueue;
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     private Map<String, Integer> ownedUnits;
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<UnitQueue> unitQueue;
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     private Map<String, Integer> infrastructureLevels;
     @JdbcTypeCode(SqlTypes.JSON)
     private UnitQueue infrastructureQueue;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private Group inGroup;
-    @Transient
+    @JdbcTypeCode(SqlTypes.JSON)
     private HackAction hackTarget;
-    @Transient
     private int groupHackers;
 
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<Message> messages;
 
     public String getCreditsString() {

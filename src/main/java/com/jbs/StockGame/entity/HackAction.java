@@ -24,6 +24,6 @@ public class HackAction {
         this.hackerCount = hackerCount;
         this.startTime = startTime;
 
-        hackTimeLength = 60;
+        hackTimeLength = 5;
     }
 }

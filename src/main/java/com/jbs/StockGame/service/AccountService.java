@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jbs.StockGame.entity.Account;
-import com.jbs.StockGame.entity.Group;
 import com.jbs.StockGame.entity.HackAction;
 import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
@@ -117,6 +116,14 @@ public class AccountService {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
         float amount = getGainLoss(username);
         return decimalFormat.format(amount);
+    }
+
+    public String getAbsoluteGainLossString(String username) {
+        String amountString = getGainLossString(username);
+        if(amountString.length() > 0 && amountString.charAt(0) == '-') {
+            return amountString.substring(1);
+        }
+        return amountString;
     }
 
     public float getTotalOwnedStockValue(String username) {

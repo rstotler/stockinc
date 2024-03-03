@@ -90,7 +90,7 @@
                 <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} &lt; 0">
                     - Investment: $<span th:with="userName=${userName}" th:text="${accountService.getTotalInvestmentString(userName)}"></span>
                     <span class="red" style="font-weight: bold;">
-                        (-$<span th:with="userName=${userName}" th:text="${accountService.getGainLossString(userName)}"></span>)
+                        (-$<span th:with="userName=${userName}" th:text="${accountService.getAbsoluteGainLossString(userName)}"></span>)
                     </span>
                 </span>
                 <span th:with="userName=${userName}" th:if="${accountService.getGainLoss(userName)} == 0">

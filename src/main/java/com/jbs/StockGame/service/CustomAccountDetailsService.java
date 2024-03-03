@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.jbs.StockGame.entity.Account;
 
-import lombok.AllArgsConstructor;
-
 @Service
 public class CustomAccountDetailsService implements UserDetailsService {
     @Autowired

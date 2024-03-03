@@ -11,6 +11,9 @@ import com.jbs.StockGame.entity.Group;
 import com.jbs.StockGame.entity.HackAction;
 import com.jbs.StockGame.entity.Message;
 import com.jbs.StockGame.entity.StockListing;
+import com.jbs.StockGame.repository.AccountRepository;
+import com.jbs.StockGame.repository.GroupRepository;
+import com.jbs.StockGame.repository.MessageRepository;
 import com.jbs.StockGame.service.AccountService;
 import com.jbs.StockGame.service.GroupService;
 import com.jbs.StockGame.service.StockListingService;
@@ -23,12 +26,18 @@ public class TaskHackGroup implements Runnable {
     private AccountService accountService;
     private GroupService groupService;
     private StockListingService stockListingService;
+    private AccountRepository accountRepository;
+    private GroupRepository groupRepository;
+    private MessageRepository messageRepository;
     private HackAction hackAction;
 
-    public TaskHackGroup(AccountService accountService, GroupService groupService, StockListingService stockListingService, HackAction hackAction) {
+    public TaskHackGroup(AccountService accountService, GroupService groupService, StockListingService stockListingService, AccountRepository accountRepository, GroupRepository groupRepository, MessageRepository messageRepository, HackAction hackAction) {
         this.accountService = accountService;
         this.groupService = groupService;
         this.stockListingService = stockListingService;
+        this.accountRepository = accountRepository;
+        this.groupRepository = groupRepository;
+        this.messageRepository = messageRepository;
         this.hackAction = hackAction;
     }
 
@@ -111,30 +120,47 @@ public class TaskHackGroup implements Runnable {
                         } else {
                             randomMemberAccount.getOwnedStock().put(randomStockSymbol, randomMemberAccount.getOwnedStock().get(randomStockSymbol) - 1);
                         }
+
+                        randomMemberAccount.setLastInvestmentAmount(randomMemberAccount.getLastInvestmentAmount() - hackedStock.getPrice());
+                        if(randomMemberAccount.getLastInvestmentAmount() <= 0.01) {
+                            randomMemberAccount.setLastInvestmentAmount(0.0f);
+                        }
                     }
+
+                    accountRepository.save(account);
+                    accountRepository.save(randomMemberAccount);
                 }
 
                 DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
                 
                 for(int hackerIndex = 0; hackerIndex < accountList.length; hackerIndex++) {
                     String messageTitle = hackString + " against target " + hackAction.getTargetGroupSymbol() + " succeeded.";
-                    String messageContent = "Your " + hackString.toLowerCase() + " against " + hackAction.getTargetGroupSymbol() + " succeeded. You stole";
-                    int i = 0;
-                    for(String hackedStockSymbol : hackedStocks.get(accountList[hackerIndex]).keySet()) {
-                        messageContent += " " + hackedStocks.get(accountList[hackerIndex]).get(hackedStockSymbol) + " " + hackedStockSymbol;
-                        if(i < hackedStocks.get(accountList[hackerIndex]).size() - 1 && hackedStocks.get(accountList[hackerIndex]).size() != 2) {
-                            messageContent += ",";
+                    String messageContent = "";
+
+                    if(hackedStocks.size() > 0) {
+                        messageContent = "Your " + hackString.toLowerCase() + " against " + hackAction.getTargetGroupSymbol() + " succeeded. You stole";
+                        int i = 0;
+                        for(String hackedStockSymbol : hackedStocks.get(accountList[hackerIndex]).keySet()) {
+                            messageContent += " " + hackedStocks.get(accountList[hackerIndex]).get(hackedStockSymbol) + " " + hackedStockSymbol;
+                            if(i < hackedStocks.get(accountList[hackerIndex]).size() - 1 && hackedStocks.get(accountList[hackerIndex]).size() != 2) {
+                                messageContent += ",";
+                            }
+                            if(i == hackedStocks.get(accountList[hackerIndex]).size() - 2) {
+                                messageContent += " and";
+                            }
+                            i++;
                         }
-                        if(i == hackedStocks.get(accountList[hackerIndex]).size() - 2) {
-                            messageContent += " and";
-                        }
-                        i++;
+                        String hackedStockTotalValueString = decimalFormat.format(hackedStockTotalValue.get(accountList[hackerIndex]));
+                        messageContent += " for a total value of $" + hackedStockTotalValueString + ".";
+                    } else {
+                        messageContent = "Your " + hackString.toLowerCase() + " against " + hackAction.getTargetGroupSymbol() + " succeeded, but you didn't receive any stocks.";
                     }
-                    String hackedStockTotalValueString = decimalFormat.format(hackedStockTotalValue.get(accountList[hackerIndex]));
-                    messageContent += " for a total value of $" + hackedStockTotalValueString + ".";
-        
+                    
                     account = accountService.findByUsername(accountList[hackerIndex]);
-                    account.getMessages().add(new Message(messageTitle, messageContent, LocalDateTime.now()));
+                    Message message = new Message(messageTitle, messageContent, LocalDateTime.now());
+                    account.getMessages().add(message);
+                    messageRepository.save(message);
+                    accountRepository.save(account);
                 }
             }
 
@@ -144,7 +170,10 @@ public class TaskHackGroup implements Runnable {
                 String messageContent = "Your " + hackString.toLowerCase() + " against " + hackAction.getTargetGroupSymbol() + " failed.";
                 for(int hackerIndex = 0; hackerIndex < accountList.length; hackerIndex++) {
                     account = accountService.findByUsername(accountList[hackerIndex]);
-                    account.getMessages().add(new Message(messageTitle, messageContent, LocalDateTime.now()));
+                    Message message = new Message(messageTitle, messageContent, LocalDateTime.now());
+                    account.getMessages().add(message);
+                    messageRepository.save(message);
+                    accountRepository.save(account);
                 }
             }
 
@@ -154,7 +183,10 @@ public class TaskHackGroup implements Runnable {
                 String targetMessageContent = "Your analysts have noticed some suspicious activity on the company servers.";
                 for(String targetGroupMemberString : groupService.getTotalMemberList(hackAction.getTargetGroupSymbol())) {
                     Account targetGroupMember = accountService.findByUsername(targetGroupMemberString);
-                    targetGroupMember.getMessages().add(new Message(targetMessageTitle, targetMessageContent, LocalDateTime.now()));
+                    Message message = new Message(targetMessageTitle, targetMessageContent, LocalDateTime.now());
+                    targetGroupMember.getMessages().add(message);
+                    messageRepository.save(message);
+                    accountRepository.save(targetGroupMember);
                 }
             }
 
@@ -162,13 +194,20 @@ public class TaskHackGroup implements Runnable {
             if(!hackAction.getHackerUsername().equals("None")) {
                 account = accountService.findByUsername(hackAction.getHackerUsername());
                 account.setHackTarget(null);
+                accountRepository.save(account);
             } else {
                 Group group = groupService.findBySymbol(hackAction.getHackerGroupSymbol());
                 group.setHackTarget(null);
+                groupRepository.save(group);
                 
-                accountService.findByUsername(group.getFounder()).setGroupHackers(0);
+                Account founderAccount = accountService.findByUsername(group.getFounder());
+                founderAccount.setGroupHackers(0);
+                accountRepository.save(founderAccount);
+
                 for(String memberUsername : group.getMemberList()) {
-                    accountService.findByUsername(memberUsername).setGroupHackers(0);
+                    Account memberAccount = accountService.findByUsername(memberUsername);
+                    memberAccount.setGroupHackers(0);
+                    accountRepository.save(memberAccount);
                 }
             }
         }

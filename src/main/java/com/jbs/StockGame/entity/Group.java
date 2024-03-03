@@ -2,6 +2,9 @@ package com.jbs.StockGame.entity;
 
 import java.util.*;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
@@ -18,7 +21,7 @@ public class Group {
     private String founder;
     private List<String> memberList;
     private List<String> requestList;
-    @Transient
+    @JdbcTypeCode(SqlTypes.JSON)
     private HackAction hackTarget;
 
     public Group(String name, String symbol, String founder) {

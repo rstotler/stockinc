@@ -22,6 +22,7 @@ import com.jbs.StockGame.entity.StockListing;
 import com.jbs.StockGame.entity.UnitQueue;
 import com.jbs.StockGame.repository.AccountRepository;
 import com.jbs.StockGame.repository.GroupRepository;
+import com.jbs.StockGame.repository.MessageRepository;
 import com.jbs.StockGame.service.AccountService;
 import com.jbs.StockGame.service.GameDataService;
 import com.jbs.StockGame.service.GroupService;
@@ -42,6 +43,7 @@ public class StockGameController {
     private final ScraperService scraperService;
     private final GameDataService gameDataService;
     private final MessageService messageService;
+    private final MessageRepository messageRepository;
     private final TaskScheduler taskScheduler;
 
     @GetMapping("/index")
@@ -397,19 +399,23 @@ public class StockGameController {
             if(groupHack == false) {
                 HackAction hackAction = new HackAction(userDetails.getUsername(), "None", groupSymbol, hackerAmount, LocalDateTime.now());
                 account.setHackTarget(hackAction);
+                accountRepository.save(account);
+
                 Date targetTime = new Date();
                 targetTime.setSeconds(targetTime.getSeconds() + hackAction.getHackTimeLength());
-                taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, hackAction), targetTime);
+                taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, accountRepository, groupRepository, messageRepository, hackAction), targetTime);
             }
 
             // Group Hack Group //
             else {
                 HackAction groupHackAction = new HackAction("None", hackerGroup.getSymbol(), groupSymbol, hackerAmount, LocalDateTime.now());
                 hackerGroup.setHackTarget(groupHackAction);
+                
                 Date targetTime = new Date();
                 targetTime.setSeconds(targetTime.getSeconds() + groupHackAction.getHackTimeLength());
-                taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, groupHackAction), targetTime);
+                taskScheduler.schedule(new TaskHackGroup(accountService, groupService, stockListingService, accountRepository, groupRepository, messageRepository, groupHackAction), targetTime);
                 groupService.setGroupHackers(hackerGroup.getSymbol(), hackerAmount);
+                groupRepository.save(hackerGroup);
             }
         }
 
