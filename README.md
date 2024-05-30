@@ -8,7 +8,7 @@ Stocks are updated once per day. Stock prices rise and fall according to the num
 ## Login Screen
 User data persisted using Spring Data JPA. Authentication is handled using Spring Security and user details are hashed and protected.
 
-![alt text](https://github.com/rstotler/gifs/blob/main/Login.png)
+![alt text](https://i.imgur.com/YVprI8G.png)
 
 ## Stock Listings
 View your account credit, total investment, and gain/loss on the top bar. Stock listing prices determined by a 30-day rolling average updated every day. Buy/sell prices and other web elements are dynamically updated on mouse click using Javascript.
