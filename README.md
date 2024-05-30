@@ -13,12 +13,12 @@ User data persisted using Spring Data JPA. Authentication is handled using Sprin
 ## Stock Listings
 View your account credit, total investment, and gain/loss on the top bar. Stock listing prices determined by a 30-day rolling average updated every day. Buy/sell prices and other web elements are dynamically updated on mouse click using Javascript.
 
-![alt text](https://github.com/rstotler/gifs/blob/main/Listings.png)
+![alt text](https://i.imgur.com/DvWhCjx.png)
 
 ## Player Companies
 Create player-made companies to band together with your friends and other players, increasing your company value and hacking power. Modify existing company details & accept/decline new members as a company CEO. Ajax is used to consume resources (accept/decline/remove members) without a page refresh.
 
-![alt text](https://github.com/rstotler/gifs/blob/main/Companies.png)
+![alt text](https://i.imgur.com/h6kAKGY.png)
 
 ## Infrastructure Units
 Hire/create units to aid in your company endeavors. Javascript is used to create a dynamic countdown timer showing how much time remains in unit creation.
@@ -28,14 +28,14 @@ Hire/create units to aid in your company endeavors. Javascript is used to create
 **Hacker** - Steal resources from competing companies to become the move valuable company.  
 **Analyst** - Prevent hacks from occuring and gain valuable insight when they occur.  
 
-![alt text](https://github.com/rstotler/gifs/blob/main/Infrastructure.png)
+![alt text](https://i.imgur.com/W3BSyDt.png)
 
 ## Hack Other Companies
 Hack competing groups using available hacker units and steal resources and stocks. More hackers increases chances of success. More analysts increases defense against being hacked. Countdown timer to hack completion is visible using Javascript to dynamically count down remaining time.
 
-![alt text](https://github.com/rstotler/gifs/blob/main/Hacking.png)
+![alt text](https://i.imgur.com/B14kdX4.png)
 
 ## Message Inbox
 Messages are received via leveraging market tipsters detailing future stock movements and upon successful and failed hacks, detailing the amount of resources stolen, and when being alerted to hacks by others.
 
-![alt text](https://github.com/rstotler/gifs/blob/main/Messages.png)
+![alt text](https://i.imgur.com/7k9y1W0.png)
