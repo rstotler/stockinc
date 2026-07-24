@@ -3,25 +3,25 @@ A web application created with Spring Boot, Thymeleaf, Java, Javascript, & Ajax
 
 Gain prestige trading stocks, artificially influence market prices, gain market insight buy leveraging tipsters, forming companies with other players, and hacking your competition and stealing their resources! Oh, and don't get caught, or your company could be disbanded or gain a negative repuation which negatively impacts your influence!
 
-Stocks are updated once per day. Stock prices rise and fall according to the number of times they are mentioned in the news.
+Stocks are updated once per day. Stock prices rise and fall according to the number of times they are mentioned on https://brutalist.report, handled via web scraping.
 
 ## Login Screen
-User data persisted using Spring Data JPA. Authentication is handled using Spring Security and user details are hashed and protected.
+User data persisted using Spring Data JPA. Authentication is handled using Spring Security and hashed with BCrypt.
 
-![alt text](https://i.imgur.com/YVprI8G.png)
+![](https://github.com/rstotler/gifs/blob/main/stockupdate2.png)
 
 ## Stock Listings
-View your account credit, total investment, and gain/loss on the top bar. Stock listing prices determined by a 30-day rolling average updated every day. Buy/sell prices and other web elements are dynamically updated on mouse click using Javascript.
+View your account credit, total investment, and current gain/loss on the top bar. Stock listing prices determined by a 30-day rolling average updated every day via thread pool task scheduling. Web elements such as current price updated dynamically via Javascript.
 
 ![alt text](https://i.imgur.com/DvWhCjx.png)
 
 ## Player Companies
-Create player-made companies to band together with your friends and other players, increasing your company value and hacking power. Modify existing company details & accept/decline new members as a company CEO. Ajax is used to consume resources (accept/decline/remove members) without a page refresh.
+User-created companies to band together with your friends and other players, increasing your company value and hacking power. Modify existing company details & accept/decline new members as a company CEO. Consume resources (accept/decline/remove members) without refreshing the page via Ajax.
 
-![alt text](https://i.imgur.com/h6kAKGY.png)
+![](https://github.com/rstotler/gifs/blob/main/stockupdate1.png)
 
 ## Infrastructure Units
-Hire/create units to aid in your company endeavors. Javascript is used to create a dynamic countdown timer showing how much time remains in unit creation.
+Hire/create units to aid in your company endeavors. Javascript is used to create a dynamic countdown timer displaying the remaining time in unit creation.
 
 **Tipster** - Gain valuable market insight into future stock price movements.  
 **Influencer** - Artificially influence the price of future stock movements.  
