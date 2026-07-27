@@ -16,7 +16,7 @@ View your account credit, total investment, and current gain/loss on the top bar
 ![alt text](https://i.imgur.com/DvWhCjx.png)
 
 ## Player Companies
-User-created companies to band together with your friends and other players, increasing your company value and hacking power. Modify existing company details & accept/decline new members as a company CEO. Consume resources (accept/decline/remove members) without refreshing the page via Ajax.
+Band together with friends & other players by forming a company. Having more members increases your companies total value, resources, and hacking power. Modify existing company details & accept/decline new members as a company CEO via POST requests. Consume resources (accept/decline/remove members) without refreshing the page via Ajax.
 
 ![](https://github.com/rstotler/gifs/blob/main/stockupdate1.png)
 
