@@ -11,7 +11,7 @@ User data persisted using Spring Data JPA. Authentication is handled using Sprin
 ![](https://github.com/rstotler/gifs/blob/main/stockupdate2.png)
 
 ## Stock Listings
-View your account credit, total investment, and current gain/loss on the top bar. Stock listing prices determined by a 30-day rolling average updated every day via thread pool task scheduling. Web elements such as current price updated dynamically via Javascript.
+View your account credit, total investment, and current gain/loss on the top bar. Stock listing prices determined by a 30-day rolling average updated every day via thread pool task scheduling. Web elements such as ticker symbol & current price updated dynamically via Javascript.
 
 ![alt text](https://i.imgur.com/DvWhCjx.png)
 
