@@ -1,7 +1,7 @@
 # StockInc
 A web application created with Spring Boot, Thymeleaf, Java, Javascript, & Ajax
 
-Gain prestige trading stocks, artificially influence market prices, gain market insight buy leveraging tipsters, form companies with other players, and hack your competition and steal their resources!
+Gain prestige trading stocks, artificially influence market prices, gain market insight by leveraging tipsters, form companies with other players, and hack your competition and steal their resources!
 
 Stocks are updated once per day. Stock prices rise and fall according to the number of times they are mentioned on https://brutalist.report, handled via web scraping.
 
